@@ -10,7 +10,7 @@ class Vendedor extends Model
     use HasFactory;
 
     protected $table = 'vendedores';
-    protected $fillable = ['user_id', 'zona_id','coordinador_id'];
+    protected $fillable = ['user_id', 'zona_id','coordinador_id','codigo_vendedor'];
 
     /**
      * The afiliados that belong to the Vendedor

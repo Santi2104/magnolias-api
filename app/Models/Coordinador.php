@@ -10,7 +10,7 @@ class Coordinador extends Model
     use HasFactory;
 
     protected $table = 'coordinadores';
-    protected $fillable = ['user_id'];
+    protected $fillable = ['user_id','codigo_coordinador'];
 
     /**
      * Get the user that owns the Coordinador

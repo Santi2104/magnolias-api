@@ -19,6 +19,7 @@ class CreateVendedoresTable extends Migration
             ->constrained()
             ->onDelete('cascade')
             ->OnUpdate('cascade');
+            $table->uuid('codigo_vendedor')->unique();
             $table->foreignId('zona_id')
             ->constrained()
             ->onDelete('cascade')

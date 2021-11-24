@@ -17,7 +17,11 @@ class AfiliadoFactory extends Factory
     {
         return [
             "user_id" => User::factory(),
-            'paquete_id' => Paquete::factory()
+            'paquete_id' => Paquete::factory(),
+            'codigo_afiliado' => $this->faker->unique()->uuid(),
+            'calle' => $this->faker->streetName(),
+            'barrio' => $this->faker->city(),
+            'nro_casa' => $this->faker->buildingNumber()
         ];
     }
 }

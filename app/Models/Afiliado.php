@@ -9,7 +9,15 @@ class Afiliado extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["user_id","paquete_id"];
+    protected $fillable = [
+        "user_id",
+        "paquete_id",
+        'codigo_afiliado',
+        'calle',
+        'barrio',
+        'nro_casa',
+        'nro_depto'
+    ];
 
     /**
      * The vendedores that belong to the Afiliado

@@ -49,7 +49,15 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\User::factory()
         ->count(1)
-        ->create(['role_id' => 1]);
+        ->create(['name' => 'Sergio','lastname' => 'Denis','email' => 'sergio@mail.com','role_id' => 1]);
+
+        \App\Models\User::factory()
+        ->count(1)
+        ->create(['name' => 'Web','lastname' => 'Web','role_id' => 2])
+        ->each(function (\App\Models\User $user){
+            Coordinador::factory()
+            ->create(['user_id' => $user->id]);
+        });
 
         \App\Models\User::factory()
         ->count(5)
@@ -84,6 +92,13 @@ class DatabaseSeeder extends Seeder
             ->create(['user_id' => $user->id]);
         });
 
+        \App\Models\User::factory()
+        ->count(1)
+        ->create(['role_id' => 4])
+        ->each(function (){
+            Vendedor::factory()
+            ->create(['user_id' => 2, 'zona_id' => rand(1,9), 'coordinador_id' => 1]);
+        });
 
         \App\Models\User::factory()
         ->count(10)
@@ -95,7 +110,7 @@ class DatabaseSeeder extends Seeder
 
         for ($i=1; $i <= 17; $i++) { 
             $afiliado = Afiliado::find($i);
-            $afiliado->vendedores()->attach(rand(2,8)); 
+            $afiliado->vendedores()->attach(rand(1,8)); 
         }
 
 

@@ -15,7 +15,8 @@ class CoordinadorFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::factory()
+            'user_id' => User::factory(),
+            'codigo_coordinador' => $this->faker->unique()->uuid()
         ];
     }
 }

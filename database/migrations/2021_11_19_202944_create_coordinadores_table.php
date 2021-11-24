@@ -15,6 +15,7 @@ class CreateCoordinadoresTable extends Migration
     {
         Schema::create('coordinadores', function (Blueprint $table) {
             $table->id();
+            $table->uuid('codigo_coordinador')->unique();
             $table->foreignId('user_id')
             ->constrained()
             ->onDelete('cascade')

@@ -15,6 +15,11 @@ class CreateAfiliadosTable extends Migration
     {
         Schema::create('afiliados', function (Blueprint $table) {
             $table->id();
+            $table->uuid('codigo_afiliado')->unique();
+            $table->string('calle');
+            $table->string('barrio');
+            $table->string('nro_casa');
+            $table->string('nro_depto')->nullable();
             $table->foreignId('user_id')
             ->constrained()
             ->onDelete('cascade')
