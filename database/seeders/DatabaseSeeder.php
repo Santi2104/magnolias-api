@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\User::factory()
         ->count(1)
-        ->create(['name' => 'Web','lastname' => 'Web','role_id' => 2])
+        ->create(['name' => 'Vendedor','lastname' => 'Vendedor','email' => 'vendedor@mail.com','role_id' => 2])
         ->each(function (\App\Models\User $user){
             Coordinador::factory()
             ->create(['user_id' => $user->id]);
@@ -92,13 +92,6 @@ class DatabaseSeeder extends Seeder
             ->create(['user_id' => $user->id]);
         });
 
-        \App\Models\User::factory()
-        ->count(1)
-        ->create(['role_id' => 4])
-        ->each(function (){
-            Vendedor::factory()
-            ->create(['user_id' => 2, 'zona_id' => rand(1,9), 'coordinador_id' => 1]);
-        });
 
         \App\Models\User::factory()
         ->count(10)
