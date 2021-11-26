@@ -28,4 +28,14 @@ class Afiliado extends Model
     {
         return $this->belongsToMany(Vendedor::class,'afiliado_vendedor');
     }
+
+    /**
+     * Get the obraSocial that owns the Afiliado
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function obraSocial()
+    {
+        return $this->belongsTo(ObraSocial::class);
+    }
 }

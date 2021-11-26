@@ -6,6 +6,7 @@ use App\Models\Afiliado;
 use App\Models\Categoria;
 use App\Models\Coordinador;
 use App\Models\Localidad;
+use App\Models\ObraSocial;
 use App\Models\Paquete;
 use App\Models\Producto;
 use App\Models\Vendedor;
@@ -45,6 +46,24 @@ class DatabaseSeeder extends Seeder
         ->create([
             'name' => 'vendedor',
             //'display_name' => 'Admisión'
+        ]);
+
+        ObraSocial::factory()->times(1)->create([
+            'nombre' => 'APOS',
+            // 'razon_social' => 'APOS',
+            // 'nombre_comercial' => 'APOS',
+        ]);
+
+        ObraSocial::factory()->times(1)->create([
+            'nombre' => 'OSUNLAR',
+            // 'razon_social' => 'OSUNLAR',
+            // 'nombre_comercial' => 'OSUNLAR',
+        ]);
+
+        ObraSocial::factory()->times(1)->create([
+            'nombre' => 'OSDE',
+            // 'razon_social' => 'OSDE',
+            // 'nombre_comercial' => 'OSDE',
         ]);
 
         \App\Models\User::factory()
@@ -89,7 +108,7 @@ class DatabaseSeeder extends Seeder
         ->create(['role_id' => 3])
         ->each(function (\App\Models\User $user){
             Afiliado::factory()
-            ->create(['user_id' => $user->id]);
+            ->create(['user_id' => $user->id, 'obra_social_id' => rand(1,3)]);
         });
 
 
