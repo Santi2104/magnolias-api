@@ -11,6 +11,10 @@ class Role extends Model
 
     protected $fillable = ['name'];
 
+    public const ES_ADMIN = 1;
+    public const ES_COORDINADOR = 2;
+    public const ES_AFILIADO = 3;
+    public const ES_VENDEDOR = 4;
 
     /**
      * Get all of the users for the Role
