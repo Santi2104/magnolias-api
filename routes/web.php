@@ -16,3 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Route::get('login', function () {
+//     return response()->json([
+//         "message" => "No se puede encontrar ni el token ni las cabeceras"
+//     ],401);
+// })->name("login");

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Library\ApiHelpers;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
@@ -12,15 +13,13 @@ use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
+    use ApiHelpers;
+
     public function login(Request $request)
     {
 
-        //*TODO: Mover todo lo relacionado a las respuesta dentro de un Trait 
-        $content = $request->header('Content-Type');
-
-        if(!$request->expectsJson() or $content !== "application/json" ){
-            return response()->json([
-                'message' => 'Error en las cabeceras'], 422);
+        if($this->checkHeaders($request->header('Content-Type'),$request)){
+            return $this->onError(422,'Error en las cabeceras');
         }
 
         $request->validate([ 
@@ -32,8 +31,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!Auth::attempt($credentials)) {
-            return response()->json([
-                'message' => 'Unauthorized'], 401);
+            return $this->onError(401,'Unauthorized');    
         }
 
         $user = $request->user();
@@ -46,31 +44,30 @@ class AuthController extends Controller
         }
         
         $token->save();
-        return response()->json([
-            'access_token' => $tokenResult->accessToken,
-            'token_type'   => 'Bearer',
-            'expires_at'   => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
-            'data'         => $user
-        ]);
+        return $this->loginResponse(
+            $tokenResult->accessToken,
+            Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+            "Inicio de sesión satisfactorio",
+            $user
+        );
+            
     }
 
     public function logout(Request $request)
     {
+        if($this->checkHeaders($request->header('Content-Type'),$request)){
+            return $this->onError(422,'Error en las cabeceras');
+        }
 
         $request->user()->token()->revoke();
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+        return $this->onMessage(200, "Su sesión ha sido cerrada");
     }
 
     public function register(Request $request)
     {
 
-        $content = $request->header('Content-Type');
-
-        if(!$request->expectsJson() or $content !== "application/json" ){
-            return response()->json([
-                'message' => 'Error en las cabeceras'], 422);
+        if($this->checkHeaders($request->header('Content-Type'),$request)){
+            return $this->onError(422,'Error en las cabeceras');
         }
 
         $nacimiento = Carbon::parse($request['nacimiento']);
@@ -85,8 +82,7 @@ class AuthController extends Controller
             'nacimiento' => ['required'],
             'password'=> ['required','string','confirmed'],       
         ]);
-        //TODO: Agregar la obra social a los usuarios que falta ese campo
-        //'o_s_id' => ['required']
+
 
         User::create([
             'name'     => $request->name,
@@ -105,7 +101,6 @@ class AuthController extends Controller
          * *pedirle todo el tiempo que se compre un producto
          */
 
-        return response()->json([
-            'message' => 'Successfully created user!'], 201);
+        return $this->onMessage(201,"Usuario creado de manera satisfactoria");    
     }
 }
