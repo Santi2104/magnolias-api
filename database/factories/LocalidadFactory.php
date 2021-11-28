@@ -14,7 +14,7 @@ class LocalidadFactory extends Factory
     public function definition()
     {
         return [
-            'nombre' => $this->faker->unique()->word
+            'nombre' => $this->faker->unique()->country
         ];
     }
 }

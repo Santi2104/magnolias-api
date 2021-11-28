@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\CategoriasController;
+use App\Http\Controllers\Api\Admin\LocalidadController;
 use App\Http\Controllers\Api\Admin\PaqueteController;
 use App\Http\Controllers\Api\Admin\ProductoController;
 use App\Http\Controllers\Api\AuthController;
@@ -44,6 +45,12 @@ Route::group(['middleware' => ['auth:api','checkaccept']], function(){
         Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
         Route::post('paquete', [PaqueteController::class, 'store'])->name('paquete.store');
         Route::put('paquete/{id}', [PaqueteController::class, 'update'])->name('paquete.update');
+
+        //**Crud de las localidades */
+        Route::get('localidades', [LocalidadController::class, 'index'])->name('localidad.index');
+        Route::post('localidad', [LocalidadController::class, 'store'])->name('localidad.store');
+        Route::put('localidad/{id}', [LocalidadController::class, 'update'])->name('localidad.update');
+        
         
     });
 });

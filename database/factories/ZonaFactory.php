@@ -15,7 +15,7 @@ class ZonaFactory extends Factory
     public function definition()
     {
         return [
-            'nombre' => $this->faker->unique()->word,
+            'nombre' => $this->faker->unique()->city,
             'localidad_id' => Localidad::factory()
         ];
     }
