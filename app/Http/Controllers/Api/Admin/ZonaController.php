@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
-use App\Http\Resources\Admin\LocalidadResource;
-use App\Models\Localidad;
+use App\Http\Resources\Admin\ZonaResource;
+use App\Models\Zona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class LocalidadController extends Controller
+class ZonaController extends Controller
 {
     use ApiHelpers;
     /**
@@ -19,8 +19,8 @@ class LocalidadController extends Controller
      */
     public function index()
     {
-        $localidades = Localidad::all();
-        return $this->onSuccess(LocalidadResource::collection($localidades));
+        $zonas = Zona::all();
+        return $this->onSuccess(ZonaResource::collection($zonas));
     }
 
     /**
@@ -33,6 +33,7 @@ class LocalidadController extends Controller
     {
         $validador = Validator::make($request->all(), [
             "nombre" => ['required'],
+            "localidad_id" => ['required']
         ]);
 
         if($validador->fails()){
@@ -43,11 +44,12 @@ class LocalidadController extends Controller
             ], 200);
         }
 
-        $localidad = Localidad::create([
-            "nombre" => $request["nombre"]
+        $zona = Zona::create([
+            "nombre" => $request["nombre"],
+            "localidad_id" => $request["localidad_id"]
         ]);
 
-        return $this->onSuccess(new LocalidadResource($localidad),"Localidad creada de manera correcta", 201);
+        return $this->onSuccess(new ZonaResource($zona),"La zona fue creada de manera correcta",201);
     }
 
     /**
@@ -72,6 +74,7 @@ class LocalidadController extends Controller
     {
         $validador = Validator::make($request->all(), [
             "nombre" => ['required'],
+            "localidad_id" => ['required']
         ]);
 
         if($validador->fails()){
@@ -82,22 +85,23 @@ class LocalidadController extends Controller
             ], 200);
         }
 
-        $localidad = Localidad::find($id);
-        if(!isset($localidad)){
-            return $this->onError(404,"La localidad a la que intenta acceder no existe");
+        $zona = Zona::find($id);
+        if(!isset($zona)){
+            return $this->onError(404,"La zona al que intenta acceder no existe");
         }
 
-        $localidad->fill($request->only([
-            "nombre"
+        $zona->fill($request->only([
+            "nombre",
+            "localidad_id"
         ]));
 
-        if($localidad->isClean()){
+        if($zona->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
 
-        $localidad->save();
+        $zona->save();
 
-        return $this->onSuccess(new LocalidadResource($localidad),"Localidad modificada de forma correcta",200);
+        return $this->onSuccess(new ZonaResource($zona),"Zona actualizado de manera correcta");
     }
 
     /**

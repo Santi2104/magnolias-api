@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Admin\CategoriasController;
 use App\Http\Controllers\Api\Admin\LocalidadController;
 use App\Http\Controllers\Api\Admin\PaqueteController;
 use App\Http\Controllers\Api\Admin\ProductoController;
+use App\Http\Controllers\Api\Admin\ZonaController;
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,11 @@ Route::group(['middleware' => ['auth:api','checkaccept']], function(){
         Route::get('localidades', [LocalidadController::class, 'index'])->name('localidad.index');
         Route::post('localidad', [LocalidadController::class, 'store'])->name('localidad.store');
         Route::put('localidad/{id}', [LocalidadController::class, 'update'])->name('localidad.update');
+
+        //**Crud de las zonas */
+        Route::get('zonas', [ZonaController::class, 'index'])->name('zona.index');
+        Route::post('zona', [ZonaController::class, 'store'])->name('zona.store');
+        Route::put('zona/{id}', [ZonaController::class, 'update'])->name('zona.update');
         
         
     });
