@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\Admin\CategoriaResource;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -21,7 +22,7 @@ class CategoriasController extends Controller
     public function index()
     {
         $categorias = Categoria::all();
-        return $this->onSuccess($categorias);
+        return $this->onSuccess(CategoriaResource::collection($categorias));
     }
 
     /**
@@ -32,7 +33,7 @@ class CategoriasController extends Controller
      */
     public function store(Request $request)
     {
-
+        //TODO: Verificar que la categoria que se quiera ingresar no se encuentre en la BD
         $validador = Validator::make($request->all(), [
             "nombre" => ['required']
         ]);
@@ -49,7 +50,7 @@ class CategoriasController extends Controller
             'nombre' => $request['nombre']
         ]);
 
-        return $this->onSuccess($categoria,"Categoria creada de manera correcta",201);
+        return $this->onSuccess(new CategoriaResource($categoria),"Categoria creada de manera correcta",201);
 
     }
 
@@ -95,7 +96,7 @@ class CategoriasController extends Controller
 
         $categoria->save();
 
-        return $this->onSuccess($categoria,"Categoria actualizada de manera correcta");
+        return $this->onSuccess(new CategoriaResource($categoria),"Categoria actualizada de manera correcta");
 
     }
 

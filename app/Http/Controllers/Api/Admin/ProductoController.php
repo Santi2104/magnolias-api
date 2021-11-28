@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\Admin\ProductoResource;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +20,7 @@ class ProductoController extends Controller
     public function index()
     {
         $productos = Producto::all();
-        return $this->onSuccess($productos,"",200);
+        return $this->onSuccess(ProductoResource::collection($productos),200);
     }
 
     /**
@@ -48,7 +49,7 @@ class ProductoController extends Controller
             "categoria_id" => $request['categoria_id']
         ]);
 
-        return $this->onSuccess($producto,"Producto creado de manera correcta",201);
+        return $this->onSuccess(new ProductoResource($producto),"Producto creado de manera correcta",201);
     }
 
     /**
@@ -65,7 +66,7 @@ class ProductoController extends Controller
             return $this->onError(404,"El producto al que intenta acceder no existe");
         }
 
-        return $this->onSuccess($producto,"Producto encontrado",200);
+        return $this->onSuccess(new ProductoResource($producto),"Producto encontrado",200);
     }
 
     /**
@@ -106,7 +107,7 @@ class ProductoController extends Controller
 
         $producto->save();
 
-        return $this->onSuccess($producto,"Producto actualizado de manera correcta");
+        return $this->onSuccess(new ProductoResource($producto),"Producto actualizado de manera correcta");
 
     }
 
