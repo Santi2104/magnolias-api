@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\CategoriasController;
 use App\Http\Controllers\Api\Admin\LocalidadController;
+use App\Http\Controllers\Api\Admin\ObraSocialController;
 use App\Http\Controllers\Api\Admin\PaqueteController;
 use App\Http\Controllers\Api\Admin\ProductoController;
 use App\Http\Controllers\Api\Admin\ZonaController;
@@ -56,7 +57,11 @@ Route::group(['middleware' => ['auth:api','checkaccept']], function(){
         Route::get('zonas', [ZonaController::class, 'index'])->name('zona.index');
         Route::post('zona', [ZonaController::class, 'store'])->name('zona.store');
         Route::put('zona/{id}', [ZonaController::class, 'update'])->name('zona.update');
-        
+
+        //**Crud de las obras sociales */
+        Route::get('obra-social', [ObraSocialController::class, 'index'])->name("obra.social.index");
+        Route::post('obra-social', [ObraSocialController::class, 'store'])->name("obra.social.store");
+        Route::put('obra-social/{id}', [ObraSocialController::class, 'update'])->name("obra.social.update");
         
     });
 });
