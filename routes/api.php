@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\CategoriasController;
+use App\Http\Controllers\Api\Admin\PaqueteController;
 use App\Http\Controllers\Api\Admin\ProductoController;
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
@@ -38,6 +39,11 @@ Route::group(['middleware' => ['auth:api','checkaccept']], function(){
         Route::get('producto/{id}', [ProductoController::class, 'show'])->name('productos.show');
         Route::post('producto', [ProductoController::class, 'store'])->name('productos.store');
         Route::put('producto/{id}', [ProductoController::class, 'update'])->name('productos.update');
+
+        //**Curd de los paquetes */
+        Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
+        Route::post('paquete', [PaqueteController::class, 'store'])->name('paquete.store');
+        Route::put('paquete/{id}', [PaqueteController::class, 'update'])->name('paquete.update');
         
     });
 });

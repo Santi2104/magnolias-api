@@ -9,7 +9,7 @@ class Paquete extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['nombre'];
 
     /**
      * The productos that belong to the Paquete
