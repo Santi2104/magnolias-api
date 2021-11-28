@@ -4,15 +4,13 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
-use App\Models\Categoria;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CategoriasController extends Controller
+class ProductoController extends Controller
 {
-
     use ApiHelpers;
-
     /**
      * Display a listing of the resource.
      *
@@ -20,8 +18,8 @@ class CategoriasController extends Controller
      */
     public function index()
     {
-        $categorias = Categoria::all();
-        return $this->onSuccess($categorias);
+        $productos = Producto::all();
+        return $this->onSuccess($productos,"",200);
     }
 
     /**
@@ -32,9 +30,9 @@ class CategoriasController extends Controller
      */
     public function store(Request $request)
     {
-
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required']
+            "nombre" => ['required'],
+            "categoria_id" => ['required']
         ]);
 
         if($validador->fails()){
@@ -44,37 +42,44 @@ class CategoriasController extends Controller
                 'message' => $validador->errors(),
             ], 200);
         }
-
-       $categoria = Categoria::create([
-            'nombre' => $request['nombre']
+        //TODO: Crear un resourse para los productos(tambien las categorias)
+        $producto = Producto::create([
+            "nombre" => $request['nombre'],
+            "categoria_id" => $request['categoria_id']
         ]);
 
-        return $this->onSuccess($categoria,"Categoria creada de manera correcta",201);
-
+        return $this->onSuccess($producto,"Producto creado de manera correcta",201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Categoria  $categoria
+     * @param  \App\Models\Producto  $producto
      * @return \Illuminate\Http\Response
      */
-    public function show(Categoria $categoria)
+    public function show($id)
     {
-        //
+        $producto = Producto::find($id);
+
+        if(!isset($producto)){
+            return $this->onError(404,"El producto al que intenta acceder no existe");
+        }
+
+        return $this->onSuccess($producto,"Producto encontrado",200);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Categoria  $categoria
+     * @param  \App\Models\Producto  $producto
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Categoria $categoria)
+    public function update(Request $request, $id)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required']
+            "nombre" => ['required'],
+            "categoria_id" => ['required']
         ]);
 
         if($validador->fails()){
@@ -85,27 +90,33 @@ class CategoriasController extends Controller
             ], 200);
         }
 
-        $categoria->fill($request->only([
-            "nombre"
+        $producto = Producto::find($id);
+        if(!isset($producto)){
+            return $this->onError(404,"El producto al que intenta acceder no existe");
+        }
+
+        $producto->fill($request->only([
+            "nombre",
+            "categoria_id"
         ]));
 
-        if($categoria->isClean()){
+        if($producto->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
 
-        $categoria->save();
+        $producto->save();
 
-        return $this->onSuccess($categoria,"Categoria actualizada de manera correcta");
+        return $this->onSuccess($producto,"Producto actualizado de manera correcta");
 
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Categoria  $categoria
+     * @param  \App\Models\Producto  $producto
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Categoria $categoria)
+    public function destroy(Producto $producto)
     {
         //
     }

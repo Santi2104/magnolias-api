@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\CategoriasController;
+use App\Http\Controllers\Api\Admin\ProductoController;
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,9 +28,16 @@ Route::group(['middleware' => ['auth:api','checkaccept']], function(){
         "prefix" => "admin",
         "as" => 'admin.'
     ], function() {
-
+        //**Crud de las categorias */
         Route::get('categorias', [CategoriasController::class, 'index'])->name('categorias.index');
         Route::post('categoria', [CategoriasController::class, 'store'])->name('categorias.store');
         Route::put('categoria/{categoria}', [CategoriasController::class, 'update'])->name('categorias.update');
+
+        //**Crud de los productos */
+        Route::get('productos', [ProductoController::class, 'index'])->name('productos.index');
+        Route::get('producto/{id}', [ProductoController::class, 'show'])->name('productos.show');
+        Route::post('producto', [ProductoController::class, 'store'])->name('productos.store');
+        Route::put('producto/{id}', [ProductoController::class, 'update'])->name('productos.update');
+        
     });
 });
