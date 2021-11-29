@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\CategoriasController;
+use App\Http\Controllers\Api\Admin\CoordinadorController;
 use App\Http\Controllers\Api\Admin\LocalidadController;
 use App\Http\Controllers\Api\Admin\ObraSocialController;
 use App\Http\Controllers\Api\Admin\PaqueteController;
@@ -62,6 +63,12 @@ Route::group(['middleware' => ['auth:api','checkaccept']], function(){
         Route::get('obra-social', [ObraSocialController::class, 'index'])->name("obra.social.index");
         Route::post('obra-social', [ObraSocialController::class, 'store'])->name("obra.social.store");
         Route::put('obra-social/{id}', [ObraSocialController::class, 'update'])->name("obra.social.update");
+
+        //**Crud de los coordinadores */
+        Route::get('coordinadores', [CoordinadorController::class, 'index'])->name("coordinador.index");
+        Route::post('coordinador', [CoordinadorController::class, 'store'])->name("coordinador.store");
+        Route::put('coordinador', [CoordinadorController::class, 'update'])->name("coordinador.update");
+        
         
     });
 });
