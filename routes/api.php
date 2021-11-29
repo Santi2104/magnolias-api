@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Admin\CoordinadorController;
 use App\Http\Controllers\Api\Admin\LocalidadController;
 use App\Http\Controllers\Api\Admin\ObraSocialController;
 use App\Http\Controllers\Api\Admin\PaqueteController;
+use App\Http\Controllers\Api\Admin\PaqueteProductoController;
 use App\Http\Controllers\Api\Admin\ProductoController;
 use App\Http\Controllers\Api\Admin\ZonaController;
 use App\Http\Controllers\Api\AuthController;
@@ -48,6 +49,12 @@ Route::group(['middleware' => ['auth:api','checkaccept']], function(){
         Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
         Route::post('paquete', [PaqueteController::class, 'store'])->name('paquete.store');
         Route::put('paquete/{id}', [PaqueteController::class, 'update'])->name('paquete.update');
+        Route::get('paquete/producto', [PaqueteProductoController::class, 'index'])->name('paquete.prodcuto.index');
+        Route::get('paquete/{id}/producto', [PaqueteProductoController::class, 'show'])->name('paquete.prodcuto.show');
+        Route::post('paquete/producto', [PaqueteProductoController::class, 'store'])->name('paquete.prodcuto.store');
+        Route::put('paquete/{id}/producto', [PaqueteProductoController::class, 'update'])->name('paquete.prodcuto.update');
+        Route::delete('paquete/{id}/producto', [PaqueteProductoController::class, 'destroy'])->name('paquete.prodcuto.destroy');
+        
 
         //**Crud de las localidades */
         Route::get('localidades', [LocalidadController::class, 'index'])->name('localidad.index');
