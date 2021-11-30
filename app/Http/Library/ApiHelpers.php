@@ -69,7 +69,7 @@ trait ApiHelpers
         ], $code);
     }
 
-    protected function loginResponse(string $accesToken, string $expiresAt,string $message = "" ,$data, int $code = 201)
+    protected function loginResponse(string $accesToken, string $expiresAt,string $message = "" ,$data, int $code = 200)
     {
         return response()->json([
             'access_token' => $accesToken,

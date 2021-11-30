@@ -35,8 +35,26 @@ class AuthController extends Controller
         }
 
         $user = $request->user();
+        
+        $userRole = $user->UserRole();
 
-        $tokenResult = $user->createToken('Personal Access Token');
+        switch ($userRole) {
+            case 1:
+                    $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::ADMIN_TOKEN)]);
+                break;
+            
+            case 2:
+                    $tokenResult = $user->createToken('Personal Access Token', [implode(" ",Role::COORDINADOR_TOKEN)]);
+                    break;
+
+            case 4:
+                    $tokenResult = $user->createToken('Personal Access Token', [implode(" ",Role::VENDEDOR_TOKEN)]);
+                    break;         
+            default:
+                    $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::AFILIADO_TOKEN)]);
+                break;
+        }
+
         $token = $tokenResult->token;
         if ($request->remember_me) {
 

@@ -20,7 +20,7 @@ class ProductoController extends Controller
     public function index()
     {
         $productos = Producto::all();
-        return $this->onSuccess(ProductoResource::collection($productos),200);
+        return $this->onSuccess(ProductoResource::collection($productos));
     }
 
     /**

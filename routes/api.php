@@ -28,7 +28,7 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
-Route::group(['middleware' => ['auth:api','checkaccept']], function(){
+Route::group(['middleware' => ['auth:api','scope:admin','checkaccept']], function(){
 
     Route::group([
         "prefix" => "admin",

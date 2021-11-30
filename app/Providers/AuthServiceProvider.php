@@ -27,6 +27,14 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         Passport::routes();
 
+        Passport::tokensCan([
+            'admin' => "Privilegios de administrador",
+            'coordinador' => 'Privilegios de coordinador',
+            'afiliado' => 'Privilegios de afiliado',
+            'vendedor' => 'Privilegios de vendedor',
+            // 'check-status' => 'Check order status',
+        ]);
+
         //
     }
 }
