@@ -136,6 +136,10 @@ class VendedoresController extends Controller
 
             return $this->onError(409,"No se puede encontrar al vendedor con el uuid enviado");
         }
+        
+        if ($request->user()->cannot('update', $vendedor)) {
+            return $this->onError(403,"No tiene permisos para editar este vendedor");
+        }
 
         $usuario = $vendedor->user;
 
@@ -171,7 +175,8 @@ class VendedoresController extends Controller
         $usuario->nacimiento = $nacimiento;
         $usuario->edad     = $actual->diffInYears($nacimiento);
         //? Un coordinar puede cambiar a un vendedor de coordinador?
-        if($usuario->isClean()){
+
+        if($usuario->isClean() and $vendedor->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
         $vendedor->save();
