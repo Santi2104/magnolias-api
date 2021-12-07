@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\User::factory()
         ->count(1)
-        ->create(['name' => 'Vendedor','lastname' => 'Vendedor','email' => 'vendedor@mail.com','role_id' => 2])
+        ->create(['name' => 'Coordinador','lastname' => 'Coordinador','email' => 'coordinador@mail.com','role_id' => 2])
         ->each(function (\App\Models\User $user){
             Coordinador::factory()
             ->create(['user_id' => $user->id]);

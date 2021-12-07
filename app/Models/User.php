@@ -78,6 +78,16 @@ class User extends Authenticatable
         return $this->hasOne(Afiliado::class);
     }
 
+    /**
+     * Get the vendedor associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function vendedor()
+    {
+        return $this->hasOne(Vendedor::class);
+    }
+
     public function UserRole(){
         return $this->role->id;
     }

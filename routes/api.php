@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\PaqueteProductoController;
 use App\Http\Controllers\Api\Admin\ProductoController;
 use App\Http\Controllers\Api\Admin\ZonaController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Coordinador\VendedoresController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -65,6 +66,7 @@ Route::group(['middleware' => ['auth:api','scope:admin','checkaccept']], functio
         Route::get('zonas', [ZonaController::class, 'index'])->name('zona.index');
         Route::post('zona', [ZonaController::class, 'store'])->name('zona.store');
         Route::put('zona/{id}', [ZonaController::class, 'update'])->name('zona.update');
+        //*!Segun las respuestas un vendedor puede pertenecer a varias zonas, esto habra que cambiar */
 
         //**Crud de las obras sociales */
         Route::get('obra-social', [ObraSocialController::class, 'index'])->name("obra.social.index");
@@ -78,4 +80,24 @@ Route::group(['middleware' => ['auth:api','scope:admin','checkaccept']], functio
         
         
     });
+});
+
+Route::group(['middleware' => ['auth:api','scope:coordinador','checkaccept']], function(){
+
+    Route::group([
+        "prefix" => "coordinador",
+        "as" => 'coordinador.'
+    ], function(){
+
+        Route::get('vendedores', [VendedoresController::class, 'index'])->name('vendedor.index');
+        //*?Un coordinador puede crear un vendedor? o tiene que solicitar al admin que lo cree
+        //*?Un coordinador puede crear asignarse un vendedor?
+        Route::get('vendedor/{uuid}/afiliados', [VendedoresController::class, 'show'])->name('vendedor.afiliado.show');
+        Route::post('vendedor', [VendedoresController::class, 'store'])->name('vendedor.store');
+        Route::put('vendedor/{uuid}', [VendedoresController::class, 'update'])->name('vendedor.afiliado.update');
+        Route::delete('vendedor', [VendedoresController::class, 'uncouple'])->name('vendedor.uncouple');
+
+    });
+
+
 });

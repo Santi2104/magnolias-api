@@ -61,11 +61,12 @@ trait ApiHelpers
         ], $code);
     }
 
-    protected function onMessage(int $code, string $message = ''): JsonResponse
+    protected function onMessage(int $code, string $message = '', $data = ""): JsonResponse
     {
         return response()->json([
             'status' => $code,
             'message' => $message,
+            'data' => $data
         ], $code);
     }
 

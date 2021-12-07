@@ -21,4 +21,14 @@ class Coordinador extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get all of the vendedores for the Coordinador
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function vendedores()
+    {
+        return $this->hasMany(Vendedor::class,'coordinador_id');
+    }
 }

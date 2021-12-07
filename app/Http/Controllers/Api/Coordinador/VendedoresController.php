@@ -1,20 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Coordinador;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
-use App\Http\Resources\Admin\CoordinadorResource;
-use App\Http\Resources\Admin\UserCoordinadorResource;
-use App\Models\Coordinador;
+use App\Http\Resources\Coordinador\UserVendedorResource;
+use App\Http\Resources\Coordinador\VendedorAfiliadoResource;
+use App\Http\Resources\Coordinador\VendedorResource;
 use App\Models\User;
+use App\Models\Vendedor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class CoordinadorController extends Controller
+class VendedoresController extends Controller
 {
     use ApiHelpers;
     /**
@@ -24,8 +27,20 @@ class CoordinadorController extends Controller
      */
     public function index()
     {
-        $coordinadores = Coordinador::all();
-        return $this->onSuccess(CoordinadorResource::collection($coordinadores));
+        $coordinador_id = Auth::user()->coordinador->id;
+
+        if(!isset($coordinador_id)){
+            $this->onError(422,"Este usuario aun no se registró como coordinador. Contacte con un administrador para realizar dicha operacion");
+        }
+
+        $vendedores = Vendedor::where("coordinador_id", $coordinador_id)->get();
+
+        if($vendedores->isEmpty()){
+
+            return $this->onMessage(200,"Este coordinador aun no tiene vendedores asignados");
+        }
+
+        return VendedorResource::collection($vendedores);
     }
 
     /**
@@ -36,14 +51,15 @@ class CoordinadorController extends Controller
      */
     public function store(Request $request)
     {
-        //*TODO:La contraseña deberia crearse de manera aleatoria en este caso */
+        //*TODO: La contraseña deberia crearse de manera aleatoria en este caso */
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)],
             'lastname' => ['required', 'string'],
             'dni' => ['required'],
             'nacimiento' => ['required'],
-            'password'=> ['required','string','confirmed'], 
+            'password'=> ['required','string','confirmed'],
+            'zona_id' => ['required'] 
         ]);
 
         if($validador->fails()){
@@ -65,15 +81,16 @@ class CoordinadorController extends Controller
             'nacimiento' => $nacimiento,
             'edad'     => $actual->diffInYears($nacimiento),
             'password' => bcrypt($request->password),
-            'role_id'  => \App\Models\Role::ES_COORDINADOR,
+            'role_id'  => \App\Models\Role::ES_VENDEDOR,
         ]);
 
-        $usuario->coordinador()->create([
-            "codigo_coordinador" => Str::uuid()
+        $usuario->vendedor()->create([
+            "codigo_vendedor" => Str::uuid(),
+            "zona_id" => $request["zona_id"],
+            "coordinador_id" => Auth::user()->coordinador->id
         ]);
 
-        return $this->onSuccess(new UserCoordinadorResource($usuario),"coordinador creado de manera correcta",201);
-
+        return $this->onSuccess(new UserVendedorResource($usuario));
     }
 
     /**
@@ -82,10 +99,26 @@ class CoordinadorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($uuid)
     {
-        //
+        $coordinador_id = Auth::user()->coordinador->id;
+
+        if(!isset($coordinador_id)){
+            $this->onError(422,"Este usuario aun no se registró como coordinador. Contacte con un administrador para realizar dicha operacion");
+        }
+
+        $vendedor = Vendedor::where("coordinador_id", $coordinador_id)
+                            ->where("codigo_vendedor", $uuid)
+                            ->first();
+
+        if(!isset($vendedor)){
+
+            return $this->onError(404,"No existe un vendedor con el codigo enviado o no esta asociado al coordinador");
+        }                    
+                  
+        return $this->onSuccess(new VendedorAfiliadoResource($vendedor));
     }
+    
 
     /**
      * Update the specified resource in storage.
@@ -94,23 +127,26 @@ class CoordinadorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
-    {
+    public function update(Request $request, $uuid)
+    {   
 
-        $coordinador = Coordinador::where("codigo_coordinador", $request['uuid'])->first();
+        $vendedor = Vendedor::where('codigo_vendedor', $uuid)->first();
 
-        if(!isset($coordinador)){
+        if(!isset($vendedor)){
 
-            return $this->onError(409,"No se puede encontrar el coordinador con el uuid enviado");
+            return $this->onError(409,"No se puede encontrar al vendedor con el uuid enviado");
         }
 
-        $usuario = $coordinador->user;
+        $usuario = $vendedor->user;
+
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)->ignore($usuario->id)],
             'lastname' => ['required', 'string'],
             'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
             'nacimiento' => ['required'],
+            'password'=> ['required','string','confirmed'],
+            'zona_id' => ['required'],
         ]);
 
         if($validador->fails()){
@@ -121,28 +157,28 @@ class CoordinadorController extends Controller
             ], 200);
         }
 
+        $vendedor->zona_id = $request["zona_id"];
+        $vendedor->coordinador_id = $request['coordinador_id'] ? $request['coordinador_id'] : Auth::user()->coordinador->id;
         
+
         $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $actual = Carbon::now();
-
+        //*TODO: Aca deberia de nuevo el metodo fill, al igual que el coordinadorController del admin
         $usuario->name     = $request->name;
         $usuario->email    = $request->email;
         $usuario->lastname = $request->lastname;
         $usuario->dni      = $request->dni;
         $usuario->nacimiento = $nacimiento;
         $usuario->edad     = $actual->diffInYears($nacimiento);
-        /** 
-            *?Talves aca Deberia Ir algo para modificar la tabla coordinador
-            *? Si modifico el mail, deberia poder vericarlo de nuevo si es correcto
-        */
-
+        //? Un coordinar puede cambiar a un vendedor de coordinador?
         if($usuario->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
-
+        $vendedor->save();
         $usuario->save();
 
-        return $this->onSuccess(new UserCoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
+        return $this->onSuccess(new VendedorAfiliadoResource($vendedor),"vendedor actualizado de manera correcta",200);
+        
     }
 
     /**
@@ -151,8 +187,8 @@ class CoordinadorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function uncouple(Request $request)
     {
-        //
+        //*TODO: Agregar soft delete a todos los modelos
     }
 }
