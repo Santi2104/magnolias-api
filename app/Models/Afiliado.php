@@ -16,7 +16,8 @@ class Afiliado extends Model
         'calle',
         'barrio',
         'nro_casa',
-        'nro_depto'
+        'nro_depto',
+        'obra_social_id'
     ];
 
     /**
@@ -37,5 +38,25 @@ class Afiliado extends Model
     public function obraSocial()
     {
         return $this->belongsTo(ObraSocial::class);
+    }
+
+    /**
+     * Get the user that owns the Afiliado
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the paquete that owns the Afiliado
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function paquete()
+    {
+        return $this->belongsTo(Paquete::class);
     }
 }

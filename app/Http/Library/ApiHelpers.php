@@ -4,6 +4,7 @@ namespace App\Http\Library;
 
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 
 trait ApiHelpers
 {
@@ -53,11 +54,12 @@ trait ApiHelpers
         ], $code);
     }
 
-    protected function onError(int $code, string $message = ''): JsonResponse
+    protected function onError(int $code, string $message = '',$errors = ""): JsonResponse
     {
         return response()->json([
             'status' => $code,
             'message' => $message,
+            'errors' => $errors
         ], $code);
     }
 
@@ -98,6 +100,17 @@ trait ApiHelpers
         }
 
         return false;
+    }
+
+    protected function checkUuid($uuid){
+
+        if(Str::isUuid($uuid)){
+
+            return true;
+        }
+
+        return false;
+
     }
 
 }
