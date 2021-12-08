@@ -19,6 +19,7 @@ class CreateZonasTable extends Migration
             $table->unsignedBigInteger('localidad_id');
             $table->foreign('localidad_id')->references('id')->on('localidades');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

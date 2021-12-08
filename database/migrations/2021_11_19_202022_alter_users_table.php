@@ -18,6 +18,7 @@ class AlterUsersTable extends Migration
             ->constrained()
             ->onDelete('cascade')
             ->OnUpdate('cascade');
+            $table->softDeletes();
         });
     }
 
@@ -30,6 +31,7 @@ class AlterUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('role_id');
+            $table->dropSoftDeletes();
         });
     }
 }

@@ -16,6 +16,7 @@ class AlterAfiliadosTable extends Migration
         Schema::table('afiliados', function (Blueprint $table) {
             $table->unsignedBigInteger('obra_social_id');
             $table->foreign('obra_social_id')->references('id')->on('obra_sociales');
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +29,7 @@ class AlterAfiliadosTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('obra_social_id');
+            $table->dropSoftDeletes();
         });
     }
 }

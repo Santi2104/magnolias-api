@@ -27,6 +27,7 @@ class CreateVendedoresTable extends Migration
             $table->unsignedBigInteger('coordinador_id');
             $table->foreign('coordinador_id')->references('id')->on('coordinadores');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
