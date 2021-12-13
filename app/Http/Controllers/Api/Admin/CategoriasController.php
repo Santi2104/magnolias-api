@@ -8,6 +8,7 @@ use App\Http\Resources\Admin\CategoriaResource;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class CategoriasController extends Controller
 {
@@ -33,17 +34,14 @@ class CategoriasController extends Controller
      */
     public function store(Request $request)
     {
-        //TODO: Verificar que la categoria que se quiera ingresar no se encuentre en la BD
+
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required']
+            "nombre" => ['required','unique:categorias,nombre']
         ]);
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(400,"Error de validación", $validador->errors());
         }
 
        $categoria = Categoria::create([
@@ -75,15 +73,12 @@ class CategoriasController extends Controller
     public function update(Request $request, Categoria $categoria)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required']
+            "nombre" => ['required', Rule::unique(Categoria::class)->ignore($categoria->id)]
         ]);
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $categoria->fill($request->only([

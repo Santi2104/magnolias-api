@@ -37,6 +37,7 @@ class CoordinadorController extends Controller
     public function store(Request $request)
     {
         //*TODO:La contraseña deberia crearse de manera aleatoria en este caso */
+        //*TODO:Cuando se aplique la confirmación de cuenta implementar lo de la contraseña*/
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)],
@@ -48,10 +49,7 @@ class CoordinadorController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $nacimiento = Carbon::parse($request['nacimiento']);
@@ -115,22 +113,19 @@ class CoordinadorController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         
         $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $actual = Carbon::now();
 
-        $usuario->name     = $request->name;
-        $usuario->email    = $request->email;
+        $usuario->name = $request->name;
+        $usuario->email = $request->email;
         $usuario->lastname = $request->lastname;
-        $usuario->dni      = $request->dni;
+        $usuario->dni = $request->dni;
         $usuario->nacimiento = $nacimiento;
-        $usuario->edad     = $actual->diffInYears($nacimiento);
+        $usuario->edad = $actual->diffInYears($nacimiento);
         /** 
             *?Talves aca Deberia Ir algo para modificar la tabla coordinador
             *? Si modifico el mail, deberia poder vericarlo de nuevo si es correcto

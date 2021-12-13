@@ -7,6 +7,7 @@ use App\Http\Library\ApiHelpers;
 use App\Models\Paquete;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PaqueteController extends Controller
 {
@@ -30,17 +31,14 @@ class PaqueteController extends Controller
      */
     public function store(Request $request)
     {
-        //TODO:Validar que cada nombre de paquete sea unico(Y los demas modelos tambien)
+
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
+            "nombre" => ['required',Rule::unique(Paquete::class)],
         ]);
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $paquete = Paquete::create([
@@ -65,10 +63,7 @@ class PaqueteController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $paquete = Paquete::find($id);
@@ -78,7 +73,6 @@ class PaqueteController extends Controller
 
         $paquete->fill($request->only([
             "nombre",
-            "categoria_id"
         ]));
 
         if($paquete->isClean()){

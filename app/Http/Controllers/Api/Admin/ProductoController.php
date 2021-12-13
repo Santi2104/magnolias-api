@@ -32,18 +32,15 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
+            "nombre" => ['required','string', 'unique:productos,nombre'],
             "categoria_id" => ['required']
         ]);
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
-        //TODO: Crear un resourse para los productos(tambien las categorias)
+        
         $producto = Producto::create([
             "nombre" => $request['nombre'],
             "categoria_id" => $request['categoria_id']
@@ -85,10 +82,7 @@ class ProductoController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $producto = Producto::find($id);

@@ -64,10 +64,7 @@ class VendedoresController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $nacimiento = Carbon::parse($request['nacimiento']);
@@ -155,10 +152,7 @@ class VendedoresController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $vendedor->zona_id = $request["zona_id"];
@@ -167,7 +161,7 @@ class VendedoresController extends Controller
 
         $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $actual = Carbon::now();
-        //*TODO: Aca deberia de nuevo el metodo fill, al igual que el coordinadorController del admin
+
         $usuario->name     = $request->name;
         $usuario->email    = $request->email;
         $usuario->lastname = $request->lastname;

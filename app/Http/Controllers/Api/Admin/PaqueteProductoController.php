@@ -39,10 +39,7 @@ class PaqueteProductoController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $paquete = Paquete::find($request["paquete_id"]);
@@ -91,10 +88,7 @@ class PaqueteProductoController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $paquete = Paquete::find($id);
@@ -126,10 +120,7 @@ class PaqueteProductoController extends Controller
 
         if($validador->fails()){
 
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $paquete = Paquete::find($id);
