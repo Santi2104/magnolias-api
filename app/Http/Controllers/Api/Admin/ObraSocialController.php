@@ -107,6 +107,27 @@ class ObraSocialController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $obraSocial = ObraSocial::find($id);
+        
+        if(!isset($obraSocial)){
+            return $this->onError(404,"La Obra Social a la que intenta acceder no existe");
+        }
+
+        $obraSocial->delete();
+
+        return $this->onSuccess($obraSocial, "Obra Social eliminada de manera correcta");
+    }
+
+    public function restore($id)
+    {
+        $obraSocial = ObraSocial::withTrashed()->where('id', $id)->first();
+
+        if(!isset($obraSocial)){
+            return $this->onError(404,"La Obra Social a la que intenta acceder no existe");
+        }
+        
+        $obraSocial->restore();
+
+        return $this->onSuccess($obraSocial,"Obra Social restaurada");
     }
 }

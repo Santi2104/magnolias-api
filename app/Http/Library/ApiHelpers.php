@@ -78,7 +78,7 @@ trait ApiHelpers
             'access_token' => $accesToken,
             'token_type'   => 'Bearer',
             'expires_at'   => $expiresAt,
-            'data'         => $data,
+            'user'         => $data,
             'code'         => $code,
             'message'      => $message 
         ]);     

@@ -92,6 +92,27 @@ class PaqueteController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $paquete = Paquete::find($id);
+        
+        if(!isset($paquete)){
+            return $this->onError(404,"El paquete al que intenta acceder no existe");
+        }
+
+        $paquete->delete();
+
+        return $this->onSuccess($paquete, "Paquete eliminado de manera correcta");
+    }
+
+    public function restore($id)
+    {
+        $paquete = Paquete::withTrashed()->where('id', $id)->first();
+
+        if(!isset($paquete)){
+            return $this->onError(404,"El paquete al que intenta acceder no existe");
+        }
+        
+        $paquete->restore();
+
+        return $this->onSuccess($paquete,"Paquete restaurado");
     }
 }

@@ -108,6 +108,27 @@ class LocalidadController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $localidad = Localidad::find($id);
+        
+        if(!isset($localidad)){
+            return $this->onError(404,"El localidad al que intenta acceder no existe");
+        }
+
+        $localidad->delete();
+
+        return $this->onSuccess($localidad, "localidad eliminada de manera correcta");
+    }
+
+    public function restore($id)
+    {
+        $localidad = Localidad::withTrashed()->where('id', $id)->first();
+
+        if(!isset($localidad)){
+            return $this->onError(404,"La localidad al que intenta acceder no existe");
+        }
+        
+        $localidad->restore();
+
+        return $this->onSuccess($localidad,"Localidad restaurada");
     }
 }

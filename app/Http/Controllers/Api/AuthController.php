@@ -31,8 +31,8 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!Auth::attempt($credentials)) {
-            //*TODO: Cambiar este mensaje que no nos dice nada
-            return $this->onError(401,'Unauthorized');    
+            
+            return $this->onError(401,'Usuario o contraseña incorrectos');  
         }
 
         $user = $request->user();
@@ -121,5 +121,10 @@ class AuthController extends Controller
          */
 
         return $this->onMessage(201,"Usuario creado de manera satisfactoria");    
+    }
+
+    public function user(Request $request)
+    {
+        return $request->user();
     }
 }

@@ -108,11 +108,31 @@ class ProductoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Producto  $producto
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Producto $producto)
+    public function destroy($id)
     {
-        //
+        $producto = Producto::find($id);
+        
+        if(!isset($producto)){
+            return $this->onError(404,"El producto al que intenta acceder no existe");
+        }
+
+        $producto->delete();
+
+        return $this->onSuccess($producto, "Producto eliminada de manera correcta");
+    }
+
+    public function restore($id)
+    {
+        $producto = Producto::withTrashed()->where('id', $id)->first();
+
+        if(!isset($producto)){
+            return $this->onError(404,"El producto al que intenta acceder no existe");
+        }
+        
+        $producto->restore();
+
+        return $this->onSuccess($producto,"Producto restaurado");
     }
 }

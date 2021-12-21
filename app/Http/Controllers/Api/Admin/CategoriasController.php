@@ -103,6 +103,21 @@ class CategoriasController extends Controller
      */
     public function destroy(Categoria $categoria)
     {
-        //
+        $categoria->delete();
+
+        return $this->onSuccess($categoria, "Categoria eliminada de manera correcta");
+    }
+
+    public function restore($id)
+    {
+        $categoria = Categoria::withTrashed()->where('id', $id)->first();
+
+        if(!isset($categoria)){
+            return $this->onError(404,"El producto al que intenta acceder no existe");
+        }
+
+        $categoria->restore();
+
+        return $this->onSuccess($categoria,"Categoria restaurada");
     }
 }
