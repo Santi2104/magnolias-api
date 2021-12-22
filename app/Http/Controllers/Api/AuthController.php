@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\UserAuthResource;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
@@ -125,6 +126,6 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return $request->user();
+        return new UserAuthResource($request->user());
     }
 }
