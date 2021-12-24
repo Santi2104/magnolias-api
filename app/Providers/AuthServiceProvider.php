@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,15 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        Passport::routes();
+
+        Passport::tokensCan([
+            'admin' => "Privilegios de administrador",
+            'coordinador' => 'Privilegios de coordinador',
+            'afiliado' => 'Privilegios de afiliado',
+            'vendedor' => 'Privilegios de vendedor',
+            // 'check-status' => 'Check order status',
+        ]);
 
         //
     }
