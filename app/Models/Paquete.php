@@ -10,7 +10,7 @@ class Paquete extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre', 'precio', 'descripcion'];
 
     /**
      * The productos that belong to the Paquete
