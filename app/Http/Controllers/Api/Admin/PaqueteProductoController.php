@@ -51,7 +51,7 @@ class PaqueteProductoController extends Controller
 
         $paquete->productos()->syncWithoutDetaching($request["productos_id"]);
 
-        return $this->onSuccess(new PaqueteProductoResource($paquete));
+        return $this->onSuccess(new PaqueteProductoResource($paquete),"Productos agregados al paquete de manera correcta");
 
     }
 

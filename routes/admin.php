@@ -25,7 +25,7 @@ Route::group(['middleware' => ['auth:api','scope:admin','checkaccept']], functio
         //**Crud de los productos */
         Route::get('productos', [ProductoController::class, 'index'])->name('productos.index');
         Route::get('producto/{id}', [ProductoController::class, 'show'])->name('productos.show');
-        Route::post('producto', [ProductoController::class, 'store'])->name('productos.store');
+        Route::post('producto', [ProductoController::class, 'store'])->name('productos.store');//*TODO: Capturar para esta ruta el Illuminate\\Database\\QueryException
         Route::put('producto/{id}', [ProductoController::class, 'update'])->name('productos.update');
         Route::delete('producto/{id}', [ProductoController::class, 'destroy'])->name('productos.destroy');
         Route::patch('producto/{id}', [ProductoController::class, 'restore'])->name('productos.restore');

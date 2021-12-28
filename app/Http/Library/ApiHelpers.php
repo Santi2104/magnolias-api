@@ -2,12 +2,16 @@
 
 namespace App\Http\Library;
 
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
+
 trait ApiHelpers
 {
+    /**
+     * @param Object $user
+     * @return bool
+     */
     protected function esAdmin($user): bool
     {
         if (!empty($user)) {
@@ -17,6 +21,10 @@ trait ApiHelpers
         return false;
     }
 
+    /**
+     * @param Object $user
+     * @return bool
+     */
     protected function esAfiliado($user): bool
     {
 
@@ -26,7 +34,11 @@ trait ApiHelpers
 
         return false;
     }
-
+    
+    /**
+     * @param Object $user
+     * @return bool
+     */
     protected function esVendedor($user): bool
     {
         if (!empty($user)) {
@@ -36,6 +48,10 @@ trait ApiHelpers
         return false;
     }
 
+    /**
+     * @param Object $user
+     * @return bool
+     */
     protected function esCoordinador($user): bool
     {
         if (!empty($user)) {
@@ -45,6 +61,12 @@ trait ApiHelpers
         return false;
     }
 
+    /**
+     * @param $data
+     * @param string $message
+     * @param int $code
+     * @return JsonResponse
+     */
     protected function onSuccess($data, string $message = '', int $code = 200): JsonResponse
     {
         return response()->json([
@@ -54,6 +76,12 @@ trait ApiHelpers
         ], $code);
     }
 
+    /**
+     * @param int $code
+     * @param string $message
+     * @param string $errors
+     * @return JsonResponse
+     */
     protected function onError(int $code, string $message = '',$errors = ""): JsonResponse
     {
         return response()->json([
@@ -63,6 +91,12 @@ trait ApiHelpers
         ], $code);
     }
 
+    /**
+     * @param int $code
+     * @param string $message
+     * @param string $data
+     * @return JsonResponse
+     */
     protected function onMessage(int $code, string $message = '', $data = ""): JsonResponse
     {
         return response()->json([
@@ -72,6 +106,14 @@ trait ApiHelpers
         ], $code);
     }
 
+    /**
+     * @param string $accesToken
+     * @param string $expiresAt
+     * @param string $message
+     * @param $data
+     * @param int $code
+     * @return \Illuminate\Http\JsonResponse
+     */
     protected function loginResponse(string $accesToken, string $expiresAt,string $message = "" ,$data, int $code = 200)
     {
         return response()->json([
@@ -84,6 +126,11 @@ trait ApiHelpers
         ]);     
     }
 
+    /**
+     * @param string $contentType
+     * @param \Illuminate\Http\Request $request
+     * @return boolean
+     */
     protected function checkHeaders(string $contentType, $request)
     {
         if(!$request->expectsJson() or $contentType !== "application/json" ){
@@ -93,6 +140,10 @@ trait ApiHelpers
         return false;
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return boolean
+     */
     protected function checkAcceptHeader($request){
 
         if(!$request->expectsJson()){
@@ -102,6 +153,10 @@ trait ApiHelpers
         return false;
     }
 
+    /**
+     * @param string $uuid
+     * @return boolean
+     */
     protected function checkUuid($uuid){
 
         if(Str::isUuid($uuid)){

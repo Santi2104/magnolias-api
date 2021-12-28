@@ -118,6 +118,10 @@ class ObraSocialController extends Controller
         return $this->onSuccess($obraSocial, "Obra Social eliminada de manera correcta");
     }
 
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $obraSocial = ObraSocial::withTrashed()->where('id', $id)->first();

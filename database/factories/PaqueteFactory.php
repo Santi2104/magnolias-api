@@ -14,7 +14,9 @@ class PaqueteFactory extends Factory
     public function definition()
     {
         return [
-            'nombre' => $this->faker->unique()->word
+            'nombre' => $this->faker->unique()->word,
+            'precio' => $this->faker->numberBetween(500,4000),
+            'descripcion' => $this->faker->text()
         ];
     }
 }

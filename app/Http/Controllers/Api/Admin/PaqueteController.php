@@ -34,6 +34,7 @@ class PaqueteController extends Controller
 
         $validador = Validator::make($request->all(), [
             "nombre" => ['required',Rule::unique(Paquete::class)],
+            "precio" => ['required']
         ]);
 
         if($validador->fails()){
@@ -42,7 +43,8 @@ class PaqueteController extends Controller
         }
 
         $paquete = Paquete::create([
-            "nombre" => $request["nombre"]
+            "nombre" => $request["nombre"],
+            "precio" => $request['precio']
         ]);
 
         return $this->onSuccess($paquete,"Paquete creado de manera correcta",201);
@@ -59,6 +61,7 @@ class PaqueteController extends Controller
     {
         $validador = Validator::make($request->all(), [
             "nombre" => ['required'],
+            "precio" => ['required']
         ]);
 
         if($validador->fails()){
@@ -73,6 +76,7 @@ class PaqueteController extends Controller
 
         $paquete->fill($request->only([
             "nombre",
+            "precio"
         ]));
 
         if($paquete->isClean()){

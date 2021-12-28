@@ -117,7 +117,7 @@ class DatabaseSeeder extends Seeder
         ->create(['role_id' => 4])
         ->each(function (\App\Models\User $user){
             Vendedor::factory()
-            ->create(['user_id' => $user->id, 'zona_id' => rand(1,9), 'coordinador_id' => rand(1,4)]);
+            ->create(['user_id' => $user->id, 'coordinador_id' => rand(1,4)]);
         });
 
         for ($i=1; $i <= 17; $i++) { 

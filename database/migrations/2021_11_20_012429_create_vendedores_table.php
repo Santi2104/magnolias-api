@@ -20,10 +20,6 @@ class CreateVendedoresTable extends Migration
             ->onDelete('cascade')
             ->OnUpdate('cascade');
             $table->uuid('codigo_vendedor')->unique();
-            $table->foreignId('zona_id')
-            ->constrained()
-            ->onDelete('cascade')
-            ->OnUpdate('cascade');
             $table->unsignedBigInteger('coordinador_id');
             $table->foreign('coordinador_id')->references('id')->on('coordinadores');
             $table->timestamps();
