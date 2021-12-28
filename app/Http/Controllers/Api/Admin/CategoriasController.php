@@ -108,6 +108,10 @@ class CategoriasController extends Controller
         return $this->onSuccess($categoria, "Categoria eliminada de manera correcta");
     }
 
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $categoria = Categoria::withTrashed()->where('id', $id)->first();

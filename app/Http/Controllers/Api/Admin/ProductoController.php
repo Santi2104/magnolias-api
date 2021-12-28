@@ -123,6 +123,10 @@ class ProductoController extends Controller
         return $this->onSuccess($producto, "Producto eliminada de manera correcta");
     }
 
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $producto = Producto::withTrashed()->where('id', $id)->first();

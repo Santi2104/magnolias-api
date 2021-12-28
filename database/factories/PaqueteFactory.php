@@ -15,7 +15,8 @@ class PaqueteFactory extends Factory
     {
         return [
             'nombre' => $this->faker->unique()->word,
-            'precio' => rand(100, 5000)
+            'precio' => $this->faker->numberBetween(500,4000),
+            'descripcion' => $this->faker->text()
         ];
     }
 }

@@ -56,7 +56,7 @@ class VendedoresController extends Controller
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)],
             'lastname' => ['required', 'string'],
-            'dni' => ['required'],
+            'dni' => ['required', Rule::unique(User::class)],
             'nacimiento' => ['required'],
             'password'=> ['required','string','confirmed'],
             'zona_id' => ['required'] 
@@ -69,23 +69,29 @@ class VendedoresController extends Controller
 
         $nacimiento = Carbon::parse($request['nacimiento']);
         $actual = Carbon::now();
+        $usuario = "";
+        \DB::transaction( function() use($request, $nacimiento, $actual, &$usuario) {
+            $usuario = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'lastname' => $request->lastname,
+                'dni'      => $request->dni,
+                'nacimiento' => $nacimiento,
+                'edad'     => $actual->diffInYears($nacimiento),
+                'password' => bcrypt($request->password),
+                'role_id'  => \App\Models\Role::ES_VENDEDOR,
+            ]);
+    
+            $usuario->vendedor()->create([
+                "codigo_vendedor" => Str::uuid(),
+                
+                "coordinador_id" => Auth::user()->coordinador->id
+            ]);
+            
+            $usuario->vendedor->zonas()->attach($request['zona_id']);
+        });
 
-        $usuario = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'lastname' => $request->lastname,
-            'dni'      => $request->dni,
-            'nacimiento' => $nacimiento,
-            'edad'     => $actual->diffInYears($nacimiento),
-            'password' => bcrypt($request->password),
-            'role_id'  => \App\Models\Role::ES_VENDEDOR,
-        ]);
-
-        $usuario->vendedor()->create([
-            "codigo_vendedor" => Str::uuid(),
-            "zona_id" => $request["zona_id"],
-            "coordinador_id" => Auth::user()->coordinador->id
-        ]);
+        //*TODO: Agregar Transacciones a todos los lugares donde haya mas de una query a la vez
 
         return $this->onSuccess(new UserVendedorResource($usuario));
     }
@@ -190,4 +196,11 @@ class VendedoresController extends Controller
     {
         //*TODO: Agregar soft delete a todos los modelos
     }
+    
+    public function vendedorZonas($id)
+    {
+        return $id;
+    }
+    
+    
 }

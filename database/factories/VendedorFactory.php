@@ -17,7 +17,6 @@ class VendedorFactory extends Factory
     {
         return [
             "user_id" => User::factory(),
-            'zona_id' => Zona::factory(),
             'coordinador_id' => Zona::factory(),
             'codigo_vendedor' => $this->faker->unique()->uuid()
         ];

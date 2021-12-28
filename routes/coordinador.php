@@ -16,6 +16,7 @@ Route::group(['middleware' => ['auth:api','scope:coordinador','checkaccept']], f
         Route::post('vendedor', [VendedoresController::class, 'store'])->name('vendedor.store');
         Route::put('vendedor/{uuid}', [VendedoresController::class, 'update'])->name('vendedor.afiliado.update');
         Route::delete('vendedor', [VendedoresController::class, 'uncouple'])->name('vendedor.uncouple');
+        Route::post('vendedor/{id}/zonas', [VendedoresController::class, 'vendedorZonas'])->name('vendedor.zonas');
 
     });
 

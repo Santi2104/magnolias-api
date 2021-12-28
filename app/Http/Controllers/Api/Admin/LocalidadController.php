@@ -119,6 +119,10 @@ class LocalidadController extends Controller
         return $this->onSuccess($localidad, "localidad eliminada de manera correcta");
     }
 
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $localidad = Localidad::withTrashed()->where('id', $id)->first();

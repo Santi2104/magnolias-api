@@ -6,6 +6,39 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * App\Models\Vendedor
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $codigo_vendedor
+ * @property int $zona_id
+ * @property int $coordinador_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Afiliado[] $afiliados
+ * @property-read int|null $afiliados_count
+ * @property-read \App\Models\Coordinador $coordinador
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\Zona $zona
+ * @method static \Database\Factories\VendedorFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Vendedor onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor whereCodigoVendedor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor whereCoordinadorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendedor whereZonaId($value)
+ * @method static \Illuminate\Database\Query\Builder|Vendedor withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Vendedor withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Vendedor extends Model
 {
     use HasFactory, SoftDeletes;
@@ -24,13 +57,13 @@ class Vendedor extends Model
     }
 
     /**
-     * Get the zona that owns the Vendedor
+     * The zonas that belong to the Vendedor
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function zona()
+    public function zonas()
     {
-        return $this->belongsTo(Zona::class);
+        return $this->belongsToMany(Zona::class, 'vendedor_zona');
     }
 
     /**

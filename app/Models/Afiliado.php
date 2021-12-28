@@ -6,6 +6,47 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * App\Models\Afiliado
+ *
+ * @property int $id
+ * @property string $codigo_afiliado
+ * @property string $calle
+ * @property string $barrio
+ * @property string $nro_casa
+ * @property string|null $nro_depto
+ * @property int $user_id
+ * @property int $paquete_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $obra_social_id
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\ObraSocial $obraSocial
+ * @property-read \App\Models\Paquete $paquete
+ * @property-read \App\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Vendedor[] $vendedores
+ * @property-read int|null $vendedores_count
+ * @method static \Database\Factories\AfiliadoFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Afiliado onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereBarrio($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereCalle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereCodigoAfiliado($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereNroCasa($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereNroDepto($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereObraSocialId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado wherePaqueteId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Afiliado whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|Afiliado withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Afiliado withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Afiliado extends Model
 {
     use HasFactory, SoftDeletes;
