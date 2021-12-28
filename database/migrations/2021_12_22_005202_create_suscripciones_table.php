@@ -16,7 +16,7 @@ class CreateSuscripcionesTable extends Migration
         Schema::create('suscripciones', function (Blueprint $table) {
             $table->id();
             $table->uuid('comprobante')->unique();
-            $table->unsignedBigInteger('codigo_afiliado');
+            $table->uuid('codigo_afiliado');
             $table->foreign('codigo_afiliado')->references('codigo_afiliado')->on('afiliados');
             $table->unsignedBigInteger('paquete_id');
             $table->foreign('paquete_id')->references('id')->on('paquetes');
