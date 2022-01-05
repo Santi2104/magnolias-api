@@ -98,7 +98,7 @@ class AuthController extends Controller
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)],
             'lastname' => ['required', 'string'],
-            'dni' => ['required'],
+            'dni' => ['required', Rule::unique(User::class)],
             'nacimiento' => ['required'],
             'password'=> ['required','string','confirmed'],       
         ]);
