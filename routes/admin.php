@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AdministrativoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\CategoriasController;
 use App\Http\Controllers\Api\Admin\CoordinadorController;
@@ -67,7 +68,11 @@ Route::group(['middleware' => ['auth:api','scope:admin','checkaccept']], functio
         Route::get('coordinadores', [CoordinadorController::class, 'index'])->name("coordinador.index");
         Route::post('coordinador', [CoordinadorController::class, 'store'])->name("coordinador.store");
         Route::put('coordinador', [CoordinadorController::class, 'update'])->name("coordinador.update");
-        
+
+        //**Crud de los administrativos */
+        Route::get('administrativo', [AdministrativoController::class, 'index'])->name("administrativo.index");
+        Route::post('administrativo', [AdministrativoController::class, 'store'])->name("administrativo.store");
+        Route::put('administrativo', [AdministrativoController::class, 'update'])->name("administrativo.update");
         
     });
 });

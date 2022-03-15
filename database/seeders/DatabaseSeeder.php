@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Administrativo;
 use App\Models\Afiliado;
 use App\Models\Categoria;
 use App\Models\Coordinador;
@@ -48,6 +49,13 @@ class DatabaseSeeder extends Seeder
             //'display_name' => 'Admisión'
         ]);
 
+        \App\Models\Role::factory()
+        ->count(1)
+        ->create([
+            'name' => 'administrativo',
+            //'display_name' => 'Admisión'
+        ]);
+
         ObraSocial::factory()->times(1)->create([
             'nombre' => 'APOS',
             // 'razon_social' => 'APOS',
@@ -69,6 +77,14 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory()
         ->count(1)
         ->create(['name' => 'Sergio','lastname' => 'Denis','email' => 'sergio@mail.com','role_id' => 1]);
+
+        \App\Models\User::factory()
+        ->count(1)
+        ->create(['name' => 'Juan','lastname' => 'Perez','email' => 'administrativo@mail.com','role_id' => 5])
+        ->each(function (\App\Models\User $user){
+            Administrativo::factory()
+            ->create(['user_id' => $user->id]);
+        });
 
         \App\Models\User::factory()
         ->count(1)

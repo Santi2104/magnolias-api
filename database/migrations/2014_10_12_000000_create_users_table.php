@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('lastname');
             $table->string('dni')->unique();
             $table->string('edad');
-            $table->dateTime('nacimiento');
+            $table->date('nacimiento');//!La fecha de nacimiento aparece con la hora 00:00:00
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

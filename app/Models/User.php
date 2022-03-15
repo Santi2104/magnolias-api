@@ -139,6 +139,16 @@ class User extends Authenticatable
         return $this->hasOne(Vendedor::class);
     }
 
+    /**
+     * Get the administrativo associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function administrativo()
+    {
+        return $this->hasOne(Administrativo::class);
+    }
+
     public function UserRole(){
         return $this->role->id;
     }
