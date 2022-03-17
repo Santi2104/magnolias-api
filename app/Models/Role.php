@@ -46,6 +46,10 @@ class Role extends Model
                                             'coordinador:index',
                                             'coordinador:store',
                                             'coordinador:update',
+                                            'vendedor:index',
+                                            'vendedor:store',
+                                            'vendedor:update',
+                                            'vendedor:destroy'
                                         ];
 
     /**

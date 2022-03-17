@@ -27,6 +27,8 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         Passport::routes();
 
+        Passport::personalAccessTokensExpireIn(now()->addDay());
+
         Passport::tokensCan([
             'admin' => "Privilegios de administrador",
             'coordinador' => 'Privilegios de coordinador',
@@ -41,10 +43,11 @@ class AuthServiceProvider extends ServiceProvider
             'coordinador:store' => 'Crear Coordinador',
             'coordinador:update' => 'Editar Coordinador',
             'coordinador:destroy' => 'Eliminar Coordinador',
-            
-            // 'check-status' => 'Check order status',
+            'vendedor:index' => 'Listar vendedores',
+            'vendedor:store' => 'Crear vendedores',
+            'vendedor:update' => 'Editar vendedores',
+            'vendedor:destroy' => 'Eliminar vendedores',
         ]);
 
-        //
     }
 }
