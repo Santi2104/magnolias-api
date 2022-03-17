@@ -35,11 +35,18 @@ class Role extends Model
     public const ES_AFILIADO = 3;
     public const ES_VENDEDOR = 4;
     public const ES_ADMINISTRATIVO = 5;
-    public const ADMIN_TOKEN = ['admin'];
+    public const ADMIN_TOKEN = ['*'];
     public const COORDINADOR_TOKEN = ["coordinador"];
     public const AFILIADO_TOKEN = ["afiliado"];
     public const VENDEDOR_TOKEN = ["vendedor"];
-    public const ADMINISTRATIVO_TOKEN = ["administrativo"];
+    public const ADMINISTRATIVO_TOKEN = [
+                                            "administrativo",
+                                            "categoria:index",
+                                            "categoria:store",
+                                            'coordinador:index',
+                                            'coordinador:store',
+                                            'coordinador:update',
+                                        ];
 
     /**
      * Get all of the users for the Role

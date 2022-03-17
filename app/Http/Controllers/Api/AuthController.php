@@ -39,7 +39,7 @@ class AuthController extends Controller
         $user = $request->user();
         
         $userRole = $user->UserRole();
-
+        //dd(implode(", ", Role::ADMINISTRATIVO_TOKEN));
         switch ($userRole) {
             case 1:
                 $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::ADMIN_TOKEN)]);
@@ -51,7 +51,8 @@ class AuthController extends Controller
                 $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::VENDEDOR_TOKEN)]);
                 break;
             case 5;
-                $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::ADMINISTRATIVO_TOKEN)]);
+                //$tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::ADMINISTRATIVO_TOKEN)]);
+                $tokenResult = $user->createToken('Personal Access Token',Role::ADMINISTRATIVO_TOKEN);
                 break;
             default:
                 $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::AFILIADO_TOKEN)]);

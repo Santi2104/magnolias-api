@@ -32,6 +32,16 @@ class AuthServiceProvider extends ServiceProvider
             'coordinador' => 'Privilegios de coordinador',
             'afiliado' => 'Privilegios de afiliado',
             'vendedor' => 'Privilegios de vendedor',
+            'administrativo' => 'Privilegios de administrativo',
+            'categoria:index' => 'Listar Categorias',
+            'categoria:store' => 'Crear Categoria',
+            'categoria:update' => 'Actualizar Categorias',
+            'categoria:destroy' => 'Eliminar Categoria',
+            'coordinador:index' => 'Listar Coordinador',
+            'coordinador:store' => 'Crear Coordinador',
+            'coordinador:update' => 'Editar Coordinador',
+            'coordinador:destroy' => 'Eliminar Coordinador',
+            
             // 'check-status' => 'Check order status',
         ]);
 

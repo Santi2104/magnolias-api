@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\Admin\PaqueteProductoController;
 use App\Http\Controllers\Api\Admin\ProductoController;
 use App\Http\Controllers\Api\Admin\ZonaController;
 
-Route::group(['middleware' => ['auth:api','scope:admin','checkaccept']], function(){
+Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
 
     Route::group([
         "as" => 'admin.'
