@@ -42,7 +42,8 @@ class ProduccionSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'role_id' => Role::ES_ADMIN,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
+                'sexo' => 'M'
             ],
             [
                 'name' => 'Emiliano',
@@ -56,7 +57,8 @@ class ProduccionSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'role_id' => Role::ES_COORDINADOR,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
+                'sexo' => 'M'
             ],
             [
                 'name' => 'Sergio',
@@ -70,7 +72,8 @@ class ProduccionSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'role_id' => Role::ES_VENDEDOR,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
+                'sexo' => 'M'
             ]
             ]);
 
