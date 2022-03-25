@@ -22,8 +22,8 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
-//*TODO:Dar la posibilidad al admin de crear un administrativo
-//*TODO:Agregar scopes a cada rol (Administracion, Administrativo)
+//*Dar la posibilidad al admin de crear un administrativo
+//*Agregar scopes a cada rol (Administracion, Administrativo)
 //*TODO:Intentar implementar las transacciones o los eventos de Eloquent
 //*TODO:Suprimir la tabla categorias que no sirve pa' nah
 //*TODO:Crear una tabla para los Logs

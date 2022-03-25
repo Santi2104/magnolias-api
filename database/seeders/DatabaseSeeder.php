@@ -119,13 +119,13 @@ class DatabaseSeeder extends Seeder
                     ->count(1))
         ->create();
 
-        \App\Models\User::factory()
-        ->count(20)
-        ->create(['role_id' => 3])
-        ->each(function (\App\Models\User $user){
-            Afiliado::factory()
-            ->create(['user_id' => $user->id, 'obra_social_id' => rand(1,3)]);
-        });
+        // \App\Models\User::factory()
+        // ->count(20)
+        // ->create(['role_id' => 3])
+        // ->each(function (\App\Models\User $user){
+        //     Afiliado::factory()
+        //     ->create(['user_id' => $user->id, 'obra_social_id' => rand(1,3)]);
+        // });
 
 
         \App\Models\User::factory()
@@ -136,10 +136,10 @@ class DatabaseSeeder extends Seeder
             ->create(['user_id' => $user->id, 'coordinador_id' => rand(1,4)]);
         });
 
-        for ($i=1; $i <= 17; $i++) { 
-            $afiliado = Afiliado::find($i);
-            $afiliado->vendedores()->attach(rand(1,8)); 
-        }
+        // for ($i=1; $i <= 17; $i++) { 
+        //     $afiliado = Afiliado::find($i);
+        //     $afiliado->vendedores()->attach(rand(1,8)); 
+        // }
 
 
     }

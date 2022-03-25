@@ -76,7 +76,8 @@ class User extends Authenticatable
         'dni',
         'edad',
         'nacimiento',
-        'role_id'
+        'role_id',
+        'sexo'
     ];
 
     /**
@@ -97,6 +98,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public const sexo = ['M','F'];
 
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Administrativo\AfiliadoController;
 use App\Http\Controllers\Api\Administrativo\CategoriaController;
 use App\Http\Controllers\Api\Administrativo\CoordinadorController;
 use App\Http\Controllers\Api\Administrativo\VendedorController;
@@ -20,5 +21,9 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
         Route::get('vendedores', [VendedorController::class, 'index'])->name('vendedor,index');
         Route::post('vendedor', [VendedorController::class, 'store'])->name('vendedor.store');
         Route::put('vendedor',[VendedorController::class, 'update'])->name('vendedor.update');
+
+        //**Rutas para los afiliados */
+        Route::get('afiliados', [AfiliadoController::class, 'index'])->name('afiliado,index');
+        Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
     });
 });
