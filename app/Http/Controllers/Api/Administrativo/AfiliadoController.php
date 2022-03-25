@@ -58,7 +58,7 @@ class AfiliadoController extends Controller
             'solicitante' => ['present', 'boolean'],
             'vendedor_id' => ['required'],
             'paquete_id' => ['required'],
-            'sexo' => ['required', Rule::in(User::sexo)],
+            //'sexo' => ['required', Rule::in(User::sexo)],
             'calle' => ['required'],
             'barrio' => ['required'],
             'nro_casa' => ['required'],
@@ -109,7 +109,7 @@ class AfiliadoController extends Controller
             'nacimiento' => $nacimiento,
             'edad'     => $actual->diffInYears($nacimiento),
             'password' => $password,
-            'sexo' => $request['sexo'],
+            //'sexo' => $request['sexo'],
             'role_id'  => \App\Models\Role::ES_AFILIADO,
         ]);
 

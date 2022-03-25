@@ -77,7 +77,6 @@ class User extends Authenticatable
         'edad',
         'nacimiento',
         'role_id',
-        'sexo'
     ];
 
     /**
