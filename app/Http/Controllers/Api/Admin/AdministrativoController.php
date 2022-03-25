@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
-use App\Http\Resources\Admin\CoordinadorResource;
-use App\Http\Resources\Admin\UserCoordinadorResource;
-use App\Models\Coordinador;
+use App\Http\Resources\Admin\AdministrativoResource;
+use App\Http\Resources\Admin\UserAdministrativoResource;
+use App\Models\Administrativo;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
+use Str;
+use Validator;
 
-class CoordinadorController extends Controller
+class AdministrativoController extends Controller
 {
+
     use ApiHelpers;
     /**
      * Display a listing of the resource.
@@ -24,8 +25,8 @@ class CoordinadorController extends Controller
      */
     public function index()
     {
-        $coordinadores = Coordinador::all();
-        return $this->onSuccess(CoordinadorResource::collection($coordinadores));
+        $administrativos = Administrativo::all();
+        return $this->onSuccess(AdministrativoResource::collection($administrativos));
     }
 
     /**
@@ -36,13 +37,11 @@ class CoordinadorController extends Controller
      */
     public function store(Request $request)
     {
-        //*TODO:La contraseña deberia crearse de manera aleatoria en este caso */
-        //*TODO:Cuando se aplique la confirmación de cuenta implementar lo de la contraseña*/
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)],
             'lastname' => ['required', 'string'],
-            'dni' => ['required'],
+            'dni' => ['required', Rule::unique(User::class)],
             'nacimiento' => ['required', 'date'],
             'password'=> ['required','string','confirmed'], 
         ]);
@@ -63,14 +62,19 @@ class CoordinadorController extends Controller
             'nacimiento' => $nacimiento,
             'edad'     => $actual->diffInYears($nacimiento),
             'password' => bcrypt($request->password),
-            'role_id'  => \App\Models\Role::ES_COORDINADOR,
+            'role_id'  => \App\Models\Role::ES_ADMINISTRATIVO,
         ]);
 
-        $usuario->coordinador()->create([
-            "codigo_coordinador" => Str::uuid()
+        $usuario->administrativo()->create([
+            "codigo_administrativo" => Str::uuid()
         ]);
 
-        return $this->onSuccess(new UserCoordinadorResource($usuario),"coordinador creado de manera correcta",201);
+        return $this->onSuccess(
+            new UserAdministrativoResource($usuario),
+            "Administrativo creado de manera correcta",
+            201
+        );
+
 
     }
 
@@ -94,21 +98,21 @@ class CoordinadorController extends Controller
      */
     public function update(Request $request)
     {
+        $administrativo = Administrativo::where("codigo_administrativo", $request['uuid'])->first();
 
-        $coordinador = Coordinador::where("codigo_coordinador", $request['uuid'])->first();
+        if(!isset($administrativo)){
 
-        if(!isset($coordinador)){
-
-            return $this->onError(409,"No se puede encontrar el coordinador con el uuid enviado");
+            return $this->onError(409,"No se puede encontrar el administrativo con el uuid enviado");
         }
 
-        $usuario = $coordinador->user;
+        $usuario = $administrativo->user;
+
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)->ignore($usuario->id)],
             'lastname' => ['required', 'string'],
             'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
-            'nacimiento' => ['required', 'date'],
+            'nacimiento' => ['required','date'],
         ]);
 
         if($validador->fails()){
@@ -116,8 +120,8 @@ class CoordinadorController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        
         $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
+
         $actual = Carbon::now();
 
         $usuario->name = $request->name;
@@ -126,18 +130,17 @@ class CoordinadorController extends Controller
         $usuario->dni = $request->dni;
         $usuario->nacimiento = $nacimiento;
         $usuario->edad = $actual->diffInYears($nacimiento);
-        /** 
-            *?Talves aca Deberia Ir algo para modificar la tabla coordinador
-            *? Si modifico el mail, deberia poder vericarlo de nuevo si es correcto
-        */
-
+        
         if($usuario->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
 
         $usuario->save();
 
-        return $this->onSuccess(new UserCoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
+        return $this->onSuccess(
+            new UserAdministrativoResource($usuario),
+            "Administrativo modificado de manera correcta",
+        );
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Administrativo;
 use App\Models\Afiliado;
 use App\Models\Categoria;
 use App\Models\Coordinador;
@@ -48,6 +49,13 @@ class DatabaseSeeder extends Seeder
             //'display_name' => 'Admisión'
         ]);
 
+        \App\Models\Role::factory()
+        ->count(1)
+        ->create([
+            'name' => 'administrativo',
+            //'display_name' => 'Admisión'
+        ]);
+
         ObraSocial::factory()->times(1)->create([
             'nombre' => 'APOS',
             // 'razon_social' => 'APOS',
@@ -69,6 +77,14 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory()
         ->count(1)
         ->create(['name' => 'Sergio','lastname' => 'Denis','email' => 'sergio@mail.com','role_id' => 1]);
+
+        \App\Models\User::factory()
+        ->count(1)
+        ->create(['name' => 'Juan','lastname' => 'Perez','email' => 'administrativo@mail.com','role_id' => 5])
+        ->each(function (\App\Models\User $user){
+            Administrativo::factory()
+            ->create(['user_id' => $user->id]);
+        });
 
         \App\Models\User::factory()
         ->count(1)
@@ -103,13 +119,13 @@ class DatabaseSeeder extends Seeder
                     ->count(1))
         ->create();
 
-        \App\Models\User::factory()
-        ->count(20)
-        ->create(['role_id' => 3])
-        ->each(function (\App\Models\User $user){
-            Afiliado::factory()
-            ->create(['user_id' => $user->id, 'obra_social_id' => rand(1,3)]);
-        });
+        // \App\Models\User::factory()
+        // ->count(20)
+        // ->create(['role_id' => 3])
+        // ->each(function (\App\Models\User $user){
+        //     Afiliado::factory()
+        //     ->create(['user_id' => $user->id, 'obra_social_id' => rand(1,3)]);
+        // });
 
 
         \App\Models\User::factory()
@@ -120,10 +136,10 @@ class DatabaseSeeder extends Seeder
             ->create(['user_id' => $user->id, 'coordinador_id' => rand(1,4)]);
         });
 
-        for ($i=1; $i <= 17; $i++) { 
-            $afiliado = Afiliado::find($i);
-            $afiliado->vendedores()->attach(rand(1,8)); 
-        }
+        // for ($i=1; $i <= 17; $i++) { 
+        //     $afiliado = Afiliado::find($i);
+        //     $afiliado->vendedores()->attach(rand(1,8)); 
+        // }
 
 
     }

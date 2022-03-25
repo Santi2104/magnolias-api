@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Administrativo;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
-use App\Http\Resources\Admin\CoordinadorResource;
-use App\Http\Resources\Admin\UserCoordinadorResource;
+use App\Http\Resources\Administrativo\CoordinadorResource;
 use App\Models\Coordinador;
 use App\Models\User;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CoordinadorController extends Controller
 {
@@ -23,9 +24,15 @@ class CoordinadorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $coordinadores = Coordinador::all();
+    {   
+        $user = Auth::user();
+        if(!$user->tokenCan('coordinador:index')){
+            return $this->onError(403,"No esta autorizado a realizar esta accion","Falta de permisos para acceder a este recurso");
+        }
+
+        $coordinadores = User::whereRoleId(\App\Models\Role::ES_COORDINADOR)->get();
         return $this->onSuccess(CoordinadorResource::collection($coordinadores));
+        
     }
 
     /**
@@ -36,8 +43,11 @@ class CoordinadorController extends Controller
      */
     public function store(Request $request)
     {
-        //*TODO:La contraseña deberia crearse de manera aleatoria en este caso */
-        //*TODO:Cuando se aplique la confirmación de cuenta implementar lo de la contraseña*/
+        //TODO:Tratar de enviar esta logica al ApiHelper y a una clase de servicios
+        if(!$request->user()->tokenCan('coordinador:store')){
+            return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
+        }
+
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)],
@@ -47,31 +57,38 @@ class CoordinadorController extends Controller
             'password'=> ['required','string','confirmed'], 
         ]);
 
-        if($validador->fails()){
-
+        if($validador->fails())
+        {
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
         $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $actual = Carbon::now();
 
-        $usuario = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'lastname' => $request->lastname,
-            'dni'      => $request->dni,
-            'nacimiento' => $nacimiento,
-            'edad'     => $actual->diffInYears($nacimiento),
-            'password' => bcrypt($request->password),
-            'role_id'  => \App\Models\Role::ES_COORDINADOR,
-        ]);
+        try {
+            DB::beginTransaction();
+            $usuario = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'lastname' => $request->lastname,
+                'dni'      => $request->dni,
+                'nacimiento' => $nacimiento,
+                'edad'     => $actual->diffInYears($nacimiento),
+                'password' => bcrypt($request->password),
+                'role_id'  => \App\Models\Role::ES_COORDINADOR,
+            ]);
+    
+            $usuario->coordinador()->create([
+                "codigo_coordinador" => Str::uuid()
+            ]);
 
-        $usuario->coordinador()->create([
-            "codigo_coordinador" => Str::uuid()
-        ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->onError(422,"Error al cargar los datos",$th->getMessage());
+        }
 
-        return $this->onSuccess(new UserCoordinadorResource($usuario),"coordinador creado de manera correcta",201);
-
+        return $this->onSuccess(new CoordinadorResource($usuario),"coordinador creado de manera correcta",201);
     }
 
     /**
@@ -94,15 +111,20 @@ class CoordinadorController extends Controller
      */
     public function update(Request $request)
     {
+        //TODO:Agregar la condicion de que solo se pueda modificar pasadas las 24 horas y agregarlo al ApiHelper
+        if(!$request->user()->tokenCan('coordinador:update')){
+            return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
+        }
 
         $coordinador = Coordinador::where("codigo_coordinador", $request['uuid'])->first();
 
         if(!isset($coordinador)){
 
-            return $this->onError(409,"No se puede encontrar el coordinador con el uuid enviado");
+            return $this->onError(409,"No se puede encontrar el coordinador con el codigo enviado");
         }
 
         $usuario = $coordinador->user;
+
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)->ignore($usuario->id)],
@@ -116,7 +138,6 @@ class CoordinadorController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        
         $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $actual = Carbon::now();
 
@@ -126,18 +147,14 @@ class CoordinadorController extends Controller
         $usuario->dni = $request->dni;
         $usuario->nacimiento = $nacimiento;
         $usuario->edad = $actual->diffInYears($nacimiento);
-        /** 
-            *?Talves aca Deberia Ir algo para modificar la tabla coordinador
-            *? Si modifico el mail, deberia poder vericarlo de nuevo si es correcto
-        */
 
         if($usuario->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
 
         $usuario->save();
+        return $this->onSuccess(new CoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
 
-        return $this->onSuccess(new UserCoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
     }
 
     /**

@@ -59,7 +59,9 @@ class Afiliado extends Model
         'barrio',
         'nro_casa',
         'nro_depto',
-        'obra_social_id'
+        'obra_social_id',
+        'grupo_familiar_id',
+        'solicitante'
     ];
 
     /**
@@ -100,5 +102,15 @@ class Afiliado extends Model
     public function paquete()
     {
         return $this->belongsTo(Paquete::class);
+    }
+
+    /**
+     * Get the grupoFamiliar that owns the Afiliado
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function grupoFamiliar()
+    {
+        return $this->belongsTo(GrupoFamiliar::class);
     }
 }

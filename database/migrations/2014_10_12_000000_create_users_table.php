@@ -18,8 +18,10 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('lastname');
             $table->string('dni')->unique();
+            $table->string('tipo_dni')->nullable();
             $table->string('edad');
-            $table->dateTime('nacimiento');
+            $table->date('nacimiento');
+            $table->enum('sexo',['M','F']);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

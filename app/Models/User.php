@@ -76,7 +76,8 @@ class User extends Authenticatable
         'dni',
         'edad',
         'nacimiento',
-        'role_id'
+        'role_id',
+        'sexo'
     ];
 
     /**
@@ -97,6 +98,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public const sexo = ['M','F'];
 
 
     /**
@@ -137,6 +140,16 @@ class User extends Authenticatable
     public function vendedor()
     {
         return $this->hasOne(Vendedor::class);
+    }
+
+    /**
+     * Get the administrativo associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function administrativo()
+    {
+        return $this->hasOne(Administrativo::class);
     }
 
     public function UserRole(){

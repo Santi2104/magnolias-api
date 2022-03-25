@@ -39,21 +39,23 @@ class AuthController extends Controller
         $user = $request->user();
         
         $userRole = $user->UserRole();
-
+        //dd(implode(", ", Role::ADMINISTRATIVO_TOKEN));
         switch ($userRole) {
             case 1:
-                    $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::ADMIN_TOKEN)]);
+                $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::ADMIN_TOKEN)]);
                 break;
-            
             case 2:
-                    $tokenResult = $user->createToken('Personal Access Token', [implode(" ",Role::COORDINADOR_TOKEN)]);
-                    break;
-
+                $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::COORDINADOR_TOKEN)]);
+                break;
             case 4:
-                    $tokenResult = $user->createToken('Personal Access Token', [implode(" ",Role::VENDEDOR_TOKEN)]);
-                    break;         
+                $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::VENDEDOR_TOKEN)]);
+                break;
+            case 5;
+                //$tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::ADMINISTRATIVO_TOKEN)]);
+                $tokenResult = $user->createToken('Personal Access Token',Role::ADMINISTRATIVO_TOKEN);
+                break;
             default:
-                    $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::AFILIADO_TOKEN)]);
+                $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::AFILIADO_TOKEN)]);
                 break;
         }
 
@@ -98,7 +100,7 @@ class AuthController extends Controller
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)],
             'lastname' => ['required', 'string'],
-            'dni' => ['required'],
+            'dni' => ['required', Rule::unique(User::class)],
             'nacimiento' => ['required'],
             'password'=> ['required','string','confirmed'],       
         ]);
