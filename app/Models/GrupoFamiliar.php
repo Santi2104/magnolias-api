@@ -11,7 +11,7 @@ class GrupoFamiliar extends Model
 
     protected $table = 'grupo_familiar';
 
-    protected $fillable = ['apellido'];
+    protected $fillable = ['apellido','dni_solicitante'];
 
     /**
      * Get the afiliado associated with the GrupoFamiliar

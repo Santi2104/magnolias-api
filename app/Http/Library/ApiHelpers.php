@@ -2,6 +2,7 @@
 
 namespace App\Http\Library;
 
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
@@ -166,6 +167,17 @@ trait ApiHelpers
 
         return false;
 
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $fechaNacimiento
+     * @return $edad
+     */
+    protected function calcularEdad($fechaNacimiento)
+    {
+        $nacimiento = Carbon::parse($fechaNacimiento)->format('Y-m-d');
+        $edad = Carbon::now()->diffInYears($nacimiento);
+        return $edad;
     }
 
 }

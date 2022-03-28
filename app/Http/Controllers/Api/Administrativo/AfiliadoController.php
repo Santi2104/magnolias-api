@@ -25,12 +25,11 @@ class AfiliadoController extends Controller
      */
     public function index()
     {
-        // if(!Auth::user()->tokenCan('vendedor:index'))
-        // {
-        //     return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
-        // }
+        if(!Auth::user()->tokenCan('vendedor:index'))
+        {
+            return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
+        }
 
-        //$afiliados = Afiliado::all();
         $afiliados = User::whereRoleId(\App\Models\Role::ES_AFILIADO)->get();
         return $this->onSuccess(AfiliadoResource::collection($afiliados));
     }
@@ -47,18 +46,19 @@ class AfiliadoController extends Controller
         $solicitante = null;
         $idFamilia = 0;
         $grupo = null;
+        //TODO: Meter todo esto dentro de un servicio y una transaccion
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
-            'email' => ['required_unless:solicitante,false','string', Rule::unique(User::class)],
+            'email' => ['required_unless:solicitante,false', Rule::unique(User::class),'email'],
             'lastname' => ['required', 'string'],
             'dni' => ['required', Rule::unique(User::class)],
             'tipo_dni' => ['required'],
             'nacimiento' => ['required', 'date'],
-            'password'=> ['required_unless:solicitante,false','string'],
             'solicitante' => ['present', 'boolean'],
             'vendedor_id' => ['required'],
             'paquete_id' => ['required'],
-            //'sexo' => ['required', Rule::in(User::sexo)],
+            'sexo' => ['required', Rule::in(Afiliado::sexo)],
+            'parentesco' => ['required_unless:solicitante,true',Rule::in(Afiliado::parentesco)],
             'calle' => ['required'],
             'barrio' => ['required'],
             'nro_casa' => ['required'],
@@ -73,18 +73,21 @@ class AfiliadoController extends Controller
 
         if($request['solicitante']){
             $email = $request['email'];
-            $password = bcrypt($request['password']);
+            $password = bcrypt(Str::random(12).$request['dni']);
+            $request['parentesco'] = null;
+            
         }else{
             $email = Str::random(12).$request['dni'].'@mail.com';
             $password = bcrypt(Str::random(12).$request['dni']);
-            $solicitante = User::where('dni',$request['dni_solicitante'])->first();
-            
-            if(!isset($solicitante->afiliado))
+            $solicitante = GrupoFamiliar::where('dni_solicitante', $request['dni_solicitante'])
+                                        ->where('apellido', $request['lastname'])->first();
+                           
+            if(!isset($solicitante))
             {
-                return $this->onError(422,"el dni enviado no pertenece a ningun afiliado");
+                return $this->onError(422,"El DNI enviado no pertenece a ninguna solicitante o el apellido no coincide");
             }else
             {
-                $idFamilia = $solicitante->afiliado->grupo_familiar_id;
+                $idFamilia = $solicitante->id;
             }
         }
 
@@ -92,13 +95,11 @@ class AfiliadoController extends Controller
             $grupo = $idFamilia;
         }else{
             $grupo = GrupoFamiliar::create([
-                'apellido' => $request['lastname']
+                'apellido' => $request['lastname'],
+                'dni_solicitante' => $request['dni']
             ]);
             $grupo = $grupo->id;
         }
-
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-        $actual = Carbon::now();
 
         $usuario = User::create([
             'name'     => $request->name,
@@ -106,10 +107,9 @@ class AfiliadoController extends Controller
             'lastname' => $request->lastname,
             'dni'      => $request->dni,
             'tipo_dni' => $request->tipo_dni,
-            'nacimiento' => $nacimiento,
-            'edad'     => $actual->diffInYears($nacimiento),
+            'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
+            'edad'     => $this->calcularEdad($request['nacimiento']),
             'password' => $password,
-            //'sexo' => $request['sexo'],
             'role_id'  => \App\Models\Role::ES_AFILIADO,
         ]);
 
@@ -121,6 +121,8 @@ class AfiliadoController extends Controller
             "paquete_id" => $request["paquete_id"],
             "obra_social_id" => $request["obra_social_id"],
             'solicitante' => $request['solicitante'],
+            'sexo' => $request['sexo'],
+            'parentesco' => $request['parentesco'],
             'grupo_familiar_id' => $grupo
         ]);
 

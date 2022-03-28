@@ -61,8 +61,13 @@ class Afiliado extends Model
         'nro_depto',
         'obra_social_id',
         'grupo_familiar_id',
-        'solicitante'
+        'solicitante',
+        'parentesco',
+        'sexo'
     ];
+
+    public const parentesco = ['Padre','Madre','Hijo','Hija','Conyugue'];
+    public const sexo = ['M','F'];
 
     /**
      * The vendedores that belong to the Afiliado

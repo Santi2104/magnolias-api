@@ -21,6 +21,8 @@ class CreateAfiliadosTable extends Migration
             $table->string('nro_casa')->nullable();
             $table->string('nro_depto')->nullable();
             $table->boolean('solicitante')->default(false)->comment("Esta campo indica si este afiliado fue el que solicito el servicio");
+            $table->enum('sexo',['M','F']);
+            $table->string('parentesco')->nullable();
             //?Crear clave foranea para relacionar el acta de solicitud
             //?Crear una clave foranea para relacionar al acta de seguro
             $table->string('CUIT')->nullable();

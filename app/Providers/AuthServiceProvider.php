@@ -47,6 +47,10 @@ class AuthServiceProvider extends ServiceProvider
             'vendedor:store' => 'Crear vendedores',
             'vendedor:update' => 'Editar vendedores',
             'vendedor:destroy' => 'Eliminar vendedores',
+            'afiliado:index' => 'Listar un afiliado',
+            'afiliado:store' => 'Crear un afiliado',
+            'afiliado:update' => 'Editar un afiliado',
+            'afiliado:destroy' => 'Eliminar un afiliado'
         ]);
 
     }
