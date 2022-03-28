@@ -130,6 +130,11 @@ class VendedorController extends Controller
             return $this->onError(409,"No se puede encontrar el vendedor con el codigo enviado");
         }
 
+        if(!$this->puedeEditar($vendedor->created_at))
+        {
+            return $this->onError(409,"Error al tratar de editar","Ha pasado el tiempo limite en que el registro se puede editar");
+        }
+
         $usuario = $vendedor->user;
 
         $validador = Validator::make($request->all(), [

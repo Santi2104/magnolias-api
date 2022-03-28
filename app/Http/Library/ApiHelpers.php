@@ -180,4 +180,21 @@ trait ApiHelpers
         return $edad;
     }
 
+    /**
+     * @param  $fecha
+     * @return boolean
+     */
+    protected function puedeEditar($fecha)
+    {
+        $fechaCreacion = Carbon::parse($fecha);
+        $diferencia = $fechaCreacion->diffIndays(now());
+
+        if($diferencia != 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 }
