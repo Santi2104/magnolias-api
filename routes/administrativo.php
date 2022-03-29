@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Administrativo\AfiliadoController;
 use App\Http\Controllers\Api\Administrativo\CategoriaController;
 use App\Http\Controllers\Api\Administrativo\CoordinadorController;
+use App\Http\Controllers\Api\Administrativo\PaqueteController;
 use App\Http\Controllers\Api\Administrativo\VendedorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,5 +26,8 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
         //**Rutas para los afiliados */
         Route::get('afiliados', [AfiliadoController::class, 'index'])->name('afiliado,index');
         Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
+
+        //**Rutas para los paquetes */
+        Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
     });
 });

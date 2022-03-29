@@ -52,6 +52,7 @@ class Role extends Model
                                             'vendedor:destroy',
                                             'afiliado:index',
                                             'afiliado:store',
+                                            'paquete:index'
                                         ];
 
     /**
