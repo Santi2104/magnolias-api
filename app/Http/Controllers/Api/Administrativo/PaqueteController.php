@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Api\Administrativo;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Models\Paquete;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PaqueteController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -23,6 +25,7 @@ class PaqueteController extends Controller
             return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
         }
         $paquetes = Paquete::all(['id','nombre']);
+        //$this->crearLog(\App\Models\UserLog::CREAR,Auth::user()->id,'Paquetes');
         return $this->onSuccess($paquetes);
     }
 

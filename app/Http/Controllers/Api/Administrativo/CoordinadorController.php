@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Administrativo;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Http\Resources\Administrativo\CoordinadorResource;
 use App\Models\Coordinador;
 use App\Models\User;
@@ -17,7 +18,7 @@ use Illuminate\Validation\Rule;
 
 class CoordinadorController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -52,7 +53,7 @@ class CoordinadorController extends Controller
             'name' => ['required', 'string'],
             'email' => ['required','string', Rule::unique(User::class)],
             'lastname' => ['required', 'string'],
-            'dni' => ['required'],
+            'dni' => ['required', Rule::unique(User::class)],
             'nacimiento' => ['required', 'date'],
             'password'=> ['required','string','confirmed'], 
         ]);
@@ -87,7 +88,7 @@ class CoordinadorController extends Controller
             DB::rollBack();
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
-
+        $this->crearLog("Creando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
         return $this->onSuccess(new CoordinadorResource($usuario),"coordinador creado de manera correcta",201);
     }
 
