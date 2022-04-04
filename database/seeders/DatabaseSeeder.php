@@ -23,6 +23,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+
+        $this->call([
+            PaisSeeder::class,
+            ProvinciaSeeder::class,
+            DepartamentoSeeder::class,
+            LocalidadSeeder::class,
+            CalleSeeder::class,
+            BarrioSeeder::class
+        ]);
+        
         \App\Models\Role::factory()
         ->count(1)
         ->create([
@@ -113,11 +123,11 @@ class DatabaseSeeder extends Seeder
                     ->count(3))
                     ->create();
 
-        Zona::factory()
-        ->count(10)
-        ->has(Localidad::factory()
-                    ->count(1))
-        ->create();
+        // Zona::factory()
+        // ->count(10)
+        // ->has(Localidad::factory()
+        //             ->count(1))
+        // ->create();
 
         // \App\Models\User::factory()
         // ->count(20)

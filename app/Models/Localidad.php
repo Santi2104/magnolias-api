@@ -34,7 +34,7 @@ class Localidad extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nlocalidad','departamento_id','codigo_postal'];
     protected $table = 'localidades';
 
     /**
