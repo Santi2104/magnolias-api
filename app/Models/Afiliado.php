@@ -63,7 +63,12 @@ class Afiliado extends Model
         'grupo_familiar_id',
         'solicitante',
         'parentesco',
-        'sexo'
+        'sexo',
+        'finaliza_en',
+        'cuil',
+        'estado_civil',
+        'profesion_ocupacion',
+        'poliza_electronica'
     ];
 
     public const parentesco = ['Padre','Madre','Hijo','Hija','Conyugue'];

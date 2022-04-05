@@ -16,6 +16,7 @@ class AfiliadoResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'codigo_afiliado' => $this->afiliado->codigo_afiliado,
             'nombre' => $this->name,
             'apellido' => $this->lastname,
             'dni' => $this->dni,

@@ -51,6 +51,7 @@ class Role extends Model
                                             'vendedor:update',
                                             'vendedor:destroy',
                                             'afiliado:index',
+                                            'afiliado:show',
                                             'afiliado:store',
                                             'paquete:index'
                                         ];

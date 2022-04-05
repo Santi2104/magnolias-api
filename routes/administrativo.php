@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
 
         //**Rutas para los afiliados */
         Route::get('afiliados', [AfiliadoController::class, 'index'])->name('afiliado,index');
+        Route::get('afiliado', [AfiliadoController::class, 'show'])->name('afiliado.show');
         Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
 
         //**Rutas para los paquetes */

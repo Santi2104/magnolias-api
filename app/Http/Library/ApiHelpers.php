@@ -180,6 +180,12 @@ trait ApiHelpers
         return $edad;
     }
 
+    protected function calcularVencimiento($fecha)
+    {
+        $vence = Carbon::parse($fecha)->addMonth()->format('Y-m-d');
+        return $vence;
+    }
+
     /**
      * @param  $fecha
      * @return boolean
