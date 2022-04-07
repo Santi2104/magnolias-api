@@ -54,17 +54,13 @@ class CoordinadorController extends Controller
             'email' => ['required','string', Rule::unique(User::class)],
             'lastname' => ['required', 'string'],
             'dni' => ['required', Rule::unique(User::class)],
-            'nacimiento' => ['required', 'date'],
-            'password'=> ['required','string','confirmed'], 
+            'nacimiento' => ['required', 'date'], 
         ]);
 
         if($validador->fails())
         {
             return $this->onError(422,"Error de validación", $validador->errors());
         }
-
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-        $actual = Carbon::now();
 
         try {
             DB::beginTransaction();
@@ -73,9 +69,9 @@ class CoordinadorController extends Controller
                 'email'    => $request->email,
                 'lastname' => $request->lastname,
                 'dni'      => $request->dni,
-                'nacimiento' => $nacimiento,
-                'edad'     => $actual->diffInYears($nacimiento),
-                'password' => bcrypt($request->password),
+                'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
+                'edad'     => $this->calcularEdad($request['nacimiento']),
+                'password' => bcrypt(Str::random(12).$request['dni']),
                 'role_id'  => \App\Models\Role::ES_COORDINADOR,
             ]);
     

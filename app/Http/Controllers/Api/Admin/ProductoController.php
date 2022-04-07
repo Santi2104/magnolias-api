@@ -33,7 +33,7 @@ class ProductoController extends Controller
     {
         $validador = Validator::make($request->all(), [
             "nombre" => ['required','string', 'unique:productos,nombre'],
-            "categoria_id" => ['required', 'exists:App\Models\Categoria,id']
+            // "categoria_id" => ['required', 'exists:App\Models\Categoria,id']
         ]);
 
         if($validador->fails()){
@@ -43,7 +43,6 @@ class ProductoController extends Controller
         
         $producto = Producto::create([
             "nombre" => $request['nombre'],
-            "categoria_id" => $request['categoria_id']
         ]);
 
         return $this->onSuccess(new ProductoResource($producto),"Producto creado de manera correcta",201);
@@ -77,10 +76,9 @@ class ProductoController extends Controller
     {
         $validador = Validator::make($request->all(), [
             "nombre" => ['required'],
-            "categoria_id" => ['required', 'exists:App\Models\Categoria,id']
+            // "categoria_id" => ['required', 'exists:App\Models\Categoria,id']
         ]);
         //*TODO: Realizar la validacion de arriba a todos los modelos
-        //*TODO: extraer las validaciones a sus respectivos archivos
         if($validador->fails()){
 
             return $this->onError(422,"Error de validación", $validador->errors());

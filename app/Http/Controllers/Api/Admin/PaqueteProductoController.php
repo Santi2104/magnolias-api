@@ -101,7 +101,7 @@ class PaqueteProductoController extends Controller
         $paquete->productos()->sync($request["productos_id"]);
 
         return $this->onSuccess(new PaqueteProductoResource($paquete),
-                                "Los productos del paquete $paquete->nombre fueron actualizados",
+                                "Los productos del paquete ".$paquete->nombre." fueron actualizados",
                                 200);
     }
 

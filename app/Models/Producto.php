@@ -37,17 +37,8 @@ class Producto extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['nombre','categoria_id'];
+    protected $fillable = ['nombre'];
 
-    /**
-     * Get the categoria that owns the Producto
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function categoria()
-    {
-        return $this->belongsTo(Categoria::class, 'categoria_id');
-    }
 
     /**
      * The productos that belong to the Producto

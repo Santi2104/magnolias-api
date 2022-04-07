@@ -114,7 +114,6 @@ class DatabaseSeeder extends Seeder
      
         Producto::factory()
         ->count(4)
-        ->has(Categoria::factory()->count(1))
         ->create();
         
         Paquete::factory()

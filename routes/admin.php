@@ -2,14 +2,13 @@
 
 use App\Http\Controllers\Api\Admin\AdministrativoController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Admin\CategoriasController;
 use App\Http\Controllers\Api\Admin\CoordinadorController;
 use App\Http\Controllers\Api\Admin\LocalidadController;
 use App\Http\Controllers\Api\Admin\ObraSocialController;
 use App\Http\Controllers\Api\Admin\PaqueteController;
 use App\Http\Controllers\Api\Admin\PaqueteProductoController;
 use App\Http\Controllers\Api\Admin\ProductoController;
-use App\Http\Controllers\Api\Admin\ZonaController;
+
 
 Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
 
@@ -17,11 +16,11 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         "as" => 'admin.'
     ], function() {
         //**Crud de las categorias */
-        Route::get('categorias', [CategoriasController::class, 'index'])->name('categorias.index');
-        Route::post('categoria', [CategoriasController::class, 'store'])->name('categorias.store');
-        Route::put('categoria/{categoria}', [CategoriasController::class, 'update'])->name('categorias.update');
-        Route::delete('categoria/{categoria}', [CategoriasController::class, 'destroy'])->name('categorias.destroy');
-        Route::patch('categoria/{id}', [CategoriasController::class, 'restore'])->name('categorias.restore');
+        // Route::get('categorias', [CategoriasController::class, 'index'])->name('categorias.index');
+        // Route::post('categoria', [CategoriasController::class, 'store'])->name('categorias.store');
+        // Route::put('categoria/{categoria}', [CategoriasController::class, 'update'])->name('categorias.update');
+        // Route::delete('categoria/{categoria}', [CategoriasController::class, 'destroy'])->name('categorias.destroy');
+        // Route::patch('categoria/{id}', [CategoriasController::class, 'restore'])->name('categorias.restore');
 
         //**Crud de los productos */
         Route::get('productos', [ProductoController::class, 'index'])->name('productos.index');
@@ -43,6 +42,7 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::put('paquete/{id}/producto', [PaqueteProductoController::class, 'update'])->name('paquete.producto.update');
         Route::delete('paquete/{id}/producto', [PaqueteProductoController::class, 'destroy'])->name('paquete.producto.destroy');
         
+        //TODO:Crear crud de los paises, provincias, barrios, calles y vendedores
 
         //**Crud de las localidades */
         Route::get('localidades', [LocalidadController::class, 'index'])->name('localidad.index');
@@ -52,9 +52,9 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::patch('localidad/{id}', [LocalidadController::class, 'restore'])->name('localidad.restore');
 
         //**Crud de las zonas */
-        Route::get('zonas', [ZonaController::class, 'index'])->name('zona.index');
-        Route::post('zona', [ZonaController::class, 'store'])->name('zona.store');
-        Route::put('zona/{id}', [ZonaController::class, 'update'])->name('zona.update');
+        // Route::get('zonas', [ZonaController::class, 'index'])->name('zona.index');
+        // Route::post('zona', [ZonaController::class, 'store'])->name('zona.store');
+        // Route::put('zona/{id}', [ZonaController::class, 'update'])->name('zona.update');
         //*!Segun las respuestas un vendedor puede pertenecer a varias zonas, esto habra que cambiar */
 
         //**Crud de las obras sociales */

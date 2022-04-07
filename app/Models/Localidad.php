@@ -38,12 +38,12 @@ class Localidad extends Model
     protected $table = 'localidades';
 
     /**
-     * Get all of the zonas for the Localidad
+     * The vendedores that belong to the Localidad
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function zonas()
+    public function vendedores()
     {
-        return $this->hasMany(Zona::class);
+        return $this->belongsToMany(Vendedor::class);
     }
 }

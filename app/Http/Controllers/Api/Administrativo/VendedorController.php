@@ -55,7 +55,7 @@ class VendedorController extends Controller
             'dni' => ['required', Rule::unique(User::class)],
             'nacimiento' => ['required'],
             'password'=> ['required','string','confirmed'],
-            'zona_id' => ['required'],
+            'localidad_id' => ['required'],
             'coordinador_id' => ['required']
         ]);
 
@@ -86,7 +86,7 @@ class VendedorController extends Controller
                 "coordinador_id" => $request['coordinador_id']
             ]);
             
-            $usuario->vendedor->zonas()->attach($request['zona_id']);
+            $usuario->vendedor->localidades()->attach($request['localidad_id']);
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -144,7 +144,7 @@ class VendedorController extends Controller
             'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
             'nacimiento' => ['required'],
             'password'=> ['required','string'],
-            'zona_id' => ['required'],
+            'localidad_id' => ['required'],
             'coordinador_id' => ['required']
         ]);
 
@@ -169,7 +169,7 @@ class VendedorController extends Controller
             $usuario->vendedor()->update([
                 'coordinador_id' => $request->coordinador_id
             ]);
-            $usuario->vendedor->zonas()->sync($request->zona_id);
+            $usuario->vendedor->localidades()->sync($request->localidad_id);
 
             DB::commit();
         } catch (\Throwable $th) {

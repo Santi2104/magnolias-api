@@ -57,13 +57,13 @@ class Vendedor extends Model
     }
 
     /**
-     * The zonas that belong to the Vendedor
+     * The localidades that belong to the Vendedor
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function zonas()
+    public function localidades()
     {
-        return $this->belongsToMany(Zona::class, 'vendedor_zona');
+        return $this->belongsToMany(Localidad::class,'vendedores_localidades');
     }
 
     /**
