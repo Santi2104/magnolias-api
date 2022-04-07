@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\Admin\ObraSocialController;
 use App\Http\Controllers\Api\Admin\PaqueteController;
 use App\Http\Controllers\Api\Admin\PaqueteProductoController;
 use App\Http\Controllers\Api\Admin\ProductoController;
-
+use App\Http\Controllers\Api\Admin\VendedorController;
 
 Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
 
@@ -68,6 +68,11 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::get('coordinadores', [CoordinadorController::class, 'index'])->name("coordinador.index");
         Route::post('coordinador', [CoordinadorController::class, 'store'])->name("coordinador.store");
         Route::put('coordinador', [CoordinadorController::class, 'update'])->name("coordinador.update");
+
+        //**Curd de los vendedores */
+        Route::get('vendedores', [VendedorController::class, 'index'])->name('vendedor.index');
+        Route::post('vendedor', [VendedorController::class, 'store'])->name('vendedor.store');
+        Route::put('vendedor', [VendedorController::class, 'update'])->name('vendedor.update');
 
         //**Crud de los administrativos */
         Route::get('administrativo', [AdministrativoController::class, 'index'])->name("administrativo.index");
