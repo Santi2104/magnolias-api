@@ -77,12 +77,35 @@ class CoordinadorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $validador = Validator::make($request->all(), [
+            'uuid' => ['required'],
+        ]);
+
+        if($validador->fails()){
+
+            return $this->onError(422,"Error de validación", $validador->errors());
+        }
+
+        $coordinador = Coordinador::whereCodigoCoordinador($request['uuid'])
+                    ->with([
+                        'user' => function($query){
+                            $query->select('id','name','lastname','dni','email');
+                        },
+                        'vendedores' => function($query){
+                            $query->select('id','user_id','codigo_vendedor','coordinador_id');
+                        },
+                        'vendedores.user' => function($query){
+                            $query->select('id','name','lastname','dni','email');
+                        }
+                    ])
+                    ->first();
+                    
+        return $this->onSuccess($coordinador);
     }
 
     /**
@@ -150,4 +173,17 @@ class CoordinadorController extends Controller
     {
         //
     }
+
+        /**
+     * Obtiene los vendedores de un coordinador especifico
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function obtenerVendedor(Request $request)
+    {
+        
+    }
+
+    
 }

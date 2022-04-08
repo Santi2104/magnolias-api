@@ -83,12 +83,38 @@ class VendedorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $validador = Validator::make($request->all(), [
+            'uuid' => ['required','exists:App\Models\Vendedor,codigo_vendedor'],
+        ]);
+
+        if($validador->fails()){
+
+            return $this->onError(422,"Error de validación", $validador->errors());
+        }
+
+        $vendedor = Vendedor::whereCodigoVendedor($request->uuid)
+                    ->with([
+                        'user' => function($query){
+                            $query->select('id','name','lastname','dni','email');
+                        },
+                        'coordinador' => function($query){
+                            $query->select('id','user_id','codigo_coordinador');
+                        },
+                        'coordinador.user' => function($query){
+                            $query->select('id','name','lastname','dni','email');
+                        },
+                        'afiliados',
+                        'afiliados.user' => function($query){
+                            $query->select('id','name','lastname','dni','email');
+                        },
+                    ])->first();
+        
+        return $vendedor;
     }
 
     /**

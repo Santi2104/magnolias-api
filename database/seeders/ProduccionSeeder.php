@@ -20,7 +20,8 @@ class ProduccionSeeder extends Seeder
             ['name' => 'admin' , 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'coordinador' , 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'afiliado', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'vendedor', 'created_at' => now(), 'updated_at' => now()]
+            ['name' => 'vendedor', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'administrativo', 'created_at' => now(), 'updated_at' => now()]
         ]);
 
         DB::table('obra_sociales')->insert([
@@ -43,7 +44,7 @@ class ProduccionSeeder extends Seeder
                 'role_id' => Role::ES_ADMIN,
                 'created_at' => now(),
                 'updated_at' => now(),
-                //'sexo' => 'M'
+
             ],
             [
                 'name' => 'Emiliano',
@@ -58,7 +59,7 @@ class ProduccionSeeder extends Seeder
                 'role_id' => Role::ES_COORDINADOR,
                 'created_at' => now(),
                 'updated_at' => now(),
-               // 'sexo' => 'M'
+
             ],
             [
                 'name' => 'Sergio',
@@ -73,7 +74,22 @@ class ProduccionSeeder extends Seeder
                 'role_id' => Role::ES_VENDEDOR,
                 'created_at' => now(),
                 'updated_at' => now(),
-                // 'sexo' => 'M'
+
+            ],
+            [
+                'name' => 'Juan Carlos',
+                'lastname' => 'bodoque',
+                'dni' => '12345681',
+                'edad' => '27',
+                'nacimiento' => '1994-04-04',
+                'email' => 'administrativo@mail.com',
+                'email_verified_at' => now(),
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'remember_token' => Str::random(10),
+                'role_id' => Role::ES_ADMINISTRATIVO,
+                'created_at' => now(),
+                'updated_at' => now(),
+
             ]
             ]);
 
@@ -89,6 +105,12 @@ class ProduccionSeeder extends Seeder
                     'user_id' => 3,
                     'codigo_vendedor' => Str::uuid(),
                     'coordinador_id' => 1
+                ]
+                ]);
+            DB::table('administrativos')->insert([
+                [
+                    'user_id' => 4,
+                    'codigo_vendedor' => Str::uuid(),
                 ]
                 ]);
     }

@@ -66,11 +66,13 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
 
         //**Crud de los coordinadores */
         Route::get('coordinadores', [CoordinadorController::class, 'index'])->name("coordinador.index");
+        Route::get('coordinador/vendedor', [CoordinadorController::class,'show'])->name("coordinador.vendedor.index");
         Route::post('coordinador', [CoordinadorController::class, 'store'])->name("coordinador.store");
         Route::put('coordinador', [CoordinadorController::class, 'update'])->name("coordinador.update");
 
         //**Curd de los vendedores */
         Route::get('vendedores', [VendedorController::class, 'index'])->name('vendedor.index');
+        Route::get('vendedor',[VendedorController::class, 'show'])->name('vendedor.show');
         Route::post('vendedor', [VendedorController::class, 'store'])->name('vendedor.store');
         Route::put('vendedor', [VendedorController::class, 'update'])->name('vendedor.update');
 
