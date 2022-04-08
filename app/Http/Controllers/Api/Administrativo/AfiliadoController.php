@@ -57,8 +57,8 @@ class AfiliadoController extends Controller
             'tipo_dni' => ['required'],
             'nacimiento' => ['required', 'date'],
             'solicitante' => ['present', 'boolean'],
-            'vendedor_id' => ['required'],
-            'paquete_id' => ['required'],
+            'vendedor_id' => ['required','exists:App\Models\Vendedor,id'],
+            'paquete_id' => ['required','exists:App\Models\Paquete,id'],
             'sexo' => ['required', Rule::in(Afiliado::sexo)],
             'parentesco' => ['required_unless:solicitante,true',Rule::in(Afiliado::parentesco)],
             'calle' => ['required_unless:solicitante,false',],
@@ -68,7 +68,7 @@ class AfiliadoController extends Controller
             'estado_civil' => ['required_unless:solicitante,false'],
             'profesion_ocupacion' => ['required_unless:solicitante,false'],
             'poliza_electronica' => ['required_unless:solicitante,false','boolean'],
-            'obra_social_id' => ['required'],
+            'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
             'dni_solicitante' => ['required_unless:solicitante,true']
         ]);
 
@@ -101,18 +101,19 @@ class AfiliadoController extends Controller
             }
         }
 
-        if($idFamilia <> 0){
-            $grupo = $idFamilia;
-        }else{
-            $grupo = GrupoFamiliar::create([
-                'apellido' => $request['lastname'],
-                'dni_solicitante' => $request['dni']
-            ]);
-            $grupo = $grupo->id;
-        }
-
         try {
             DB::beginTransaction();
+
+            if($idFamilia <> 0){
+                $grupo = $idFamilia;
+            }else{
+                $grupo = GrupoFamiliar::create([
+                    'apellido' => $request['lastname'],
+                    'dni_solicitante' => $request['dni']
+                ]);
+                $grupo = $grupo->id;
+            }
+
             $usuario = User::create([
                 'name'     => $request->name,
                 'email'    => $email,

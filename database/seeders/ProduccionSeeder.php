@@ -110,7 +110,7 @@ class ProduccionSeeder extends Seeder
             DB::table('administrativos')->insert([
                 [
                     'user_id' => 4,
-                    'codigo_vendedor' => Str::uuid(),
+                    'codigo_administrativo' => Str::uuid(),
                 ]
                 ]);
     }
