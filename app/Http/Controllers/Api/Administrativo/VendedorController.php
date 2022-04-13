@@ -29,7 +29,7 @@ class VendedorController extends Controller
         {
             return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
         }
-        
+
         $vendedores = User::whereRoleId(\App\Models\Role::ES_VENDEDOR)->get();
 
         return $this->onSuccess(VendedorResource::collection($vendedores));
@@ -54,8 +54,7 @@ class VendedorController extends Controller
             'lastname' => ['required', 'string'],
             'dni' => ['required', Rule::unique(User::class)],
             'nacimiento' => ['required'],
-            'password'=> ['required','string','confirmed'],
-            'localidad_id' => ['required'],
+            'localidad_id' => ['required', 'exists:App\Models\Localidad,id'],
             'coordinador_id' => ['required','exists:App\Models\Coordinador,id']
         ]);
 
@@ -77,7 +76,7 @@ class VendedorController extends Controller
                 'dni'      => $request->dni,
                 'nacimiento' => $nacimiento,
                 'edad'     => $actual->diffInYears($nacimiento),
-                'password' => bcrypt($request->password),
+                'password' => bcrypt(Str::random(12).$request['dni']),
                 'role_id'  => \App\Models\Role::ES_VENDEDOR,
             ]);
 
@@ -85,7 +84,7 @@ class VendedorController extends Controller
                 "codigo_vendedor" => Str::uuid(),
                 "coordinador_id" => $request['coordinador_id']
             ]);
-            
+
             $usuario->vendedor->localidades()->attach($request['localidad_id']);
 
             DB::commit();
@@ -144,7 +143,7 @@ class VendedorController extends Controller
             'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
             'nacimiento' => ['required','date'],
             'password'=> ['required','string'],
-            'localidad_id' => ['required'],
+            'localidad_id' => ['required', 'exists:App\Models\Localidad,id'],
             'coordinador_id' => ['required','exists:App\Models\Coordinador,id']
         ]);
 
@@ -165,7 +164,7 @@ class VendedorController extends Controller
             $usuario->nacimiento = $nacimiento;
             $usuario->edad = $actual->diffInYears($nacimiento);
             $usuario->save();
-    
+
             $usuario->vendedor()->update([
                 'coordinador_id' => $request->coordinador_id
             ]);

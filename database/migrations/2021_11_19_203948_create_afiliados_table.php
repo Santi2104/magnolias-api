@@ -44,7 +44,13 @@ class CreateAfiliadosTable extends Migration
             $table->string('email_laboral')->nullable();
             $table->string('telefono_laboral')->nullable();
             $table->boolean('seguro_retiro')->nullable();//esta campo es booleano
-            //?El conyuge es automaticamente un beneficiaro?
+            $table->string('nombre_tarjeta')->nullable();
+            $table->string('numero_tarjeta')->nullable();
+            $table->string('codigo_cvv',3)->nullable();
+            $table->string('tipo_tarjeta')->nullable();
+            $table->string('banco')->nullable();
+            $table->string('vencimiento_tarjeta')->nullable();
+            $table->string('titular_tarjeta')->nullable();
             $table->foreignId('user_id')
             ->constrained()
             ->onDelete('cascade')

@@ -44,7 +44,6 @@ class CoordinadorController extends Controller
             'lastname' => ['required', 'string'],
             'dni' => ['required'],
             'nacimiento' => ['required', 'date'],
-            'password'=> ['required','string','confirmed'], 
         ]);
 
         if($validador->fails()){
@@ -62,7 +61,7 @@ class CoordinadorController extends Controller
             'dni'      => $request->dni,
             'nacimiento' => $nacimiento,
             'edad'     => $actual->diffInYears($nacimiento),
-            'password' => bcrypt($request->password),
+            'password' => bcrypt(Str::random(12).$request['dni']),
             'role_id'  => \App\Models\Role::ES_COORDINADOR,
         ]);
 
@@ -104,7 +103,7 @@ class CoordinadorController extends Controller
                         }
                     ])
                     ->first();
-                    
+
         return $this->onSuccess($coordinador);
     }
 
@@ -139,7 +138,7 @@ class CoordinadorController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        
+
         $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $actual = Carbon::now();
 
@@ -149,7 +148,7 @@ class CoordinadorController extends Controller
         $usuario->dni = $request->dni;
         $usuario->nacimiento = $nacimiento;
         $usuario->edad = $actual->diffInYears($nacimiento);
-        /** 
+        /**
             *?Talves aca Deberia Ir algo para modificar la tabla coordinador
             *? Si modifico el mail, deberia poder vericarlo de nuevo si es correcto
         */
@@ -182,8 +181,8 @@ class CoordinadorController extends Controller
      */
     public function obtenerVendedor(Request $request)
     {
-        
+
     }
 
-    
+
 }

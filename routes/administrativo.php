@@ -26,9 +26,11 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
         //**Rutas para los afiliados */
         Route::get('afiliados', [AfiliadoController::class, 'index'])->name('afiliado,index');
         Route::get('afiliado', [AfiliadoController::class, 'show'])->name('afiliado.show');
+        Route::get('afiliado/datos',[AfiliadoController::class,'datosAfiliado'])->name('afiliado.datos');
         Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
 
         //**Rutas para los paquetes */
         Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
+        //?Crear ruta para cargar un familiar del afiliado apartir de su dni (Consultar mensajes con Emi)
     });
 });

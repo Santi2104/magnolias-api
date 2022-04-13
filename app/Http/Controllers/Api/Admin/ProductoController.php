@@ -33,14 +33,13 @@ class ProductoController extends Controller
     {
         $validador = Validator::make($request->all(), [
             "nombre" => ['required','string', 'unique:productos,nombre'],
-            // "categoria_id" => ['required', 'exists:App\Models\Categoria,id']
         ]);
 
         if($validador->fails()){
 
             return $this->onError(422,"Error de validación", $validador->errors());
         }
-        
+
         $producto = Producto::create([
             "nombre" => $request['nombre'],
         ]);
@@ -76,7 +75,6 @@ class ProductoController extends Controller
     {
         $validador = Validator::make($request->all(), [
             "nombre" => ['required'],
-            // "categoria_id" => ['required', 'exists:App\Models\Categoria,id']
         ]);
         //*TODO: Realizar la validacion de arriba a todos los modelos
         if($validador->fails()){
@@ -112,7 +110,7 @@ class ProductoController extends Controller
     public function destroy($id)
     {
         $producto = Producto::find($id);
-        
+
         if(!isset($producto)){
             return $this->onError(404,"El producto al que intenta acceder no existe");
         }
@@ -133,7 +131,7 @@ class ProductoController extends Controller
         if(!isset($producto)){
             return $this->onError(404,"El producto al que intenta acceder no existe");
         }
-        
+
         $producto->restore();
 
         return $this->onSuccess($producto,"Producto restaurado");

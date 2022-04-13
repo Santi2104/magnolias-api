@@ -68,7 +68,15 @@ class Afiliado extends Model
         'cuil',
         'estado_civil',
         'profesion_ocupacion',
-        'poliza_electronica'
+        'poliza_electronica',
+        'nombre_tarjeta',
+        'numero_tarjeta',
+        'codigo_cvv',
+        'tipo_tarjeta',
+        'banco',
+        'vencimiento_tarjeta',
+        'titular_tarjeta',
+        'codigo_postal'
     ];
 
     public const parentesco = ['Padre','Madre','Hijo','Hija','Conyugue'];

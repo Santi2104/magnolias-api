@@ -48,7 +48,7 @@ class AfiliadoController extends Controller
         $solicitante = null;
         $idFamilia = 0;
         $grupo = null;
-        //TODO: Meter todo esto dentro de un servicio y una transaccion
+        //TODO: Meter todo esto dentro de un servicio
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required_unless:solicitante,false', Rule::unique(User::class),'email'],
@@ -69,7 +69,15 @@ class AfiliadoController extends Controller
             'profesion_ocupacion' => ['required_unless:solicitante,false'],
             'poliza_electronica' => ['required_unless:solicitante,false','boolean'],
             'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
-            'dni_solicitante' => ['required_unless:solicitante,true']
+            'dni_solicitante' => ['required_unless:solicitante,true'],
+            'nombre_tarjeta' => ['required_unless:solicitante,false'],
+            'numero_tarjeta' => ['required_unless:solicitante,false'],
+            'codigo_cvv' => ['required_unless:solicitante,false','max:3'],
+            'tipo_tarjeta' => ['required_unless:solicitante,false'],
+            'banco' => ['required_unless:solicitante,false'],
+            'vencimiento_tarjeta' => ['required_unless:solicitante,false'],
+            'titular_tarjeta' => ['required_unless:solicitante,false'],
+            'codigo_postal' => ['required_unless:solicitante,false'],
         ]);
 
         if($validador->fails())
@@ -81,17 +89,24 @@ class AfiliadoController extends Controller
             $email = $request['email'];
             $password = bcrypt(Str::random(12).$request['dni']);
             $request['parentesco'] = null;
-            
+
         }else{
             $email = Str::random(12).$request['dni'].'@mail.com';
             $password = bcrypt(Str::random(12).$request['dni']);
             $request['cuil'] = null;
             $request['estado_civil'] = null;
             $request['profesion_ocupacion'] = null;
-            $request['poliza_electronica'] = null;
+            $request['poliza_electronica'] = false;
+            $request['nombre_tarjeta'] = null;
+            $request['numero_tarjeta'] = null;
+            $request['codigo_cvv'] = null;
+            $request['tipo_tarjeta'] = null;
+            $request['banco'] = null;
+            $request['vencimiento_tarjeta'] = null;
+            $request['titular_tarjeta'] = null;
             $solicitante = GrupoFamiliar::where('dni_solicitante', $request['dni_solicitante'])
                                         ->where('apellido', $request['lastname'])->first();
-                           
+
             if(!isset($solicitante))
             {
                 return $this->onError(422,"El DNI enviado no pertenece a ninguna solicitante o el apellido no coincide");
@@ -125,7 +140,7 @@ class AfiliadoController extends Controller
                 'password' => $password,
                 'role_id'  => \App\Models\Role::ES_AFILIADO,
             ]);
-    
+
             $afiliado = $usuario->afiliado()->create([
                 "codigo_afiliado" => Str::uuid(),
                 "calle" => $request["calle"],
@@ -141,9 +156,17 @@ class AfiliadoController extends Controller
                 'estado_civil' => $request['estado_civil'],
                 'profesion_ocupacion' => $request['profesion_ocupacion'],
                 'poliza_electronica' => $request['poliza_electronica'],
-                'finaliza_en' => $this->calcularVencimiento(now())
+                'finaliza_en' => $this->calcularVencimiento(now()),
+                'nombre_tarjeta' => $request['nombre_tarjeta'],
+                'numero_tarjeta' => $request['numero_tarjeta'],
+                'codigo_cvv' => $request['codigo_cvv'],
+                'banco' => $request['banco'],
+                'vencimiento_tarjeta' => $request['vencimiento_tarjeta'],
+                'titular_tarjeta' => $request['titular_tarjeta'],
+                'tipo_tarjeta' => $request['tipo_tarjeta'],
+                'codigo_postal' => $request['codigo_postal'],
             ]);
-    
+
             $afiliado->vendedores()->attach($request->vendedor_id);
             DB::commit();
         } catch (\Throwable $th) {
@@ -197,5 +220,54 @@ class AfiliadoController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Envia los datos del vendedor y el paquete de un afiliado
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function datosAfiliado(Request $request)
+    {
+
+        $validador = Validator::make($request->all(), [
+            "dni" => ['required','exists:App\Models\User,dni'],
+        ]);
+
+        if($validador->fails())
+        {
+            return $this->onError(422,"Error de validación", $validador->errors());
+        }
+
+        $usuario = User::with([
+            'afiliado' => function($query){
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante');
+            },
+            'afiliado.paquete' => function($query){
+                $query->select('id','nombre');
+            },
+            'afiliado.vendedores' => function($query){
+                $query->select('id','user_id','codigo_vendedor');
+            },
+            'afiliado.vendedores.user' => function($query){
+                $query->select('id','name','lastname');
+            }
+        ])
+        ->where('dni',$request->dni)
+        ->first(['id','name','lastname','dni']);
+
+        if(is_null($usuario->afiliado))
+        {
+            return $this->onError(422,'Error con el afiliado','El dni debe ser el de un afiliado solicitante');
+        }
+
+        if($usuario->afiliado->solicitante == false)
+        {
+            return $this->onError(422,'Error con el afiliado','El dni debe ser el de un afiliado solicitante');
+        }
+
+
+        return $this->onSuccess($usuario,'Afiliado encontrado');
     }
 }
