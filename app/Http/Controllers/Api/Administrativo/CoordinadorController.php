@@ -108,7 +108,6 @@ class CoordinadorController extends Controller
      */
     public function update(Request $request)
     {
-        //TODO:Agregar la condicion de que solo se pueda modificar pasadas las 24 horas y agregarlo al ApiHelper
         if(!$request->user()->tokenCan('coordinador:update')){
             return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
         }
@@ -147,8 +146,8 @@ class CoordinadorController extends Controller
         $usuario->email = $request->email;
         $usuario->lastname = $request->lastname;
         $usuario->dni = $request->dni;
-        $usuario->nacimiento = $nacimiento;
-        $usuario->edad = $actual->diffInYears($nacimiento);
+        $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
+        $usuario->edad = $this->calcularEdad($request['nacimiento']);
 
         if($usuario->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");

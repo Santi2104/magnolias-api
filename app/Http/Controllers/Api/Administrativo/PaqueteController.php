@@ -25,7 +25,7 @@ class PaqueteController extends Controller
             return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
         }
         $paquetes = Paquete::all(['id','nombre']);
-        //$this->crearLog(\App\Models\UserLog::CREAR,Auth::user()->id,'Paquetes');
+
         return $this->onSuccess($paquetes);
     }
 

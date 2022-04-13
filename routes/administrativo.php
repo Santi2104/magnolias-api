@@ -31,6 +31,5 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
 
         //**Rutas para los paquetes */
         Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
-        //?Crear ruta para cargar un familiar del afiliado apartir de su dni (Consultar mensajes con Emi)
     });
 });

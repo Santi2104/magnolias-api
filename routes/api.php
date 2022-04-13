@@ -22,12 +22,11 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
-//*Dar la posibilidad al admin de crear un administrativo
-//*Agregar scopes a cada rol (Administracion, Administrativo)
-//*Intentar implementar las transacciones o los eventos de Eloquent
-//*Suprimir la tabla categorias que no sirve pa' nah
-//*TCrear una tabla para los Logs
-//*TODO:Implementar un sistema de "alias" para identificar a los vendedores y coordinadores
+//*Agregar los cruds para los paises, provincias, etc.
+//*Agregar el sistema de Logs a toda la aplicacion.
+//*Agregar al administrativo la condicion de edicion antes de las 24hs.
+//*Agregar el poder de editar un afiliado para el admin y el administrativo
+//*Terminar todos los cruds del admin, incluyendo el del grupo familiar
 
 
 

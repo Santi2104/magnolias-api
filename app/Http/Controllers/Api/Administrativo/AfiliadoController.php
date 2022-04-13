@@ -32,7 +32,14 @@ class AfiliadoController extends Controller
             return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
         }
 
-        $afiliados = User::whereRoleId(\App\Models\Role::ES_AFILIADO)->get();
+        //$afiliados = User::whereRoleId(\App\Models\Role::ES_AFILIADO)->get();
+        $afiliados = User::with([
+            'afiliado' => function($query){
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante');
+            }
+        ])
+        ->where('role_id',\App\Models\Role::ES_AFILIADO)
+        ->get();
         return $this->onSuccess(AfiliadoResource::collection($afiliados));
     }
 
