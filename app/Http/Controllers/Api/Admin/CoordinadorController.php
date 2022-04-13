@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\UserCoordinadorResource;
 use App\Models\Coordinador;
 use App\Models\User;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -36,7 +37,6 @@ class CoordinadorController extends Controller
      */
     public function store(Request $request)
     {
-        //*TODO:La contraseña deberia crearse de manera aleatoria en este caso */
         //*TODO:Cuando se aplique la confirmación de cuenta implementar lo de la contraseña*/
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string'],
@@ -51,23 +51,27 @@ class CoordinadorController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-        $actual = Carbon::now();
-
-        $usuario = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'lastname' => $request->lastname,
-            'dni'      => $request->dni,
-            'nacimiento' => $nacimiento,
-            'edad'     => $actual->diffInYears($nacimiento),
-            'password' => bcrypt(Str::random(12).$request['dni']),
-            'role_id'  => \App\Models\Role::ES_COORDINADOR,
-        ]);
-
-        $usuario->coordinador()->create([
-            "codigo_coordinador" => Str::uuid()
-        ]);
+        try {
+            DB::beginTransaction();
+            $usuario = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'lastname' => $request->lastname,
+                'dni'      => $request->dni,
+                'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
+                'edad'     => $this->calcularEdad($request['nacimiento']),
+                'password' => bcrypt(Str::random(12).$request['dni']),
+                'role_id'  => \App\Models\Role::ES_COORDINADOR,
+            ]);
+    
+            $usuario->coordinador()->create([
+                "codigo_coordinador" => Str::uuid()
+            ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->onError(422,"Error al cargar los datos",$th->getMessage());
+        }
 
         return $this->onSuccess(new UserCoordinadorResource($usuario),"coordinador creado de manera correcta",201);
 
@@ -138,16 +142,12 @@ class CoordinadorController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-        $actual = Carbon::now();
-
         $usuario->name = $request->name;
         $usuario->email = $request->email;
         $usuario->lastname = $request->lastname;
         $usuario->dni = $request->dni;
-        $usuario->nacimiento = $nacimiento;
-        $usuario->edad = $actual->diffInYears($nacimiento);
+        $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
+        $usuario->edad = $this->calcularEdad($request['nacimiento']);
         /**
             *?Talves aca Deberia Ir algo para modificar la tabla coordinador
             *? Si modifico el mail, deberia poder vericarlo de nuevo si es correcto

@@ -10,6 +10,7 @@ use App\Models\Administrativo;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Str;
 use Validator;
@@ -43,7 +44,6 @@ class AdministrativoController extends Controller
             'lastname' => ['required', 'string'],
             'dni' => ['required', Rule::unique(User::class)],
             'nacimiento' => ['required', 'date'],
-            'password'=> ['required','string','confirmed'], 
         ]);
 
         if($validador->fails()){
@@ -51,31 +51,33 @@ class AdministrativoController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-        $actual = Carbon::now();
-
-        $usuario = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'lastname' => $request->lastname,
-            'dni'      => $request->dni,
-            'nacimiento' => $nacimiento,
-            'edad'     => $actual->diffInYears($nacimiento),
-            'password' => bcrypt($request->password),
-            'role_id'  => \App\Models\Role::ES_ADMINISTRATIVO,
-        ]);
-
-        $usuario->administrativo()->create([
-            "codigo_administrativo" => Str::uuid()
-        ]);
+        try {
+            DB::beginTransaction();
+            $usuario = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'lastname' => $request->lastname,
+                'dni'      => $request->dni,
+                'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
+                'edad'     => $this->calcularEdad($request['nacimiento']),
+                'password' => bcrypt(Str::random(10). $request->dni),
+                'role_id'  => \App\Models\Role::ES_ADMINISTRATIVO,
+            ]);
+    
+            $usuario->administrativo()->create([
+                "codigo_administrativo" => Str::uuid()
+            ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->onError(422,"Error al cargar los datos",$th->getMessage());
+        }
 
         return $this->onSuccess(
             new UserAdministrativoResource($usuario),
             "Administrativo creado de manera correcta",
             201
         );
-
-
     }
 
     /**
@@ -120,16 +122,12 @@ class AdministrativoController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-
-        $actual = Carbon::now();
-
         $usuario->name = $request->name;
         $usuario->email = $request->email;
         $usuario->lastname = $request->lastname;
         $usuario->dni = $request->dni;
-        $usuario->nacimiento = $nacimiento;
-        $usuario->edad = $actual->diffInYears($nacimiento);
+        $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
+        $usuario->edad = $this->calcularEdad($request['nacimiento']);
         
         if($usuario->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
