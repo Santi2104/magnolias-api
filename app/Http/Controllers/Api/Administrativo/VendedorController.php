@@ -47,13 +47,13 @@ class VendedorController extends Controller
         {
             return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
         }
-        //TODO: Verificar de alguna forma que ese coordinador_id sea realmente un coordinador
+
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)],
-            'nacimiento' => ['required'],
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required', Rule::unique(User::class),'max:9'],
+            'nacimiento' => ['required', 'date'],
             'localidad_id' => ['required', 'exists:App\Models\Localidad,id'],
             'coordinador_id' => ['required','exists:App\Models\Coordinador,id']
         ]);
@@ -137,12 +137,11 @@ class VendedorController extends Controller
         $usuario = $vendedor->user;
 
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)->ignore($usuario->id)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class)->ignore($usuario->id)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
-            'password'=> ['required','string'],
             'localidad_id' => ['required', 'exists:App\Models\Localidad,id'],
             'coordinador_id' => ['required','exists:App\Models\Coordinador,id']
         ]);
@@ -152,17 +151,14 @@ class VendedorController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-        $actual = Carbon::now();
-
         try {
             DB::beginTransaction();
             $usuario->name = $request->name;
             $usuario->lastname = $request->lastname;
             $usuario->email = $request->email;
             $usuario->dni = $request->dni;
-            $usuario->nacimiento = $nacimiento;
-            $usuario->edad = $actual->diffInYears($nacimiento);
+            $usuario->nacimiento = $request->nacimiento;
+            $usuario->edad = $this->calcularEdad($request->nacimiento);
             $usuario->save();
 
             $usuario->vendedor()->update([

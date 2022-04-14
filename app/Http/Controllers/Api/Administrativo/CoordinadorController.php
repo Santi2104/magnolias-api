@@ -50,10 +50,10 @@ class CoordinadorController extends Controller
         }
 
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)],
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required', Rule::unique(User::class),'max:9'],
             'nacimiento' => ['required', 'date'], 
         ]);
 
@@ -127,20 +127,17 @@ class CoordinadorController extends Controller
         $usuario = $coordinador->user;
 
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)->ignore($usuario->id)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
-            'nacimiento' => ['required', 'date'],
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class)->ignore($usuario->id)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
+            'nacimiento' => ['required','date'],
         ]);
 
         if($validador->fails()){
 
             return $this->onError(422,"Error de validación", $validador->errors());
         }
-
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-        $actual = Carbon::now();
 
         $usuario->name = $request->name;
         $usuario->email = $request->email;

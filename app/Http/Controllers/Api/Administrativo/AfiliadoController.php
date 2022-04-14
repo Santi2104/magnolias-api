@@ -57,12 +57,12 @@ class AfiliadoController extends Controller
         $grupo = null;
         //TODO: Meter todo esto dentro de un servicio
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string','max:25'],
             'email' => ['required_unless:solicitante,false', Rule::unique(User::class),'email'],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)],
-            'tipo_dni' => ['required'],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required', Rule::unique(User::class),'max:9'],        
             'nacimiento' => ['required', 'date'],
+            'tipo_dni' => ['required'],
             'solicitante' => ['present', 'boolean'],
             'vendedor_id' => ['required','exists:App\Models\Vendedor,id'],
             'paquete_id' => ['required','exists:App\Models\Paquete,id'],
@@ -72,18 +72,18 @@ class AfiliadoController extends Controller
             'barrio' => ['required_unless:solicitante,false'],
             'nro_casa' => ['required_unless:solicitante,false'],
             'cuil' => ['required_unless:solicitante,false'],
-            'estado_civil' => ['required_unless:solicitante,false'],
+            'estado_civil' => ['required_unless:solicitante,false',Rule::in(Afiliado::estado_civil)],
             'profesion_ocupacion' => ['required_unless:solicitante,false'],
             'poliza_electronica' => ['required_unless:solicitante,false','boolean'],
             'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
             'dni_solicitante' => ['required_unless:solicitante,true'],
-            'nombre_tarjeta' => ['required_unless:solicitante,false'],
+            'nombre_tarjeta' => ['required_unless:solicitante,false','max:20'],
             'numero_tarjeta' => ['required_unless:solicitante,false'],
             'codigo_cvv' => ['required_unless:solicitante,false','max:3'],
-            'tipo_tarjeta' => ['required_unless:solicitante,false'],
-            'banco' => ['required_unless:solicitante,false'],
+            'tipo_tarjeta' => ['required_unless:solicitante,false','max:10'],
+            'banco' => ['required_unless:solicitante,false','max:15'],
             'vencimiento_tarjeta' => ['required_unless:solicitante,false'],
-            'titular_tarjeta' => ['required_unless:solicitante,false'],
+            'titular_tarjeta' => ['required_unless:solicitante,false','max:20'],
             'codigo_postal' => ['required_unless:solicitante,false'],
         ]);
 
@@ -116,7 +116,7 @@ class AfiliadoController extends Controller
 
             if(!isset($solicitante))
             {
-                return $this->onError(422,"El DNI enviado no pertenece a ninguna solicitante o el apellido no coincide");
+                return $this->onError(422,"El DNI enviado no pertenece a ninguna solicitante");
             }else
             {
                 $idFamilia = $solicitante->id;
