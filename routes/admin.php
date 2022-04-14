@@ -15,12 +15,6 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
     Route::group([
         "as" => 'admin.'
     ], function() {
-        //**Crud de las categorias */
-        // Route::get('categorias', [CategoriasController::class, 'index'])->name('categorias.index');
-        // Route::post('categoria', [CategoriasController::class, 'store'])->name('categorias.store');
-        // Route::put('categoria/{categoria}', [CategoriasController::class, 'update'])->name('categorias.update');
-        // Route::delete('categoria/{categoria}', [CategoriasController::class, 'destroy'])->name('categorias.destroy');
-        // Route::patch('categoria/{id}', [CategoriasController::class, 'restore'])->name('categorias.restore');
 
         //**Crud de los productos */
         Route::get('productos', [ProductoController::class, 'index'])->name('productos.index');

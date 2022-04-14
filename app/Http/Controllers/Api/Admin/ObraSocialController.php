@@ -31,7 +31,7 @@ class ObraSocialController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
+            "nombre" => ['required','string','max:15'],
         ]);
 
         if($validador->fails()){
@@ -70,7 +70,7 @@ class ObraSocialController extends Controller
     public function update(Request $request, $id)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
+            "nombre" => ['required','string','max:15'],
         ]);
 
         if($validador->fails()){

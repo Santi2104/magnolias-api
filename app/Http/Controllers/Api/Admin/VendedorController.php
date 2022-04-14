@@ -37,11 +37,11 @@ class VendedorController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)],
-            'nacimiento' => ['required'],
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required', Rule::unique(User::class),'max:9'],
+            'nacimiento' => ['required', 'date'],
             'localidad_id' => ['required', 'exists:App\Models\Localidad,id'],
             'coordinador_id' => ['required','exists:App\Models\Coordinador,id']
         ]);
@@ -135,10 +135,10 @@ class VendedorController extends Controller
         $usuario = $vendedor->user;
 
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)->ignore($usuario->id)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class)->ignore($usuario->id)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
             'localidad_id' => ['required','exists:App\Models\Localidad,id'],
             'coordinador_id' => ['required','exists:App\Models\Coordinador,id']

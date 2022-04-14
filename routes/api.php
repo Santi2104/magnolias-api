@@ -27,6 +27,7 @@ Route::group(['prefix' => 'auth'], function () {
 //*Agregar al administrativo la condicion de edicion antes de las 24hs.
 //*Agregar el poder de editar un afiliado para el admin y el administrativo
 //*Terminar todos los cruds del admin, incluyendo el del grupo familiar
+//*Agregar en el ApiHelper las validadiones especificas de algunos campos, como Cuil y esas cosas
 
 
 

@@ -81,6 +81,7 @@ class Afiliado extends Model
 
     public const parentesco = ['Padre','Madre','Hijo','Hija','Conyugue'];
     public const sexo = ['M','F'];
+    public const estado_civil = ['soltero', 'casado', 'viudo', 'divorciado'];
 
     /**
      * The vendedores that belong to the Afiliado

@@ -15,7 +15,7 @@ class CreatePaquetesTable extends Migration
     {
         Schema::create('paquetes', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->unique();
+            $table->string('nombre',15)->unique();
             $table->integer('precio');
             $table->text('descripcion')->nullable();
             $table->timestamps();

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Library\ApiHelpers;
-use App\Http\Resources\Admin\ProductoResource;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Library\ApiHelpers;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\Admin\ProductoResource;
 
 class ProductoController extends Controller
 {
@@ -32,7 +33,7 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required','string', 'unique:productos,nombre'],
+            "nombre" => ['required','string','max:15','unique:productos,nombre'],
         ]);
 
         if($validador->fails()){
@@ -74,7 +75,7 @@ class ProductoController extends Controller
     public function update(Request $request, $id)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
+            "nombre" => ['required','string','max:15',Rule::unique(Producto::class)->ignore($id)],
         ]);
         //*TODO: Realizar la validacion de arriba a todos los modelos
         if($validador->fails()){

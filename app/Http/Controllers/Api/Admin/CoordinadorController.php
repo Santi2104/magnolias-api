@@ -39,10 +39,10 @@ class CoordinadorController extends Controller
     {
         //*TODO:Cuando se aplique la confirmación de cuenta implementar lo de la contraseña*/
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required'],
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required', Rule::unique(User::class),'max:9'],
             'nacimiento' => ['required', 'date'],
         ]);
 
@@ -130,11 +130,11 @@ class CoordinadorController extends Controller
 
         $usuario = $coordinador->user;
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)->ignore($usuario->id)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
-            'nacimiento' => ['required', 'date'],
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class)->ignore($usuario->id)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
+            'nacimiento' => ['required','date'],
         ]);
 
         if($validador->fails()){
@@ -172,17 +172,5 @@ class CoordinadorController extends Controller
     {
         //
     }
-
-        /**
-     * Obtiene los vendedores de un coordinador especifico
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function obtenerVendedor(Request $request)
-    {
-
-    }
-
 
 }

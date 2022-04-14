@@ -32,8 +32,8 @@ class CreateAfiliadosTable extends Migration
             $table->string('localidad')->nullable();
             $table->string('provincia')->nullable();
             $table->string('codigo_postal')->nullable();
-            $table->string('estado_civil')->nullable();
-            $table->string('telefono_particular')->nullable();
+            $table->string('estado_civil',10)->nullable();
+            $table->string('telefono_particular',20)->nullable();
             $table->string('profesion_ocupacion')->nullable();
             $table->boolean('poliza_electronica')->nullable();//Campo para saber si le mandamos la poliza por email al solicitante
             $table->string('trabajo')->nullable();
@@ -44,13 +44,13 @@ class CreateAfiliadosTable extends Migration
             $table->string('email_laboral')->nullable();
             $table->string('telefono_laboral')->nullable();
             $table->boolean('seguro_retiro')->nullable();//esta campo es booleano
-            $table->string('nombre_tarjeta')->nullable();
+            $table->string('nombre_tarjeta',20)->nullable();
             $table->string('numero_tarjeta')->nullable();
             $table->string('codigo_cvv',3)->nullable();
-            $table->string('tipo_tarjeta')->nullable();
-            $table->string('banco')->nullable();
+            $table->string('tipo_tarjeta',10)->nullable();
+            $table->string('banco',15)->nullable();
             $table->string('vencimiento_tarjeta')->nullable();
-            $table->string('titular_tarjeta')->nullable();
+            $table->string('titular_tarjeta',20)->nullable();
             $table->foreignId('user_id')
             ->constrained()
             ->onDelete('cascade')

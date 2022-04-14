@@ -33,8 +33,8 @@ class PaqueteController extends Controller
     {
 
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required',Rule::unique(Paquete::class)],
-            "precio" => ['required']
+            "nombre" => ['required','string','max:15',Rule::unique(Paquete::class)],
+            "precio" => ['required','integer','min:0','max:10000']
         ]);
 
         if($validador->fails()){
@@ -60,8 +60,8 @@ class PaqueteController extends Controller
     public function update(Request $request, $id)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
-            "precio" => ['required']
+            "nombre" => ['required','string','max:15',Rule::unique(Paquete::class)->ignore($id)],
+            "precio" => ['required','integer','min:0','max:10000']
         ]);
 
         if($validador->fails()){
