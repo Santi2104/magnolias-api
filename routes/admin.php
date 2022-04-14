@@ -3,11 +3,14 @@
 use App\Http\Controllers\Api\Admin\AdministrativoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\CoordinadorController;
+use App\Http\Controllers\Api\Admin\DepartamentoController;
 use App\Http\Controllers\Api\Admin\LocalidadController;
 use App\Http\Controllers\Api\Admin\ObraSocialController;
+use App\Http\Controllers\Api\Admin\PaisController;
 use App\Http\Controllers\Api\Admin\PaqueteController;
 use App\Http\Controllers\Api\Admin\PaqueteProductoController;
 use App\Http\Controllers\Api\Admin\ProductoController;
+use App\Http\Controllers\Api\Admin\ProvinciaController;
 use App\Http\Controllers\Api\Admin\VendedorController;
 
 Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
@@ -45,12 +48,6 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::delete('localidad/{id}', [LocalidadController::class, 'destroy'])->name('localidad.destroy');
         Route::patch('localidad/{id}', [LocalidadController::class, 'restore'])->name('localidad.restore');
 
-        //**Crud de las zonas */
-        // Route::get('zonas', [ZonaController::class, 'index'])->name('zona.index');
-        // Route::post('zona', [ZonaController::class, 'store'])->name('zona.store');
-        // Route::put('zona/{id}', [ZonaController::class, 'update'])->name('zona.update');
-        //*!Segun las respuestas un vendedor puede pertenecer a varias zonas, esto habra que cambiar */
-
         //**Crud de las obras sociales */
         Route::get('obra-social', [ObraSocialController::class, 'index'])->name("obra.social.index");
         Route::post('obra-social', [ObraSocialController::class, 'store'])->name("obra.social.store");
@@ -74,6 +71,21 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::get('administrativo', [AdministrativoController::class, 'index'])->name("administrativo.index");
         Route::post('administrativo', [AdministrativoController::class, 'store'])->name("administrativo.store");
         Route::put('administrativo', [AdministrativoController::class, 'update'])->name("administrativo.update");
+
+        //**Crud de los paises */
+        Route::get('paises',[PaisController::class,'index'])->name('pais.index');
+        Route::post('pais',[PaisController::class,'store'])->name('pais.store');
+        Route::put('pais',[PaisController::class,'update'])->name('pais.update');
+
+        //**Crud de las provincias */
+        Route::get('provincias', [ProvinciaController::class,'index'])->name('provincia.index');
+        Route::post('provincia', [ProvinciaController::class,'store'])->name('provincia.store');
+        Route::put('provincia', [ProvinciaController::class,'update'])->name('provincia.update');
+
+        //**Crud de los departamentos */
+        Route::get('departamentos', [DepartamentoController::class,'index'])->name('departamento.index');
+        Route::post('departamento', [DepartamentoController::class,'store'])->name('departamento.store');
+        Route::put('departamento', [DepartamentoController::class,'update'])->name('departamento.update');
         
     });
 });

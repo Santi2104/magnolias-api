@@ -19,7 +19,14 @@ class LocalidadController extends Controller
      */
     public function index()
     {
-        $localidades = Localidad::all();
+        $localidades = Localidad::with([
+            'departamento' => function($query){
+                $query->select('id','ndepartamento','provincia_id');
+            },
+            'departamento.provincia' => function($query){
+                $query->select('id','nprovincia');
+            }
+        ])->get(['id','departamento_id','nlocalidad','codigo_postal']);
         return $this->onSuccess(LocalidadResource::collection($localidades));
     }
 
@@ -32,7 +39,9 @@ class LocalidadController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
+            "nombre" => ['required','string','max:30'],
+            "departamento_id" => ['required','exists:App\Models\Departamento,id'],
+            "codigo_postal" => ['present']
         ]);
 
         if($validador->fails()){
@@ -44,7 +53,9 @@ class LocalidadController extends Controller
         }
 
         $localidad = Localidad::create([
-            "nombre" => $request["nombre"]
+            "nlocalidad" => $request["nombre"],
+            'departamento_id' => $request['departamento_id'],
+            'codigo_posta' => $request['codigo_postal']
         ]);
 
         return $this->onSuccess(new LocalidadResource($localidad),"Localidad creada de manera correcta", 201);
@@ -71,7 +82,9 @@ class LocalidadController extends Controller
     public function update(Request $request, $id)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
+            "nombre" => ['required','string','max:30'],
+            "departamento_id" => ['required','exists:App\Models\Departamento,id'],
+            "codigo_postal" => ['present'],
         ]);
 
         if($validador->fails()){
@@ -87,9 +100,8 @@ class LocalidadController extends Controller
             return $this->onError(404,"La localidad a la que intenta acceder no existe");
         }
 
-        $localidad->fill($request->only([
-            "nombre"
-        ]));
+        $localidad->nlocalidad = $request['nombre'];
+        $localidad->codigo_postal = $request['codigo_postal'];
 
         if($localidad->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");

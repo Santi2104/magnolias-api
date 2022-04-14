@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Pais extends Model
 {
     use HasFactory;
-    protected $table = 'my_flights';
+    protected $table = 'paises';
     protected $fillable = ['npais', 'activo'];
 }

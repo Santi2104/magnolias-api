@@ -46,4 +46,14 @@ class Localidad extends Model
     {
         return $this->belongsToMany(Vendedor::class);
     }
+
+    /**
+     * Get the departamento that owns the Localidad
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function departamento()
+    {
+        return $this->belongsTo(Departamento::class);
+    }
 }
