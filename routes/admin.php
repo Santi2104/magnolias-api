@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\AdministrativoController;
+use App\Http\Controllers\Api\Admin\BarrioController;
+use App\Http\Controllers\Api\Admin\CalleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\CoordinadorController;
 use App\Http\Controllers\Api\Admin\DepartamentoController;
@@ -43,6 +45,7 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
 
         //**Crud de las localidades */
         Route::get('localidades', [LocalidadController::class, 'index'])->name('localidad.index');
+        Route::get('localidad/{id}', [LocalidadController::class, 'show'])->name('localidad.show');
         Route::post('localidad', [LocalidadController::class, 'store'])->name('localidad.store');
         Route::put('localidad/{id}', [LocalidadController::class, 'update'])->name('localidad.update');
         Route::delete('localidad/{id}', [LocalidadController::class, 'destroy'])->name('localidad.destroy');
@@ -79,13 +82,26 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
 
         //**Crud de las provincias */
         Route::get('provincias', [ProvinciaController::class,'index'])->name('provincia.index');
+        Route::get('provincia/{id}', [ProvinciaController::class,'show'])->name('provincia.show');
         Route::post('provincia', [ProvinciaController::class,'store'])->name('provincia.store');
         Route::put('provincia', [ProvinciaController::class,'update'])->name('provincia.update');
 
         //**Crud de los departamentos */
         Route::get('departamentos', [DepartamentoController::class,'index'])->name('departamento.index');
+        Route::get('departamento/{id}', [DepartamentoController::class,'show'])->name('departamento.show');
         Route::post('departamento', [DepartamentoController::class,'store'])->name('departamento.store');
         Route::put('departamento', [DepartamentoController::class,'update'])->name('departamento.update');
+        
+        //**Crud de los barrios */
+        Route::get('barrios', [BarrioController::class, 'index'])->name('barrio.index');
+        Route::post('barrio', [BarrioController::class, 'store'])->name('barrio.store');
+        Route::put('barrio', [BarrioController::class, 'update'])->name('barrio.update');
+
+        //**Crud de las calles */
+        Route::get('calles', [CalleController::class, 'index'])->name('calle.index');
+        Route::post('calle', [CalleController::class, 'store'])->name('calle.store');
+        Route::put('calle', [CalleController::class, 'update'])->name('calle.update');
+        
         
     });
 });

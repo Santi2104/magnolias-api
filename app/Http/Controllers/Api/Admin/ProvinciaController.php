@@ -42,10 +42,7 @@ class ProvinciaController extends Controller
         ]);
 
         if($validador->fails()){
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 422);
+            return $this->onError(422,"Error de validacion",$validador->errors());
         }
 
         $provincia = Provincia::create([
@@ -64,7 +61,19 @@ class ProvinciaController extends Controller
      */
     public function show($id)
     {
-        //
+        $provincia = Provincia::with([
+            'departamentos' => function($query){
+                $query->select('id','ndepartamento','provincia_id');
+            }
+        ])
+        ->where('id',$id)
+        ->first(['id','nprovincia AS nombre']);
+
+        if(!isset($provincia)){
+            return $this->onError(404,"Recurso no encontrado","El id provisto no pertenece a ningun recurso");
+        }
+
+        return $this->onSuccess($provincia,"recurso encontrado");
     }
 
     /**
@@ -83,10 +92,7 @@ class ProvinciaController extends Controller
         ]);
 
         if($validador->fails()){
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 422);
+            return $this->onError(422,"Error de validacion",$validador->errors());
         }
 
         $provincia = Provincia::whereId($request['id'])->first();

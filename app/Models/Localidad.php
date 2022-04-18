@@ -56,4 +56,24 @@ class Localidad extends Model
     {
         return $this->belongsTo(Departamento::class);
     }
+
+    /**
+     * Get all of the calles for the Localidad
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function calles()
+    {
+        return $this->hasMany(Calle::class);
+    }
+
+    /**
+     * Get all of the barrios for the Localidad
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function barrios()
+    {
+        return $this->hasMany(Barrio::class);
+    }
 }

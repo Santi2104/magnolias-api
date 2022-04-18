@@ -45,11 +45,7 @@ class LocalidadController extends Controller
         ]);
 
         if($validador->fails()){
-
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validacion",$validador->errors());
         }
 
         $localidad = Localidad::create([
@@ -69,7 +65,22 @@ class LocalidadController extends Controller
      */
     public function show($id)
     {
-        //
+        $localidad = Localidad::with([
+            'barrios' => function($query){
+                $query->select('id','nbarrio AS nombre','localidad_id');
+            },
+            'calles' => function($query){
+                $query->select('id','ncalle AS nombre','localidad_id');
+            },
+        ])
+        ->where('id',$id)
+        ->first(['id','nlocalidad AS nombre']);
+
+        if(!isset($localidad)){
+            return $this->onError(404,"Recurso no encontrado","El id provisto no pertenece a ningun recurso");
+        }
+
+        return $this->onSuccess($localidad);
     }
 
     /**
@@ -88,11 +99,7 @@ class LocalidadController extends Controller
         ]);
 
         if($validador->fails()){
-
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 200);
+            return $this->onError(422,"Error de validacion",$validador->errors());
         }
 
         $localidad = Localidad::find($id);

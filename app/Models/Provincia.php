@@ -19,4 +19,14 @@ class Provincia extends Model
     {
         return $this->belongsTo(Pais::class);
     }
+
+    /**
+     * Get all of the departamentos for the Provincia
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function departamentos()
+    {
+        return $this->hasMany(Departamento::class);
+    }
 }

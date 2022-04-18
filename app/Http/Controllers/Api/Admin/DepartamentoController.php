@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Library\ApiHelpers;
 use App\Http\Controllers\Controller;
+use App\Models\Provincia;
 use Illuminate\Support\Facades\Validator;
 
 class DepartamentoController extends Controller
@@ -42,10 +43,7 @@ class DepartamentoController extends Controller
         ]);
 
         if($validador->fails()){
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 422);
+            return $this->onError(422,"Error de validacion",$validador->errors());
         }
 
         $departamento = Departamento::create([
@@ -64,7 +62,20 @@ class DepartamentoController extends Controller
      */
     public function show($id)
     {
-        //
+        //$departamento = Departamento::whereId($id)->first(['id','ndepartamento AS nombre']);
+        $departamento = Departamento::with([
+            'localidades' => function($query){
+                $query->select('id','nlocalidad AS nombre','departamento_id');
+            }
+        ])
+        ->where('id',$id)
+        ->first(['id','ndepartamento AS nombre']);
+
+        if(!isset($departamento)){
+            return $this->onError(404,"Recurso no encontrado","El id provisto no pertenece a ningun recurso");
+        }
+
+        return $this->onSuccess($departamento);
     }
 
     /**
@@ -83,10 +94,7 @@ class DepartamentoController extends Controller
         ]);
 
         if($validador->fails()){
-            return response()->json([
-                'status' => 200,
-                'message' => $validador->errors(),
-            ], 422);
+            return $this->onError(422,"Error de validacion",$validador->errors());
         }
 
         $departamento = Departamento::whereId($request['id'])->first();
@@ -106,5 +114,21 @@ class DepartamentoController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Muestra los departamentos de determinada provincia.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showProvincia($id)
+    {
+        $provincia = Provincia::with([
+            'departamentos'
+        ])->where('id',$id)
+        ->first();
+
+        return $provincia;
     }
 }

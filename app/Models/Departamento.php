@@ -19,4 +19,14 @@ class Departamento extends Model
     {
         return $this->belongsTo(Provincia::class);
     }
+
+    /**
+     * Get all of the localidades for the Departamento
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function localidades()
+    {
+        return $this->hasMany(Localidad::class);
+    }
 }
