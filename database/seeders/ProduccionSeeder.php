@@ -113,5 +113,71 @@ class ProduccionSeeder extends Seeder
                     'codigo_administrativo' => Str::uuid(),
                 ]
                 ]);
+
+            DB::table('productos')->insert([
+                [
+                    'nombre' => 'Responso',
+                ],
+                [
+                    'nombre' => 'Cremación ', 
+                ],
+                [
+                    'nombre' => 'Entrega de urna',
+                ]
+                ]);
+
+            DB::table('paquetes')->insert([
+                [
+                    "nombre" => 'PLAN INDIVIDUAL',
+                    "precio" => 1500
+                ],
+                [
+                    "nombre" => 'PLAN MAYOR',
+                    "precio" => 2000
+                ],
+                [
+                    "nombre" => 'PLAN FAMILIA',
+                    "precio" => 2300
+                ]
+                ]);
+
+            DB::table('paquete_producto')->insert([
+                [
+                    'paquete_id' => 1,
+                    'producto_id' => 1
+                ],
+                [
+                    'paquete_id' => 1,
+                    'producto_id' => 2
+                ],
+                [
+                    'paquete_id' => 1,
+                    'producto_id' => 3
+                ],
+                [
+                    'paquete_id' => 2,
+                    'producto_id' => 1,
+                ],
+                [
+                    'paquete_id' => 2,
+                    'producto_id' => 2,
+                ],
+                [
+                    'paquete_id' => 2,
+                    'producto_id' => 3,
+                ],
+                [
+                    'paquete_id' => 3,
+                    'producto_id' => 1
+                ],
+                [
+                    'paquete_id' => 3,
+                    'producto_id' => 2
+                ],
+                [
+                    'paquete_id' => 3,
+                    'producto_id' => 3
+                ],
+                ]);
     }
 }
