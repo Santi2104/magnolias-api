@@ -10,4 +10,14 @@ class Pais extends Model
     use HasFactory;
     protected $table = 'paises';
     protected $fillable = ['npais', 'activo'];
+
+    /**
+     * Get all of the provincias for the Pais
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function provincias()
+    {
+        return $this->hasMany(Provincia::class);
+    }
 }

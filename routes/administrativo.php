@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Administrativo\AfiliadoController;
 use App\Http\Controllers\Api\Administrativo\CategoriaController;
 use App\Http\Controllers\Api\Administrativo\CoordinadorController;
 use App\Http\Controllers\Api\Administrativo\PaqueteController;
+use App\Http\Controllers\Api\Administrativo\UbicacionesController;
 use App\Http\Controllers\Api\Administrativo\VendedorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,5 +32,12 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
 
         //**Rutas para los paquetes */
         Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
+
+        //**Rutas para las ubicaciones */
+        Route::get('pais/{id}/provincias', [UbicacionesController::class, 'listarProvinciasPorPais'])->name('pais.provincias');
+        Route::get('provincia/{id}/departamentos', [UbicacionesController::class, 'listarDepartamentosPorProvincia'])->name('provincia.departamentos');
+        Route::get('departamento/{id}/localidades', [UbicacionesController::class, 'listarLocalidadesPorDepartamento'])->name('departamento.localidades');
+        Route::get('localidad/{id}/calles', [UbicacionesController::class, 'listarCallesPorLocalidad'])->name('localidad.calles');
+        Route::get('localidad/{id}/barrios', [UbicacionesController::class, 'listarBarriosPorLocalidad'])->name('localidad.barrios');
     });
 });
