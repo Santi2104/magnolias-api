@@ -86,7 +86,7 @@ class CoordinadorController extends Controller
     public function show(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            'uuid' => ['required'],
+            'uuid' => ['required','uuid','exists:App\Models\Coordinador,codigo_coordinador'],
         ]);
 
         if($validador->fails()){

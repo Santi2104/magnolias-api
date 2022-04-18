@@ -108,7 +108,9 @@ class VendedorController extends Controller
                         'coordinador.user' => function($query){
                             $query->select('id','name','lastname','dni','email');
                         },
-                        'afiliados',
+                        'afiliados' => function($query){
+                            $query->select('id','user_id','codigo_afiliado');
+                        },
                         'afiliados.user' => function($query){
                             $query->select('id','name','lastname','dni','email');
                         },
