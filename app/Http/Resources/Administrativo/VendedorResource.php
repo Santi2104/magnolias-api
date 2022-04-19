@@ -21,7 +21,8 @@ class VendedorResource extends JsonResource
             'apellido' => $this->lastname,
             'dni' => $this->dni,
             'email' => $this->email,
-            'codigo_vendedor' => $this->vendedor->codigo_vendedor
+            'codigo_vendedor' => $this->vendedor->codigo_vendedor,
+            'coordinador' => $this->vendedor->coordinador->user->name ." ".$this->vendedor->coordinador->user->lastname
         ];
     }
 }

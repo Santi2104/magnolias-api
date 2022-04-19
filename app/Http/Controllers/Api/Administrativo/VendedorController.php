@@ -30,7 +30,23 @@ class VendedorController extends Controller
             return $this->onError(403,"No está autorizado a realizar esta acción","Falta de permisos para acceder a este recurso");
         }
 
-        $vendedores = User::whereRoleId(\App\Models\Role::ES_VENDEDOR)->get();
+        //$vendedores = User::whereRoleId(\App\Models\Role::ES_VENDEDOR)->get();
+        $vendedores = User::with([
+            'vendedor' => function($query){
+                $query->select('id','user_id','codigo_vendedor','coordinador_id');
+            },
+            'vendedor.user' => function($query){
+                $query->select('id','name','lastname','email','dni');
+            },
+            'vendedor.coordinador' => function($query){
+                $query->select('id','user_id','codigo_coordinador');
+            },
+            'vendedor.coordinador.user' => function($query){
+                $query->select('id','name','lastname','email','dni');
+            }
+        ])
+        ->where('role_id',\App\Models\Role::ES_VENDEDOR)
+        ->get(['id','name','lastname','email','dni']);
 
         return $this->onSuccess(VendedorResource::collection($vendedores));
     }
