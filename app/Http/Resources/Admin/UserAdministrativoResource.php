@@ -22,7 +22,7 @@ class UserAdministrativoResource extends JsonResource
             "edad" => $this->edad,
             "nacimiento" => $this->nacimiento,
             "email" => $this->email,
-            "role_name" => $this->role->name,
+            //"role_name" => $this->role->name,
             "administrativo" => $this->administrativo
         ];
     }

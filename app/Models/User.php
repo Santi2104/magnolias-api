@@ -61,7 +61,7 @@ use Laravel\Passport\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -100,14 +100,24 @@ class User extends Authenticatable
 
 
 
+    // /**
+    //  * Get the role that owns the User
+    //  *
+    //  * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    //  */
+    // public function role()
+    // {
+    //     return $this->belongsTo(Role::class);
+    // }
+
     /**
-     * Get the role that owns the User
+     * The roles that belong to the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function role()
+    public function roles()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsToMany(Role::class, 'role_users');
     }
 
     /**

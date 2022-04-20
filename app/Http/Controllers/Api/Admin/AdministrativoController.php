@@ -61,12 +61,13 @@ class AdministrativoController extends Controller
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
                 'edad'     => $this->calcularEdad($request['nacimiento']),
                 'password' => bcrypt(Str::random(10). $request->dni),
-                'role_id'  => \App\Models\Role::ES_ADMINISTRATIVO,
             ]);
     
             $usuario->administrativo()->create([
                 "codigo_administrativo" => Str::uuid()
             ]);
+
+            $usuario->roles()->attach(\App\Models\Role::ES_ADMINISTRATIVO);
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

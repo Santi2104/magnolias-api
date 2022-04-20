@@ -27,6 +27,7 @@ class AuthController extends Controller
             'email'       => ['required','string','email'],
             'password'    => ['required','string'],
             'remember_me' => ['boolean'],
+            'role'        => ['required','exists:App\Models\Role,id']
         ]);
 
         $credentials = request(['email', 'password']);
@@ -37,9 +38,21 @@ class AuthController extends Controller
         }
 
         $user = $request->user();
+        $userRole = 0;
+        foreach($user->roles as $rol)
+        {
+            if( intval($request['role']) === $rol->pivot->role_id)
+            {
+                $userRole = $request['role'];
+                break;
+            }
+        }
         
-        $userRole = $user->UserRole();
-        //dd(implode(", ", Role::ADMINISTRATIVO_TOKEN));
+        if($userRole === 0)
+        {
+            return $this->onError(401,"Error de validacion","El usuario no tiene asignado el rol seleccionado");
+        }
+
         switch ($userRole) {
             case 1:
                 $tokenResult = $user->createToken('Personal Access Token', [implode(" ", Role::ADMIN_TOKEN)]);

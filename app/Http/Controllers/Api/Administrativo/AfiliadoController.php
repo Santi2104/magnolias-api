@@ -38,7 +38,8 @@ class AfiliadoController extends Controller
                 $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante');
             }
         ])
-        ->where('role_id',\App\Models\Role::ES_AFILIADO)
+        ->join('role_users','users.id','=','role_users.user_id')
+        ->where('role_users.role_id',\App\Models\Role::ES_AFILIADO)
         ->get();
         return $this->onSuccess(AfiliadoResource::collection($afiliados));
     }
@@ -145,7 +146,7 @@ class AfiliadoController extends Controller
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
                 'edad'     => $this->calcularEdad($request['nacimiento']),
                 'password' => $password,
-                'role_id'  => \App\Models\Role::ES_AFILIADO,
+                //'role_id'  => \App\Models\Role::ES_AFILIADO,
             ]);
 
             $afiliado = $usuario->afiliado()->create([
@@ -175,6 +176,7 @@ class AfiliadoController extends Controller
             ]);
 
             $afiliado->vendedores()->attach($request->vendedor_id);
+            $usuario->roles()->attach(\App\Models\Role::ES_AFILIADO);
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -56,13 +56,23 @@ class Role extends Model
                                             'paquete:index'
                                         ];
 
+    // /**
+    //  * Get all of the users for the Role
+    //  *
+    //  * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    //  */
+    // public function users()
+    // {
+    //     return $this->hasMany(User::class);
+    // }
+
     /**
-     * Get all of the users for the Role
+     * The users that belong to the Role
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class,'role_users');
     }
 }
