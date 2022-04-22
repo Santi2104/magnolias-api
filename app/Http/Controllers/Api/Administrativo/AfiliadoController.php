@@ -175,6 +175,18 @@ class AfiliadoController extends Controller
             ]);
 
             $afiliado->vendedores()->attach($request->vendedor_id);
+
+            if($request['solicitante'])
+            {
+                $afiliado->pagos()->create([
+                    'usuario' => $request->user()->name ." ". $request->user()->lastname ,
+                    'proximo_pago' => $this->calcularVencimiento(now()),
+                    'paquete_id' => $request["paquete_id"],
+                    'afiliado_id' => $afiliado->id,
+                    'numero_comprobante' => $this->calcularComprobanteDePago()
+                ]);
+            }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -76,7 +76,8 @@ class Afiliado extends Model
         'banco',
         'vencimiento_tarjeta',
         'titular_tarjeta',
-        'codigo_postal'
+        'codigo_postal',
+        'ultimo_pago'
     ];
 
     public const parentesco = ['Padre','Madre','Hijo','Hija','Conyugue'];
@@ -131,5 +132,15 @@ class Afiliado extends Model
     public function grupoFamiliar()
     {
         return $this->belongsTo(GrupoFamiliar::class);
+    }
+
+    /**
+     * Get all of the pagos for the Afiliado
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class);
     }
 }

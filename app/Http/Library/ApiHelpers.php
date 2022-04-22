@@ -203,4 +203,20 @@ trait ApiHelpers
         return true;
     }
 
+    protected function calcularComprobanteDePago()
+    {
+        $ultomoRegistro = \App\Models\Pago::where('id',\App\Models\Pago::max('id'))->first(['id','numero_comprobante']);
+
+        if(!isset($ultomoRegistro->numero_comprobante))
+        {
+            return 1;
+        }else
+        {
+            $numero = $ultomoRegistro->numero_comprobante + 1;
+            return $numero;
+        }
+
+        
+    }
+
 }

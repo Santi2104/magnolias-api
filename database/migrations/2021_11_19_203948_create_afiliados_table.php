@@ -60,6 +60,7 @@ class CreateAfiliadosTable extends Migration
             ->onDelete('cascade')
             ->OnUpdate('cascade');
             $table->date('finaliza_en');
+            $table->date('ultimo_pago')->nullable();
             $table->timestamps();
         });
     }
