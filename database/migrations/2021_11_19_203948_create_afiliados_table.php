@@ -50,7 +50,7 @@ class CreateAfiliadosTable extends Migration
             $table->string('tipo_tarjeta',10)->nullable();
             $table->string('banco',15)->nullable();
             $table->string('vencimiento_tarjeta')->nullable();
-            $table->string('titular_tarjeta',20)->nullable();
+            $table->string('titular_tarjeta',50)->nullable();
             $table->foreignId('user_id')
             ->constrained()
             ->onDelete('cascade')

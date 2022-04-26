@@ -83,7 +83,7 @@ class AfiliadoController extends Controller
             'tipo_tarjeta' => ['required_unless:solicitante,false','max:10'],
             'banco' => ['required_unless:solicitante,false','max:15'],
             'vencimiento_tarjeta' => ['required_unless:solicitante,false'],
-            'titular_tarjeta' => ['required_unless:solicitante,false','max:20'],
+            'titular_tarjeta' => ['required_unless:solicitante,false','max:40'],
             'codigo_postal' => ['required_unless:solicitante,false'],
         ]);
 
@@ -111,8 +111,8 @@ class AfiliadoController extends Controller
             $request['banco'] = null;
             $request['vencimiento_tarjeta'] = null;
             $request['titular_tarjeta'] = null;
-            $solicitante = GrupoFamiliar::where('dni_solicitante', $request['dni_solicitante'])
-                                        ->where('apellido', $request['lastname'])->first();
+            $solicitante = GrupoFamiliar::where('dni_solicitante', $request['dni_solicitante'])->first();
+                                        // ->where('apellido', $request['lastname'])
 
             if(!isset($solicitante))
             {
@@ -179,7 +179,6 @@ class AfiliadoController extends Controller
             if($request['solicitante'])
             {
                 $afiliado->pagos()->create([
-                    'usuario' => $request->user()->name ." ". $request->user()->lastname ,
                     'proximo_pago' => $this->calcularVencimiento(now()),
                     'paquete_id' => $request["paquete_id"],
                     'afiliado_id' => $afiliado->id,

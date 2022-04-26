@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Administrativo\AfiliadoController;
 use App\Http\Controllers\Api\Administrativo\CategoriaController;
 use App\Http\Controllers\Api\Administrativo\CoordinadorController;
+use App\Http\Controllers\Api\Administrativo\PagoController;
 use App\Http\Controllers\Api\Administrativo\PaqueteController;
 use App\Http\Controllers\Api\Administrativo\UbicacionesController;
 use App\Http\Controllers\Api\Administrativo\VendedorController;
@@ -39,5 +40,9 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
         Route::get('departamento/{id}/localidades', [UbicacionesController::class, 'listarLocalidadesPorDepartamento'])->name('departamento.localidades');
         Route::get('localidad/{id}/calles', [UbicacionesController::class, 'listarCallesPorLocalidad'])->name('localidad.calles');
         Route::get('localidad/{id}/barrios', [UbicacionesController::class, 'listarBarriosPorLocalidad'])->name('localidad.barrios');
+
+        //**Rutas para los pagos */
+        Route::get('pagos', [PagoController::class, 'index'])->name('pagos.index');
+        Route::post('pago', [PagoController::class, 'establecerPago'])->name('pagos.establecer');
     });
 });
