@@ -22,7 +22,8 @@ class AfiliadoResource extends JsonResource
             'apellido' => $this->lastname,
             'dni' => $this->dni,
             'paquete' => $this->afiliado->paquete->nombre,
-            'solicitante' => $this->afiliado->solicitante
+            'solicitante' => $this->afiliado->solicitante,
+            'activo' => $this->afiliado->activo,
         ];
     }
 }

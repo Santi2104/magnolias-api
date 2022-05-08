@@ -35,7 +35,7 @@ class AfiliadoController extends Controller
         //$afiliados = User::whereRoleId(\App\Models\Role::ES_AFILIADO)->get();
         $afiliados = User::with([
             'afiliado' => function($query){
-                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante');
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','activo');
             }
         ])
         ->where('role_id',\App\Models\Role::ES_AFILIADO)
@@ -96,6 +96,7 @@ class AfiliadoController extends Controller
             $email = $request['email'];
             $password = bcrypt(Str::random(12).$request['dni']);
             $request['parentesco'] = null;
+            $request['dni_solicitante'] = null;
 
         }else{
             $email = Str::random(12).$request['dni'].'@mail.com';
@@ -122,7 +123,7 @@ class AfiliadoController extends Controller
                 $idFamilia = $solicitante->id;
             }
         }
-
+        $sol = $request['dni_solicitante'];
         try {
             DB::beginTransaction();
 
@@ -172,19 +173,22 @@ class AfiliadoController extends Controller
                 'titular_tarjeta' => $request['titular_tarjeta'],
                 'tipo_tarjeta' => $request['tipo_tarjeta'],
                 'codigo_postal' => $request['codigo_postal'],
+                'activo' => true,
+                'dni_solicitante' => $sol,
             ]);
 
             $afiliado->vendedores()->attach($request->vendedor_id);
 
-            if($request['solicitante'])
-            {
-                $afiliado->pagos()->create([
-                    'proximo_pago' => $this->calcularVencimiento(now()),
-                    'paquete_id' => $request["paquete_id"],
-                    'afiliado_id' => $afiliado->id,
-                    'numero_comprobante' => $this->calcularComprobanteDePago()
-                ]);
-            }
+            // if($request['solicitante'])
+            // {
+            //     $afiliado->pagos()->create([
+            //         'proximo_pago' => $this->calcularVencimiento(now()),
+            //         'observaciones' => 'pago a mes vencido',
+            //         'paquete_id' => $request["paquete_id"],
+            //         'afiliado_id' => $afiliado->id,
+            //         'numero_comprobante' => $this->calcularComprobanteDePago()
+            //     ]);
+            // }
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -270,7 +274,8 @@ class AfiliadoController extends Controller
             },
             'afiliado.vendedores.user' => function($query){
                 $query->select('id','name','lastname');
-            }
+            },
+            'afiliado.pagos'
         ])
         ->where('dni',$request->dni)
         ->first(['id','name','lastname','dni']);

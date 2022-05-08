@@ -19,13 +19,14 @@ class CreatePagosTable extends Migration
             $table->bigInteger('numero_comprobante',false,true);
             $table->date('fecha_pago')->nullable();
             $table->date('proximo_pago');
-            $table->string('pago')->nullable();
+            $table->string('metodo_pago')->nullable();
             $table->integer('monto')->nullable();
             $table->unsignedBigInteger('paquete_id');
             $table->foreign('paquete_id')->references('id')->on('paquetes');
             $table->unsignedBigInteger('afiliado_id');
             $table->foreign('afiliado_id')->references('id')->on('afiliados');
             $table->boolean('pagado')->default(0);
+            $table->text('observaciones')->nullable();
             $table->timestamps();
         });
     }

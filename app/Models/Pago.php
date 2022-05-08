@@ -9,7 +9,7 @@ class Pago extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['usuario','fecha_pago','proximo_pago','pago','monto','paquete_id','afiliado_id','pagado','numero_comprobante'];
+    protected $fillable = ['usuario','fecha_pago','proximo_pago','metodo_pago','monto','paquete_id','afiliado_id','pagado','numero_comprobante','observaciones','recurrente'];
 
     /**
      * Get the paquete that owns the Pago

@@ -21,6 +21,7 @@ class CreateAfiliadosTable extends Migration
             $table->string('nro_casa')->nullable();
             $table->string('nro_depto')->nullable();
             $table->boolean('solicitante')->default(false)->comment("Esta campo indica si este afiliado fue el que solicito el servicio");
+            $table->string('dni_solicitante')->nullable();
             $table->enum('sexo',['M','F']);
             $table->string('parentesco')->nullable();
             //?Crear clave foranea para relacionar el acta de solicitud
@@ -59,8 +60,9 @@ class CreateAfiliadosTable extends Migration
             ->constrained()
             ->onDelete('cascade')
             ->OnUpdate('cascade');
-            $table->date('finaliza_en');
+            $table->date('finaliza_en')->nullable();
             $table->date('ultimo_pago')->nullable();
+            $table->boolean('activo')->default(false);
             $table->timestamps();
         });
     }

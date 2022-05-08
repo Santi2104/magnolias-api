@@ -62,6 +62,7 @@ class Afiliado extends Model
         'obra_social_id',
         'grupo_familiar_id',
         'solicitante',
+        'dni_solicitante',
         'parentesco',
         'sexo',
         'finaliza_en',
@@ -77,7 +78,8 @@ class Afiliado extends Model
         'vencimiento_tarjeta',
         'titular_tarjeta',
         'codigo_postal',
-        'ultimo_pago'
+        'ultimo_pago',
+        'activo',
     ];
 
     public const parentesco = ['Padre','Madre','Hijo','Hija','Conyugue'];
