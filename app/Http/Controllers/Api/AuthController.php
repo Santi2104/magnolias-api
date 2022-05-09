@@ -69,8 +69,9 @@ class AuthController extends Controller
         return $this->loginResponse(
             $tokenResult->accessToken,
             Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+            $user,
             "Inicio de sesión satisfactorio",
-            $user
+
         );
             
     }
