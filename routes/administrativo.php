@@ -43,8 +43,8 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
 
         //**Rutas para los pagos */
         Route::get('pagos', [PagoController::class, 'index'])->name('pagos.index');
-        Route::post('pago', [PagoController::class, 'establecerPago'])->name('pagos.establecer');
+        //Route::post('pago', [PagoController::class, 'establecerPago'])->name('pagos.establecer');
         Route::put('pago', [PagoController::class, 'update'])->name('pagos.update');
-        Route::post('pago/crear', [PagoController::class, 'store'])->name('pagos.store');
+        Route::post('pago', [PagoController::class, 'store'])->name('pagos.store');
     });
 });

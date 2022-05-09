@@ -115,7 +115,7 @@ trait ApiHelpers
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function loginResponse(string $accesToken, string $expiresAt,string $message = "" ,$data, int $code = 200)
+    protected function loginResponse(string $accesToken, string $expiresAt,$data,string $message = "" , int $code = 200)
     {
         return response()->json([
             'access_token' => $accesToken,
