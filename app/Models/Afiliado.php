@@ -80,6 +80,7 @@ class Afiliado extends Model
         'codigo_postal',
         'ultimo_pago',
         'activo',
+        'nro_solicitud'
     ];
 
     public const parentesco = ['Padre','Madre','Hijo','Hija','Conyugue'];

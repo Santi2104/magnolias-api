@@ -63,6 +63,7 @@ class CreateAfiliadosTable extends Migration
             $table->date('finaliza_en')->nullable();
             $table->date('ultimo_pago')->nullable();
             $table->boolean('activo')->default(false);
+            $table->unsignedBigInteger('nro_solicitud');
             $table->timestamps();
         });
     }

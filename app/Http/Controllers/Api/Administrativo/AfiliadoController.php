@@ -55,6 +55,8 @@ class AfiliadoController extends Controller
         $solicitante = null;
         $idFamilia = 0;
         $grupo = null;
+        $solicitud = 0;
+        $sol = null;
         //TODO: Meter todo esto dentro de un servicio
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string','max:25'],
@@ -85,18 +87,21 @@ class AfiliadoController extends Controller
             'vencimiento_tarjeta' => ['required_unless:solicitante,false'],
             'titular_tarjeta' => ['required_unless:solicitante,false','max:40'],
             'codigo_postal' => ['required_unless:solicitante,false'],
+            'nro_solicitud' => ['required_unless:solicitante,false','digits_between:1,6',Rule::unique(Afiliado::class)]
         ]);
 
         if($validador->fails())
         {
             return $this->onError(422,"Error de validación", $validador->errors());
         }
+        
 
         if($request['solicitante']){
             $email = $request['email'];
             $password = bcrypt(Str::random(12).$request['dni']);
             $request['parentesco'] = null;
             $request['dni_solicitante'] = null;
+            $solicitud = $request['nro_solicitud'];
 
         }else{
             $email = Str::random(12).$request['dni'].'@mail.com';
@@ -112,6 +117,7 @@ class AfiliadoController extends Controller
             $request['banco'] = null;
             $request['vencimiento_tarjeta'] = null;
             $request['titular_tarjeta'] = null;
+            $sol = $request['dni_solicitante'];
             $solicitante = GrupoFamiliar::where('dni_solicitante', $request['dni_solicitante'])->first();
                                         // ->where('apellido', $request['lastname'])
 
@@ -121,9 +127,12 @@ class AfiliadoController extends Controller
             }else
             {
                 $idFamilia = $solicitante->id;
+                $s = User::with('afiliado')->where('dni',$sol)->first();
+                $solicitud = $s->afiliado->nro_solicitud;
             }
         }
-        $sol = $request['dni_solicitante'];
+
+        
         try {
             DB::beginTransaction();
 
@@ -175,6 +184,7 @@ class AfiliadoController extends Controller
                 'codigo_postal' => $request['codigo_postal'],
                 'activo' => true,
                 'dni_solicitante' => $sol,
+                'nro_solicitud' => $solicitud
             ]);
 
             $afiliado->vendedores()->attach($request->vendedor_id);
