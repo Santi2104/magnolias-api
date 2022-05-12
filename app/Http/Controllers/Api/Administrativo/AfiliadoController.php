@@ -241,6 +241,11 @@ class AfiliadoController extends Controller
             return $this->onError(404,"Error al encontrar el afiliado","El afiliado debe ser un solicitante");
         }
 
+        if(!$this->puedeEditar($usuario->created_at))
+        {
+            return $this->onError(409,"Error al tratar de editar","Ha pasado el tiempo limite en que el registro se puede editar");
+        }
+
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string','max:25'],
             'email' => ['required', Rule::unique(User::class)->ignore($usuario->email,'email'),'email'],
@@ -248,11 +253,9 @@ class AfiliadoController extends Controller
             'dni_solicitante' => ['required', Rule::unique(User::class,'dni')->ignore($usuario->dni,'dni'),'max:9'],        
             'nacimiento' => ['required', 'date'],
             'tipo_dni' => ['required'],
-            //'solicitante' => ['present', 'boolean'],
             'vendedor_id' => ['required','exists:App\Models\Vendedor,id'],
             'paquete_id' => ['required','exists:App\Models\Paquete,id'],
             'sexo' => ['required', Rule::in(Afiliado::sexo)],
-            //'parentesco' => ['required_unless:solicitante,true',Rule::in(Afiliado::parentesco)],
             'calle' => ['required',],
             'barrio' => ['required'],
             'nro_casa' => ['required'],
@@ -261,7 +264,6 @@ class AfiliadoController extends Controller
             'profesion_ocupacion' => ['required'],
             'poliza_electronica' => ['required','boolean'],
             'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
-            //'dni_solicitante' => ['required_unless:solicitante,true'],
             'nombre_tarjeta' => ['required','max:20'],
             'numero_tarjeta' => ['required'],
             'codigo_cvv' => ['required','max:3'],
@@ -270,7 +272,6 @@ class AfiliadoController extends Controller
             'vencimiento_tarjeta' => ['required'],
             'titular_tarjeta' => ['required','max:40'],
             'codigo_postal' => ['required'],
-            //'nro_solicitud' => ['required_unless:solicitante,false','digits_between:1,6',Rule::unique(Afiliado::class)]
         ]);
 
         if($validador->fails())
@@ -331,6 +332,59 @@ class AfiliadoController extends Controller
 
         return $this->onSuccess(new AfiliadoResource($usuario),"Afiliado creado de manera correcta",201);
 
+    }
+
+    public function actualizarFamiliar(Request $request)
+    {
+        $familiar = User::whereDni($request['dni'])->first();
+
+        if(!isset($familiar))
+        {
+            return $this->onError(404,"No se puede encontrar al afiliado con el codigo enviado");
+        }
+
+        if($familiar->afiliado->solicitante == false)
+        {
+            return $this->onError(404,"Error al editar afiliado","El afiliado debe ser un familiar no solicitante"); 
+        }
+
+        if(!$this->puedeEditar($familiar->created_at))
+        {
+            return $this->onError(409,"Error al tratar de editar","Ha pasado el tiempo limite en que el registro se puede editar");
+        }
+
+        $validador = Validator::make($request->all(), [
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required','email', Rule::unique(User::class,'email')->ignore($familiar->id)],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required','string',Rule::unique(User::class,'dni')->ignore($familiar->id,),'max:9'],
+            'nacimiento' => ['required','date'],
+        ]);
+
+        if($validador->fails()){
+
+            return $this->onError(422,"Error de validación", $validador->errors());
+        }
+
+        $familiar->name = $request->name;
+        $familiar->email = $request->email;
+        $familiar->lastname = $request->lastname;
+        $familiar->dni = $request->dni;
+        $familiar->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
+        $familiar->edad = $this->calcularEdad($request['nacimiento']);
+
+        $familiar->afiliado()->update([
+            "calle" => $request["calle"],
+            "barrio" => $request["barrio"],
+            "nro_casa" => $request["nro_casa"],
+            'sexo' => $request['sexo'],
+            'parentesco' => $request['parentesco'],
+            'codigo_postal' => $request['codigo_postal'],
+        ]);
+
+        $familiar->save();
+        return $this->onSuccess(new AfiliadoResource($familiar),"Familiar actualizado de manera correcta",201);
+        
     }
 
     /**
