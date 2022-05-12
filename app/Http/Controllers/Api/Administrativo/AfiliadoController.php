@@ -189,17 +189,6 @@ class AfiliadoController extends Controller
 
             $afiliado->vendedores()->attach($request->vendedor_id);
 
-            // if($request['solicitante'])
-            // {
-            //     $afiliado->pagos()->create([
-            //         'proximo_pago' => $this->calcularVencimiento(now()),
-            //         'observaciones' => 'pago a mes vencido',
-            //         'paquete_id' => $request["paquete_id"],
-            //         'afiliado_id' => $afiliado->id,
-            //         'numero_comprobante' => $this->calcularComprobanteDePago()
-            //     ]);
-            // }
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -235,12 +224,113 @@ class AfiliadoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateSolicitante(Request $request)
     {
-        //
+
+        $usuario = User::whereDni($request['dni'])->first();
+
+        if(!isset($usuario->afiliado))
+        {
+            return $this->onError(404,"No se puede encontrar al afiliado con el codigo enviado");
+        }
+
+        if($usuario->afiliado->solicitante == false)
+        {
+            return $this->onError(404,"Error al encontrar el afiliado","El afiliado debe ser un solicitante");
+        }
+
+        $validador = Validator::make($request->all(), [
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required', Rule::unique(User::class)->ignore($usuario->email,'email'),'email'],
+            'lastname' => ['required', 'string','max:25'],
+            'dni_solicitante' => ['required', Rule::unique(User::class,'dni')->ignore($usuario->dni,'dni'),'max:9'],        
+            'nacimiento' => ['required', 'date'],
+            'tipo_dni' => ['required'],
+            //'solicitante' => ['present', 'boolean'],
+            'vendedor_id' => ['required','exists:App\Models\Vendedor,id'],
+            'paquete_id' => ['required','exists:App\Models\Paquete,id'],
+            'sexo' => ['required', Rule::in(Afiliado::sexo)],
+            //'parentesco' => ['required_unless:solicitante,true',Rule::in(Afiliado::parentesco)],
+            'calle' => ['required',],
+            'barrio' => ['required'],
+            'nro_casa' => ['required'],
+            'cuil' => ['required'],
+            'estado_civil' => ['required',Rule::in(Afiliado::estado_civil)],
+            'profesion_ocupacion' => ['required'],
+            'poliza_electronica' => ['required','boolean'],
+            'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
+            //'dni_solicitante' => ['required_unless:solicitante,true'],
+            'nombre_tarjeta' => ['required','max:20'],
+            'numero_tarjeta' => ['required'],
+            'codigo_cvv' => ['required','max:3'],
+            'tipo_tarjeta' => ['required','max:10'],
+            'banco' => ['required','max:15'],
+            'vencimiento_tarjeta' => ['required'],
+            'titular_tarjeta' => ['required','max:40'],
+            'codigo_postal' => ['required'],
+            //'nro_solicitud' => ['required_unless:solicitante,false','digits_between:1,6',Rule::unique(Afiliado::class)]
+        ]);
+
+        if($validador->fails())
+        {
+            return $this->onError(422,"Error de validación", $validador->errors());
+        }
+
+        $usuario->name = $request->name;
+        $usuario->email = $request->email;
+        $usuario->lastname = $request->lastname;
+        $usuario->dni = $request->dni_solicitante;
+        $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
+        $usuario->edad = $this->calcularEdad($request['nacimiento']);
+        $usuario->tipo_dni = $request->tipo_dni;
+
+        if ($usuario->isDirty('dni') or ($usuario->afiliado->paquete_id != $request->paquete_id)) { 
+           $afiliados = Afiliado::where('dni_solicitante',$request['dni'])->get();
+
+           if($afiliados->isNotEmpty())
+           {
+                foreach($afiliados as $afiliado){
+                    $afiliado->dni_solicitante = $usuario->dni;
+                    $afiliado->paquete_id = $request->paquete_id;
+                    $afiliado->save();
+                }
+           }
+
+        }
+        
+        $usuario->afiliado()->update([
+            "calle" => $request["calle"],
+            "barrio" => $request["barrio"],
+            "nro_casa" => $request["nro_casa"],
+            "paquete_id" => $request["paquete_id"],
+            "obra_social_id" => $request["obra_social_id"],
+            'sexo' => $request['sexo'],
+            'parentesco' => $request['parentesco'],
+            'cuil' => $request['cuil'],
+            'estado_civil' => $request['estado_civil'],
+            'profesion_ocupacion' => $request['profesion_ocupacion'],
+            'poliza_electronica' => $request['poliza_electronica'],
+            'nombre_tarjeta' => $request['nombre_tarjeta'],
+            'numero_tarjeta' => $request['numero_tarjeta'],
+            'codigo_cvv' => $request['codigo_cvv'],
+            'banco' => $request['banco'],
+            'vencimiento_tarjeta' => $request['vencimiento_tarjeta'],
+            'titular_tarjeta' => $request['titular_tarjeta'],
+            'tipo_tarjeta' => $request['tipo_tarjeta'],
+            'codigo_postal' => $request['codigo_postal'],
+        ]);
+
+        $usuario->afiliado->grupoFamiliar()->update([
+            'dni_solicitante' => $request['dni_solicitante'],
+            'apellido' => $request['lastname']
+        ]);
+
+        $usuario->save();
+
+        return $this->onSuccess(new AfiliadoResource($usuario),"Afiliado creado de manera correcta",201);
+
     }
 
     /**
@@ -302,5 +392,41 @@ class AfiliadoController extends Controller
 
 
         return $this->onSuccess($usuario,'Afiliado encontrado');
+    }
+
+    public function familiaresDelAfiliado(Request $request)
+    {
+        $validador = Validator::make($request->all(), [
+            "dni_solicitante" => ['required','exists:App\Models\User,dni'],
+        ]);
+
+        if($validador->fails())
+        {
+            return $this->onError(422,"Error de validación", $validador->errors());
+        }
+        
+        $usuario = Afiliado::with([
+            'user' => function($query){
+                $query->select('id','name','lastname','dni');
+            },
+            'paquete' => function($query){
+                $query->select('id','nombre');
+            },
+            'vendedores' => function($query){
+                $query->select('id','user_id','codigo_vendedor');
+            },
+            'vendedores.user' => function($query){
+                $query->select('id','name','lastname');
+            },
+        ])->where('dni_solicitante', $request->dni_solicitante)
+        ->get();
+
+        if($usuario->isEmpty())
+        {
+            return $this->onError(200,'No se encontraron familiares','El afiliado no es un solicitante o no cuenta con ningun familiar');
+        }
+
+        return $this->onSuccess($usuario,'Afiliado encontrado');
+     
     }
 }

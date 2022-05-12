@@ -29,7 +29,9 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
         Route::get('afiliados', [AfiliadoController::class, 'index'])->name('afiliado,index');
         Route::get('afiliado', [AfiliadoController::class, 'show'])->name('afiliado.show');
         Route::get('afiliado/datos',[AfiliadoController::class,'datosAfiliado'])->name('afiliado.datos');
+        Route::get('afiliado/familia',[AfiliadoController::class,'familiaresDelAfiliado'])->name('afiliado.familia');
         Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
+        Route::put('afiliado/solicitante', [AfiliadoController::class, 'updateSolicitante'])->name('afiliado.solicitante');
 
         //**Rutas para los paquetes */
         Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
@@ -43,7 +45,6 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
 
         //**Rutas para los pagos */
         Route::get('pagos', [PagoController::class, 'index'])->name('pagos.index');
-        //Route::post('pago', [PagoController::class, 'establecerPago'])->name('pagos.establecer');
         Route::put('pago', [PagoController::class, 'update'])->name('pagos.update');
         Route::post('pago', [PagoController::class, 'store'])->name('pagos.store');
     });
