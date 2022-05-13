@@ -336,14 +336,14 @@ class AfiliadoController extends Controller
 
     public function actualizarFamiliar(Request $request)
     {
-        $familiar = User::whereDni($request['dni'])->first();
+        $familiar = User::whereDni($request['dni_afiliado'])->first();
 
         if(!isset($familiar))
         {
             return $this->onError(404,"No se puede encontrar al afiliado con el codigo enviado");
         }
 
-        if($familiar->afiliado->solicitante == false)
+        if($familiar->afiliado->solicitante == true)
         {
             return $this->onError(404,"Error al editar afiliado","El afiliado debe ser un familiar no solicitante"); 
         }
@@ -372,15 +372,6 @@ class AfiliadoController extends Controller
         $familiar->dni = $request->dni;
         $familiar->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $familiar->edad = $this->calcularEdad($request['nacimiento']);
-
-        $familiar->afiliado()->update([
-            "calle" => $request["calle"],
-            "barrio" => $request["barrio"],
-            "nro_casa" => $request["nro_casa"],
-            'sexo' => $request['sexo'],
-            'parentesco' => $request['parentesco'],
-            'codigo_postal' => $request['codigo_postal'],
-        ]);
 
         $familiar->save();
         return $this->onSuccess(new AfiliadoResource($familiar),"Familiar actualizado de manera correcta",201);

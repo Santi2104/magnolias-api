@@ -32,6 +32,7 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
         Route::get('afiliado/familia',[AfiliadoController::class,'familiaresDelAfiliado'])->name('afiliado.familia');
         Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
         Route::put('afiliado/solicitante', [AfiliadoController::class, 'updateSolicitante'])->name('afiliado.solicitante');
+        Route::put('afiliado/familia/edit', [AfiliadoController::class, 'actualizarFamiliar'])->name('afiliado.familiar');
 
         //**Rutas para los paquetes */
         Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
