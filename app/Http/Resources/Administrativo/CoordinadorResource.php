@@ -15,7 +15,8 @@ class CoordinadorResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'id' => $this->coordinador->id,
+            'user_id' => $this->id,
             'nombre' => $this->name,
             'apellido' => $this->lastname,
             'dni' => $this->dni,
