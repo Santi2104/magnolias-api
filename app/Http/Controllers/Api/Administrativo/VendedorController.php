@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Administrativo;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Http\Resources\Administrativo\VendedorResource;
 use App\Models\User;
 use App\Models\Vendedor;
@@ -17,7 +18,7 @@ use Illuminate\Validation\Rule;
 
 class VendedorController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -108,7 +109,7 @@ class VendedorController extends Controller
             DB::rollBack();
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
-
+        $this->crearLog("Creando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
         return $this->onSuccess(new VendedorResource($usuario),"Vendedor creado de manera correcta",201);
 
     }
@@ -188,6 +189,7 @@ class VendedorController extends Controller
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
 
+        $this->crearLog("Editando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
         return $this->onSuccess(new VendedorResource($usuario),"Vendedor editado de manera correcta",201);
 
     }

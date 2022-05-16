@@ -7,12 +7,13 @@ use App\Models\Pago;
 use Illuminate\Http\Request;
 use App\Http\Library\ApiHelpers;
 use App\Http\Controllers\Controller;
+use App\Http\Library\LogHelpers;
 use App\Models\Afiliado;
 use Illuminate\Support\Facades\Validator;
 
 class PagoController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -33,82 +34,6 @@ class PagoController extends Controller
         ])->get();
 
         return $this->onSuccess($pagos);
-
-        // $pagos = Pago::where('proximo_pago', '=',now()->addMonth()->format('Y-m-d'))
-        //                 ->where('pagado', false)
-        //                 ->get();
-        
-        // foreach($pagos as $pago)
-        // {
-        //     Pago::create([
-        //         'proximo_pago' => $this->calcularVencimiento($pago->proximo_pago),
-        //         'paquete_id' => $pago->paquete_id,
-        //         'afiliado_id' => $pago->afiliado_id,
-        //         'numero_comprobante' => $this->calcularComprobanteDePago()
-        //     ]);
-        // }
-        // return $this->onSuccess($pagos);
-    }
-
-    /**
-     * Actualizar el pago de un afiliado.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function establecerPago(Request $request)
-    {
-        $validador = Validator::make($request->all(), [
-            'id' => ['required','exists:App\Models\Pago,id'],
-            'metodo_pago' => ['required'],
-            'monto' => ['required', 'integer'],
-            'proximo_pago' => ['boolean']
-        ]);
-
-        if($validador->fails())
-        {
-            return $this->onError(422,"Error de validación", $validador->errors());
-        }
-
-        $pago = Pago::where('id', $request['id'])->first();
-
-        if($pago->pagado)
-        {
-            return $this->onError(422,'Error al procesar el pago','El pago seleccionado ya se encuentra pagado');
-        }
-
-        $pago->fecha_pago = now();
-        $pago->metodo_pago = $request['metodo_pago'];
-        $pago->monto = $request['monto'];
-        $pago->pagado = true;
-        $pago->usuario = $request->user()->name ." ". $request->user()->lastname;
-        $pago->observaciones = $request->observaciones;
-        //$pago->proximo_pago = $this->calcularVencimiento($pago->proximo_pago);
-        $pago->save();
-
-        if($pago->recurrente)
-        {
-            Pago::create([
-                'proximo_pago' => $this->calcularVencimiento($pago->proximo_pago),
-                'paquete_id' => $pago->paquete_id,
-                'afiliado_id' => $pago->afiliado_id,
-                'numero_comprobante' => $this->calcularComprobanteDePago()
-            ]);
-
-            $afiliado = Afiliado::whereId($pago->afiliado_id)->first(['id','finaliza_en','ultimo_pago']);
-            $afiliado->finaliza_en = $this->calcularVencimiento($afiliado->finaliza_en);
-            $afiliado->ultimo_pago = now();
-            $afiliado->save();
-
-            return $this->onSuccess($pago,"Pago registrado de manera correcta",201);
-        }
-
-        $afiliado = Afiliado::whereId($pago->afiliado_id)->first(['id','finaliza_en','ultimo_pago']);
-        $afiliado->finaliza_en = $this->calcularVencimiento($afiliado->finaliza_en);
-        $afiliado->ultimo_pago = now();
-        $afiliado->save();
-
-        return $this->onSuccess($pago,"Pago registrado de manera correcta",201);
     }
 
     /**
@@ -159,7 +84,7 @@ class PagoController extends Controller
         ]);
 
         event(new ActualizarAfiliado($pago,$afiliado,$request['finaliza_en']));
-
+        $this->crearLog("Creando Pago", $request->user()->id,"Pago",$request->user()->role->id,$request->path());
         return $this->onSuccess($pago,"Pago registrado de manera correcta",201);
 
     }
@@ -215,6 +140,7 @@ class PagoController extends Controller
         $pago->afiliado_id = $request['afiliado_id'];
         $pago->save();
 
+        $this->crearLog("Editando Pago", $request->user()->id,"Pago",$request->user()->role->id,$request->path());
         return $this->onSuccess($pago,"Pago registrado de manera correcta",201);
     }
 
@@ -229,9 +155,4 @@ class PagoController extends Controller
         //
     }
 
-    public function crearPagos()
-    {
-        $afiliados = Afiliado::all();
-        return $afiliados;
-    }
 }

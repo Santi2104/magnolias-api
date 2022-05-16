@@ -151,6 +151,7 @@ class CoordinadorController extends Controller
         }
 
         $usuario->save();
+        $this->crearLog("Editando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
         return $this->onSuccess(new CoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
 
     }

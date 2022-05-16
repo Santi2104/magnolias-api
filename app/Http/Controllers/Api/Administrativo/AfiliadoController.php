@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Administrativo;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Http\Resources\Administrativo\AfiliadoResource;
 use App\Http\Resources\Administrativo\ShowAfiliadoResource;
 use App\Models\Afiliado;
@@ -19,7 +20,7 @@ use Illuminate\Validation\Rule;
 
 class AfiliadoController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -188,7 +189,7 @@ class AfiliadoController extends Controller
             ]);
 
             $afiliado->vendedores()->attach($request->vendedor_id);
-
+            $this->crearLog("Creando Afiliado", $request->user()->id,"Afiliado",$request->user()->role->id,$request->path());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
