@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Http\Resources\Admin\AdministrativoResource;
 use App\Http\Resources\Admin\UserAdministrativoResource;
 use App\Models\Administrativo;
@@ -18,7 +19,7 @@ use Validator;
 class AdministrativoController extends Controller
 {
 
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -73,6 +74,7 @@ class AdministrativoController extends Controller
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
 
+        $this->crearLog("Creando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
         return $this->onSuccess(
             new UserAdministrativoResource($usuario),
             "Administrativo creado de manera correcta",
@@ -135,6 +137,7 @@ class AdministrativoController extends Controller
 
         $usuario->save();
 
+        $this->crearLog("Editando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
         return $this->onSuccess(
             new UserAdministrativoResource($usuario),
             "Administrativo modificado de manera correcta",

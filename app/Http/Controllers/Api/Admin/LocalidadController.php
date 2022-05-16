@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Http\Resources\Admin\LocalidadResource;
 use App\Models\Localidad;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class LocalidadController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -54,6 +55,7 @@ class LocalidadController extends Controller
             'codigo_posta' => $request['codigo_postal']
         ]);
 
+        $this->crearLog("Creando Localidad", $request->user()->id,"Localidad",$request->user()->role->id,$request->path());
         return $this->onSuccess(new LocalidadResource($localidad),"Localidad creada de manera correcta", 201);
     }
 
@@ -115,7 +117,7 @@ class LocalidadController extends Controller
         }
 
         $localidad->save();
-
+        $this->crearLog("Editando Localidad", $request->user()->id,"Localidad",$request->user()->role->id,$request->path());
         return $this->onSuccess(new LocalidadResource($localidad),"Localidad modificada de forma correcta",200);
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Models\Paquete;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +12,7 @@ use Illuminate\Validation\Rule;
 
 class PaqueteController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +47,7 @@ class PaqueteController extends Controller
             "nombre" => $request["nombre"],
             "precio" => $request['precio']
         ]);
-
+        $this->crearLog("Creando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete,"Paquete creado de manera correcta",201);
     }
 
@@ -84,7 +85,7 @@ class PaqueteController extends Controller
         }
 
         $paquete->save();
-
+        $this->crearLog("Editando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete,"Paquete actualizado de manera correcta");
     }
 
@@ -94,7 +95,7 @@ class PaqueteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
         $paquete = Paquete::find($id);
         
@@ -103,11 +104,11 @@ class PaqueteController extends Controller
         }
 
         $paquete->delete();
-
+        $this->crearLog("Eliminando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete, "Paquete eliminado de manera correcta");
     }
 
-    public function restore($id)
+    public function restore(Request $request,$id)
     {
         $paquete = Paquete::withTrashed()->where('id', $id)->first();
 
@@ -116,7 +117,7 @@ class PaqueteController extends Controller
         }
         
         $paquete->restore();
-
+        $this->crearLog("Restaurando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete,"Paquete restaurado");
     }
 }

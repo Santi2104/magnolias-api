@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Library\ApiHelpers;
 use App\Http\Controllers\Controller;
+use App\Http\Library\LogHelpers;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Admin\ProductoResource;
 
 class ProductoController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -44,7 +45,7 @@ class ProductoController extends Controller
         $producto = Producto::create([
             "nombre" => $request['nombre'],
         ]);
-
+        $this->crearLog("Creando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess(new ProductoResource($producto),"Producto creado de manera correcta",201);
     }
 
@@ -98,7 +99,7 @@ class ProductoController extends Controller
         }
 
         $producto->save();
-
+        $this->crearLog("Editando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess(new ProductoResource($producto),"Producto actualizado de manera correcta");
 
     }
@@ -108,7 +109,7 @@ class ProductoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
         $producto = Producto::find($id);
 
@@ -117,7 +118,7 @@ class ProductoController extends Controller
         }
 
         $producto->delete();
-
+        $this->crearLog("Eliminando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess($producto, "Producto eliminada de manera correcta");
     }
 
@@ -125,7 +126,7 @@ class ProductoController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function restore($id)
+    public function restore(Request $request,$id)
     {
         $producto = Producto::withTrashed()->where('id', $id)->first();
 
@@ -134,7 +135,7 @@ class ProductoController extends Controller
         }
 
         $producto->restore();
-
+        $this->crearLog("Restaurando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess($producto,"Producto restaurado");
     }
 }

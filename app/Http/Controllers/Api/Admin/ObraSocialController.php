@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Models\ObraSocial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ObraSocialController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -45,6 +46,8 @@ class ObraSocialController extends Controller
         $obraSocial = ObraSocial::create([
             "nombre" => $request["nombre"]
         ]);
+
+        $this->crearLog("Creando Obra social", $request->user()->id,"Obra social",$request->user()->role->id,$request->path());
 
         return $this->onSuccess($obraSocial, "Obra Social creada de manera correcta",201);
     }
@@ -95,7 +98,7 @@ class ObraSocialController extends Controller
         }
 
         $obraSocial->save();
-
+        $this->crearLog("Editando Obra social", $request->user()->id,"Obra social",$request->user()->role->id,$request->path());
         return $this->onSuccess($obraSocial, "Obra Social modificada de correcta",200);
     }
 
@@ -105,7 +108,7 @@ class ObraSocialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
         $obraSocial = ObraSocial::find($id);
         
@@ -114,7 +117,7 @@ class ObraSocialController extends Controller
         }
 
         $obraSocial->delete();
-
+        $this->crearLog("Eliminando Obra Social", $request->user()->id,"Obra Social",$request->user()->role->id,$request->path());
         return $this->onSuccess($obraSocial, "Obra Social eliminada de manera correcta");
     }
 
@@ -122,7 +125,7 @@ class ObraSocialController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function restore($id)
+    public function restore(Request $request, $id)
     {
         $obraSocial = ObraSocial::withTrashed()->where('id', $id)->first();
 
@@ -131,7 +134,7 @@ class ObraSocialController extends Controller
         }
         
         $obraSocial->restore();
-
+        $this->crearLog("Restaurando Obra Social", $request->user()->id,"Obra Social",$request->user()->role->id,$request->path());
         return $this->onSuccess($obraSocial,"Obra Social restaurada");
     }
 }

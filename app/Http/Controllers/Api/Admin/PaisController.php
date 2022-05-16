@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Library\ApiHelpers;
 use App\Http\Controllers\Controller;
+use App\Http\Library\LogHelpers;
 use Illuminate\Support\Facades\Validator;
 
 class PaisController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -46,6 +47,7 @@ class PaisController extends Controller
             'npais' => $request["nombre"]
         ]);
 
+        $this->crearLog("Creando Pais", $request->user()->id,"Pais",$request->user()->role->id,$request->path());
         return $this->onSuccess($pais,"El paise fue cargado de manera correcta",201);
     }
 
@@ -84,6 +86,7 @@ class PaisController extends Controller
         $pais->npais = $request['nombre'];
         $pais->save();
 
+        $this->crearLog("Editando Pais", $request->user()->id,"Pais",$request->user()->role->id,$request->path());
         return $this->onSuccess($pais,"El pais se actualizó de manera correcta");
         
     }

@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Library\ApiHelpers;
 use App\Http\Controllers\Controller;
+use App\Http\Library\LogHelpers;
 use Illuminate\Support\Facades\Validator;
 
 class ProvinciaController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -50,6 +51,7 @@ class ProvinciaController extends Controller
             'pais_id' => $request['pais_id']
         ]);
 
+        $this->crearLog("Creando Provincia", $request->user()->id,"Provincia",$request->user()->role->id,$request->path());
         return $this->onSuccess($provincia,"Provincia creada de manera correcta",201);
     }
 
@@ -100,6 +102,7 @@ class ProvinciaController extends Controller
         $provincia->pais_id = $request['pais_id'];
         $provincia->save();
 
+        $this->crearLog("Editando Provincia", $request->user()->id,"Provincia",$request->user()->role->id,$request->path());
         return $this->onSuccess($provincia,"La provincia se actualizó de manera correcta");
 
     }

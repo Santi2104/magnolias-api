@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Http\Resources\Admin\CoordinadorResource;
 use App\Http\Resources\Admin\UserCoordinadorResource;
 use App\Models\Coordinador;
@@ -17,7 +18,7 @@ use Illuminate\Support\Str;
 
 class CoordinadorController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -67,6 +68,7 @@ class CoordinadorController extends Controller
             $usuario->coordinador()->create([
                 "codigo_coordinador" => Str::uuid()
             ]);
+            $this->crearLog("Creando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -158,7 +160,7 @@ class CoordinadorController extends Controller
         }
 
         $usuario->save();
-
+        $this->crearLog("Editando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
         return $this->onSuccess(new UserCoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
     }
 

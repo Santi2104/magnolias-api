@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Http\Resources\Admin\VendedoresResource;
 use App\Models\User;
 use App\Models\Vendedor;
@@ -16,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 class VendedorController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -71,6 +72,7 @@ class VendedorController extends Controller
             ]);
 
             $usuario->vendedor->localidades()->attach($request->localidad_id);
+            $this->crearLog("Creando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -166,7 +168,7 @@ class VendedorController extends Controller
             ]);
 
             $usuario->vendedor->localidades()->sync($request->localidad_id);
-
+            $this->crearLog("Editando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
