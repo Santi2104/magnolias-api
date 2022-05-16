@@ -24,6 +24,7 @@ class AfiliadoResource extends JsonResource
             'paquete' => $this->afiliado->paquete->nombre,
             'solicitante' => $this->afiliado->solicitante,
             'activo' => $this->afiliado->activo,
+            'fecha_alta' => $this->created_at->format('Y-m-d')
         ];
     }
 }

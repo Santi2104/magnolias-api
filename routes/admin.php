@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\AdministrativoController;
+use App\Http\Controllers\Api\Admin\AfiliadoController;
 use App\Http\Controllers\Api\Admin\BarrioController;
 use App\Http\Controllers\Api\Admin\CalleController;
 use Illuminate\Support\Facades\Route;
@@ -74,6 +75,15 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::get('administrativo', [AdministrativoController::class, 'index'])->name("administrativo.index");
         Route::post('administrativo', [AdministrativoController::class, 'store'])->name("administrativo.store");
         Route::put('administrativo', [AdministrativoController::class, 'update'])->name("administrativo.update");
+
+        //**Crud de los afiliados */
+        Route::get('afiliados', [AfiliadoController::class,'index'])->name("afiliados.index");
+        Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
+        Route::get('afiliado', [AfiliadoController::class, 'show'])->name('afiliado.show');
+        Route::put('afiliado/solicitante', [AfiliadoController::class, 'updateSolicitante'])->name('afiliado.solicitante');
+        Route::put('afiliado/familia/edit', [AfiliadoController::class, 'actualizarFamiliar'])->name('afiliado.familiar');
+        Route::get('afiliado/datos',[AfiliadoController::class,'datosAfiliado'])->name('afiliado.datos');
+        Route::get('afiliado/familia',[AfiliadoController::class,'familiaresDelAfiliado'])->name('afiliado.familia');
 
         //**Crud de los paises */
         Route::get('paises',[PaisController::class,'index'])->name('pais.index');
