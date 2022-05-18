@@ -36,8 +36,14 @@ class AfiliadoController extends Controller
         //$afiliados = User::whereRoleId(\App\Models\Role::ES_AFILIADO)->get();
         $afiliados = User::with([
             'afiliado' => function($query){
-                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','activo');
-            }
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','activo','finaliza_en','created_at');
+            },
+            'afiliado.vendedores' => function($query){
+                $query->select('id','user_id','codigo_vendedor');
+            },
+            'afiliado.vendedores.user' => function($query){
+                $query->select('id','name','lastname');
+            },
         ])
         ->where('role_id',\App\Models\Role::ES_AFILIADO)
         ->get();

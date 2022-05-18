@@ -79,7 +79,7 @@ class VendedorController extends Controller
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
 
-        return $this->onSuccess(new VendedoresResource($usuario),"Vendedor editado de manera correcta",201);
+        return $this->onSuccess(new VendedoresResource($usuario),"Vendedor creado de manera correcta",201);
     }
 
     /**
