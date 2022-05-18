@@ -47,7 +47,7 @@ class PaqueteController extends Controller
             "nombre" => $request["nombre"],
             "precio" => $request['precio']
         ]);
-        $this->crearLog("Creando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete,"Paquete creado de manera correcta",201);
     }
 
@@ -85,7 +85,7 @@ class PaqueteController extends Controller
         }
 
         $paquete->save();
-        $this->crearLog("Editando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete,"Paquete actualizado de manera correcta");
     }
 
@@ -104,7 +104,7 @@ class PaqueteController extends Controller
         }
 
         $paquete->delete();
-        $this->crearLog("Eliminando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Eliminando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete, "Paquete eliminado de manera correcta");
     }
 
@@ -117,7 +117,7 @@ class PaqueteController extends Controller
         }
         
         $paquete->restore();
-        $this->crearLog("Restaurando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Restaurando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete,"Paquete restaurado");
     }
 }

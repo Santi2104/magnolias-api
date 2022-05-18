@@ -47,7 +47,7 @@ class PaisController extends Controller
             'npais' => $request["nombre"]
         ]);
 
-        $this->crearLog("Creando Pais", $request->user()->id,"Pais",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Pais", $request->user()->id,"Pais",$request->user()->role->id,$request->path());
         return $this->onSuccess($pais,"El paise fue cargado de manera correcta",201);
     }
 
@@ -86,7 +86,7 @@ class PaisController extends Controller
         $pais->npais = $request['nombre'];
         $pais->save();
 
-        $this->crearLog("Editando Pais", $request->user()->id,"Pais",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Pais", $request->user()->id,"Pais",$request->user()->role->id,$request->path());
         return $this->onSuccess($pais,"El pais se actualizó de manera correcta");
         
     }

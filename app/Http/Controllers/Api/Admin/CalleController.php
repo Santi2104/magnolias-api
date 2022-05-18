@@ -50,7 +50,7 @@ class CalleController extends Controller
             'localidad_id' => $request['localidad_id']
         ]);
 
-        $this->crearLog("Creando Calle", $request->user()->id,"Calle",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Calle", $request->user()->id,"Calle",$request->user()->role->id,$request->path());
         return $this->onSuccess($calle,"Calle creada de manera correcta", 201);
     }
 
@@ -88,7 +88,7 @@ class CalleController extends Controller
         $calle->localidad_id = $request['localidad_id'];
         $calle->save();
 
-        $this->crearLog("Editando Calle", $request->user()->id,"Calle",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Calle", $request->user()->id,"Calle",$request->user()->role->id,$request->path());
         return $this->onSuccess($calle,"La calle se modifico de manera correcta", 201);
 
     }

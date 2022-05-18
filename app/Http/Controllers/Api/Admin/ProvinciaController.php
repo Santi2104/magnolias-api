@@ -51,7 +51,7 @@ class ProvinciaController extends Controller
             'pais_id' => $request['pais_id']
         ]);
 
-        $this->crearLog("Creando Provincia", $request->user()->id,"Provincia",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Provincia", $request->user()->id,"Provincia",$request->user()->role->id,$request->path());
         return $this->onSuccess($provincia,"Provincia creada de manera correcta",201);
     }
 
@@ -102,7 +102,7 @@ class ProvinciaController extends Controller
         $provincia->pais_id = $request['pais_id'];
         $provincia->save();
 
-        $this->crearLog("Editando Provincia", $request->user()->id,"Provincia",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Provincia", $request->user()->id,"Provincia",$request->user()->role->id,$request->path());
         return $this->onSuccess($provincia,"La provincia se actualizó de manera correcta");
 
     }

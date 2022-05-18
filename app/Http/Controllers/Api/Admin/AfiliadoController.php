@@ -183,7 +183,7 @@ class AfiliadoController extends Controller
             ]);
 
             $afiliado->vendedores()->attach($request->vendedor_id);
-            $this->crearLog("Creando Afiliado", $request->user()->id,"Afiliado",$request->user()->role->id,$request->path());
+            $this->crearLog('Admin',"Creando Afiliado", $request->user()->id,"Afiliado",$request->user()->role->id,$request->path());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

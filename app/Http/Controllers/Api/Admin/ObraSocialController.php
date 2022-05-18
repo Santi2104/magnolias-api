@@ -47,7 +47,7 @@ class ObraSocialController extends Controller
             "nombre" => $request["nombre"]
         ]);
 
-        $this->crearLog("Creando Obra social", $request->user()->id,"Obra social",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Obra social", $request->user()->id,"Obra social",$request->user()->role->id,$request->path());
 
         return $this->onSuccess($obraSocial, "Obra Social creada de manera correcta",201);
     }
@@ -98,7 +98,7 @@ class ObraSocialController extends Controller
         }
 
         $obraSocial->save();
-        $this->crearLog("Editando Obra social", $request->user()->id,"Obra social",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Obra social", $request->user()->id,"Obra social",$request->user()->role->id,$request->path());
         return $this->onSuccess($obraSocial, "Obra Social modificada de correcta",200);
     }
 
@@ -117,7 +117,7 @@ class ObraSocialController extends Controller
         }
 
         $obraSocial->delete();
-        $this->crearLog("Eliminando Obra Social", $request->user()->id,"Obra Social",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Eliminando Obra Social", $request->user()->id,"Obra Social",$request->user()->role->id,$request->path());
         return $this->onSuccess($obraSocial, "Obra Social eliminada de manera correcta");
     }
 
@@ -134,7 +134,7 @@ class ObraSocialController extends Controller
         }
         
         $obraSocial->restore();
-        $this->crearLog("Restaurando Obra Social", $request->user()->id,"Obra Social",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Restaurando Obra Social", $request->user()->id,"Obra Social",$request->user()->role->id,$request->path());
         return $this->onSuccess($obraSocial,"Obra Social restaurada");
     }
 }

@@ -68,7 +68,7 @@ class CoordinadorController extends Controller
             $usuario->coordinador()->create([
                 "codigo_coordinador" => Str::uuid()
             ]);
-            $this->crearLog("Creando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
+            $this->crearLog('Admin',"Creando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -160,7 +160,7 @@ class CoordinadorController extends Controller
         }
 
         $usuario->save();
-        $this->crearLog("Editando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
         return $this->onSuccess(new UserCoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
     }
 

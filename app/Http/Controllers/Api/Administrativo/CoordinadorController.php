@@ -84,7 +84,7 @@ class CoordinadorController extends Controller
             DB::rollBack();
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
-        $this->crearLog("Creando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
+        $this->crearLog('administrativo',"Creando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
         return $this->onSuccess(new CoordinadorResource($usuario),"coordinador creado de manera correcta",201);
     }
 
@@ -151,7 +151,7 @@ class CoordinadorController extends Controller
         }
 
         $usuario->save();
-        $this->crearLog("Editando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
+        $this->crearLog('administrativo',"Editando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
         return $this->onSuccess(new CoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
 
     }

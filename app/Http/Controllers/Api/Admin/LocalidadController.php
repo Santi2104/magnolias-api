@@ -55,7 +55,7 @@ class LocalidadController extends Controller
             'codigo_posta' => $request['codigo_postal']
         ]);
 
-        $this->crearLog("Creando Localidad", $request->user()->id,"Localidad",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Localidad", $request->user()->id,"Localidad",$request->user()->role->id,$request->path());
         return $this->onSuccess(new LocalidadResource($localidad),"Localidad creada de manera correcta", 201);
     }
 
@@ -117,7 +117,7 @@ class LocalidadController extends Controller
         }
 
         $localidad->save();
-        $this->crearLog("Editando Localidad", $request->user()->id,"Localidad",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Localidad", $request->user()->id,"Localidad",$request->user()->role->id,$request->path());
         return $this->onSuccess(new LocalidadResource($localidad),"Localidad modificada de forma correcta",200);
     }
 

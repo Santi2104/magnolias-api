@@ -8,9 +8,9 @@ use Log;
 
 trait LogHelpers
 {
-    protected function crearLog($accion,$usuario,$recurso,$rol,$ruta)
+    protected function crearLog($canal,$accion,$usuario,$recurso,$rol,$ruta)
     {
-        Log::channel('administrativo')->info($accion,[
+        Log::channel($canal)->info($accion,[
             'user_id' => $usuario,
             'Recurso' => $recurso,
             'rol_id'  => $rol,

@@ -72,7 +72,7 @@ class VendedorController extends Controller
             ]);
 
             $usuario->vendedor->localidades()->attach($request->localidad_id);
-            $this->crearLog("Creando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
+            $this->crearLog('Admin',"Creando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -168,7 +168,7 @@ class VendedorController extends Controller
             ]);
 
             $usuario->vendedor->localidades()->sync($request->localidad_id);
-            $this->crearLog("Editando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
+            $this->crearLog('Admin',"Editando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

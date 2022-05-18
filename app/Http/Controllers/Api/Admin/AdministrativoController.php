@@ -74,7 +74,7 @@ class AdministrativoController extends Controller
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
 
-        $this->crearLog("Creando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
         return $this->onSuccess(
             new UserAdministrativoResource($usuario),
             "Administrativo creado de manera correcta",
@@ -137,7 +137,7 @@ class AdministrativoController extends Controller
 
         $usuario->save();
 
-        $this->crearLog("Editando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
         return $this->onSuccess(
             new UserAdministrativoResource($usuario),
             "Administrativo modificado de manera correcta",

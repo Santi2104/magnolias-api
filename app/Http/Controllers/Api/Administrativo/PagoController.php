@@ -84,7 +84,7 @@ class PagoController extends Controller
         ]);
 
         event(new ActualizarAfiliado($pago,$afiliado,$request['finaliza_en']));
-        $this->crearLog("Creando Pago", $request->user()->id,"Pago",$request->user()->role->id,$request->path());
+        $this->crearLog('administrativo',"Creando Pago", $request->user()->id,"Pago",$request->user()->role->id,$request->path());
         return $this->onSuccess($pago,"Pago registrado de manera correcta",201);
 
     }
@@ -140,7 +140,7 @@ class PagoController extends Controller
         $pago->afiliado_id = $request['afiliado_id'];
         $pago->save();
 
-        $this->crearLog("Editando Pago", $request->user()->id,"Pago",$request->user()->role->id,$request->path());
+        $this->crearLog('administrativo',"Editando Pago", $request->user()->id,"Pago",$request->user()->role->id,$request->path());
         return $this->onSuccess($pago,"Pago registrado de manera correcta",201);
     }
 

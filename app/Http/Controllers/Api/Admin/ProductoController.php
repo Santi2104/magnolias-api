@@ -45,7 +45,7 @@ class ProductoController extends Controller
         $producto = Producto::create([
             "nombre" => $request['nombre'],
         ]);
-        $this->crearLog("Creando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess(new ProductoResource($producto),"Producto creado de manera correcta",201);
     }
 
@@ -99,7 +99,7 @@ class ProductoController extends Controller
         }
 
         $producto->save();
-        $this->crearLog("Editando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess(new ProductoResource($producto),"Producto actualizado de manera correcta");
 
     }
@@ -118,7 +118,7 @@ class ProductoController extends Controller
         }
 
         $producto->delete();
-        $this->crearLog("Eliminando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Eliminando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess($producto, "Producto eliminada de manera correcta");
     }
 
@@ -135,7 +135,7 @@ class ProductoController extends Controller
         }
 
         $producto->restore();
-        $this->crearLog("Restaurando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Restaurando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess($producto,"Producto restaurado");
     }
 }

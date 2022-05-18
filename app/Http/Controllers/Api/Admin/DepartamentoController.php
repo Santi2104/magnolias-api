@@ -52,7 +52,7 @@ class DepartamentoController extends Controller
             'provincia_id' => $request['provincia_id']
         ]);
 
-        $this->crearLog("Creando Departamento", $request->user()->id,"Departamento",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Departamento", $request->user()->id,"Departamento",$request->user()->role->id,$request->path());
         return $this->onSuccess($departamento,"Departamento creado de manera correcta",201);
     }
 
@@ -104,7 +104,7 @@ class DepartamentoController extends Controller
         $departamento->provincia_id = $request['provincia_id'];
         $departamento->save();
 
-        $this->crearLog("Editando Departamento", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando Departamento", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
         return $this->onSuccess($departamento,"El departamento se modifico de manera correcta",200);
     }
 

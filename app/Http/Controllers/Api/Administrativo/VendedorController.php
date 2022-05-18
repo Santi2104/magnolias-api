@@ -109,7 +109,7 @@ class VendedorController extends Controller
             DB::rollBack();
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
-        $this->crearLog("Creando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
+        $this->crearLog('administrativo',"Creando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
         return $this->onSuccess(new VendedorResource($usuario),"Vendedor creado de manera correcta",201);
 
     }
@@ -189,7 +189,7 @@ class VendedorController extends Controller
             return $this->onError(422,"Error al cargar los datos",$th->getMessage());
         }
 
-        $this->crearLog("Editando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
+        $this->crearLog('administrativo',"Editando Vendedor", $request->user()->id,"Vendedor",$request->user()->role->id,$request->path());
         return $this->onSuccess(new VendedorResource($usuario),"Vendedor editado de manera correcta",201);
 
     }

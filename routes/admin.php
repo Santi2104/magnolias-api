@@ -42,8 +42,6 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::put('paquete/{id}/producto', [PaqueteProductoController::class, 'update'])->name('paquete.producto.update');
         Route::delete('paquete/{id}/producto', [PaqueteProductoController::class, 'destroy'])->name('paquete.producto.destroy');
         
-        //TODO:Crear crud de los paises, provincias, barrios, calles y vendedores
-
         //**Crud de las localidades */
         Route::get('localidades', [LocalidadController::class, 'index'])->name('localidad.index');
         Route::get('localidad/{id}', [LocalidadController::class, 'show'])->name('localidad.show');

@@ -49,7 +49,7 @@ class BarrioController extends Controller
             'nbarrio' => $request['nombre'],
             'localidad_id' => $request['localidad_id']
         ]);
-        $this->crearLog("Creando Barrio", $request->user()->id,"Barrio",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Creando Barrio", $request->user()->id,"Barrio",$request->user()->role->id,$request->path());
         return $this->onSuccess($barrio,"Barrio creada de manera correcta", 201);
     }
 
@@ -87,7 +87,7 @@ class BarrioController extends Controller
         $barrio->localidad_id = $request['localidad_id'];
         $barrio->save();
 
-        $this->crearLog("Editando VendedoBarrio", $request->user()->id,"VendedoBarrio",$request->user()->role->id,$request->path());
+        $this->crearLog('Admin',"Editando VendedoBarrio", $request->user()->id,"VendedoBarrio",$request->user()->role->id,$request->path());
         return $this->onSuccess($barrio,"El barrio se modifico de manera correcta",200);
     }
 
