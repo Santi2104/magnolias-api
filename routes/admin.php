@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::get('administrativo', [AdministrativoController::class, 'index'])->name("administrativo.index");
         Route::post('administrativo', [AdministrativoController::class, 'store'])->name("administrativo.store");
         Route::put('administrativo', [AdministrativoController::class, 'update'])->name("administrativo.update");
+        Route::delete('administrativo', [AdministrativoController::class, 'destroy'])->name("administrativo.destroy");
 
         //**Crud de los afiliados */
         Route::get('afiliados', [AfiliadoController::class,'index'])->name("afiliados.index");

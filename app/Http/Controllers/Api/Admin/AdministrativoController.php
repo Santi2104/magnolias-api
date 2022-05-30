@@ -147,11 +147,25 @@ class AdministrativoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $validador = Validator::make($request->all(), [
+            'id' => ['required','exists:App\Models\Administrativo,id'],
+        ]);
+
+        if($validador->fails()){
+            return $this->onError(422,"Error de validacion",$validador->errors());
+        }
+
+        $administrativo =  Administrativo::find($request['id']);
+
+        $administrativo->user()->delete();
+        $administrativo->delete();
+        $administrativo->save();
+
+        return $this->onSuccess($administrativo,"Administrativo eliminado de manera correcta");
     }
 }
