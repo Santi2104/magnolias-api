@@ -121,7 +121,7 @@ class AfiliadoController extends Controller
             $request['titular_tarjeta'] = null;
             $sol = $request['dni_solicitante'];
             $solicitante = GrupoFamiliar::where('dni_solicitante', $request['dni_solicitante'])->first();
-                                        // ->where('apellido', $request['lastname'])
+
 
             if(!isset($solicitante))
             {
@@ -322,7 +322,7 @@ class AfiliadoController extends Controller
         ]);
 
         $usuario->save();
-
+        $this->crearLog('Admin',"Actualizar Afiliado", $request->user()->id,"Afiliado",$request->user()->role->id,$request->path());
         return $this->onSuccess(new AfiliadoResource($usuario),"Afiliado creado de manera correcta",201);
 
     }
@@ -364,6 +364,7 @@ class AfiliadoController extends Controller
         $familiar->edad = $this->calcularEdad($request['nacimiento']);
 
         $familiar->save();
+        $this->crearLog('Admin',"Actualizar Familiar Afiliado", $request->user()->id,"Afiliado",$request->user()->role->id,$request->path());
         return $this->onSuccess(new AfiliadoResource($familiar),"Familiar actualizado de manera correcta",201);
         
     }
@@ -398,7 +399,7 @@ class AfiliadoController extends Controller
             $familiar->activo = false;
             $familiar->save();
         }
-
+        $this->crearLog('Admin',"Baja de Afiliado", $request->user()->id,"Afiliado",$request->user()->role->id,$request->path());
         return $this->onSuccess(new AfiliadoResource($usuario),"Afiliado dado de baja de manera correcta",201);
     }
 
@@ -484,5 +485,105 @@ class AfiliadoController extends Controller
         }
 
         return $this->onSuccess($usuario,'Afiliado encontrado');
+    }
+
+    public function pasarFamiliarASolicitante(Request $request)
+    {
+        $familiar = User::whereDni($request['dni'])->first();
+
+        if(!isset($familiar))
+        {
+            return $this->onError(404,"No se puede encontrar al afiliado con el codigo enviado");
+        }
+
+        if($familiar->afiliado->solicitante == true)
+        {
+            return $this->onError(404,"Error al editar afiliado","El afiliado debe ser un familiar no solicitante"); 
+        }
+
+        $validador = Validator::make($request->all(), [
+            'name' => ['required', 'string','max:25'],
+            'email' => ['required', Rule::unique(User::class)->ignore($familiar->email,'email'),'email'],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required', Rule::unique(User::class,'dni')->ignore($familiar->dni,'dni'),'max:9'],        
+            'nacimiento' => ['required', 'date'],
+            'tipo_dni' => ['required'],
+            'vendedor_id' => ['required','exists:App\Models\Vendedor,id'],
+            'paquete_id' => ['required','exists:App\Models\Paquete,id'],
+            'sexo' => ['required', Rule::in(Afiliado::sexo)],
+            'calle' => ['required',],
+            'barrio' => ['required'],
+            'nro_casa' => ['required'],
+            'cuil' => ['required'],
+            'estado_civil' => ['required',Rule::in(Afiliado::estado_civil)],
+            'profesion_ocupacion' => ['required'],
+            'poliza_electronica' => ['required','boolean'],
+            'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
+            'nombre_tarjeta' => ['required','max:20'],
+            'numero_tarjeta' => ['required'],
+            'codigo_cvv' => ['required','max:3'],
+            'tipo_tarjeta' => ['required','max:10'],
+            'banco' => ['required','max:15'],
+            'vencimiento_tarjeta' => ['required'],
+            'titular_tarjeta' => ['required','max:40'],
+            'codigo_postal' => ['required'],
+            'nro_solicitud' => ['required','digits_between:1,6',Rule::unique(Afiliado::class)]
+        ]);
+
+        if($validador->fails())
+        {
+            return $this->onError(422,"Error de validación", $validador->errors());
+        }
+
+        try {
+            DB::transaction();
+
+            $grupoFamiliar = GrupoFamiliar::create([
+                'dni_solicitante' => $request['dni'],
+                'apellido' => $familiar->lastname
+            ]);
+    
+            $familiar->afiliado()->update([
+                "calle" => $request["calle"],
+                "barrio" => $request["barrio"],
+                "nro_casa" => $request["nro_casa"],
+                "paquete_id" => $request["paquete_id"],
+                "obra_social_id" => $request["obra_social_id"],
+                'sexo' => $request['sexo'],
+                'parentesco' => null,
+                'cuil' => $request['cuil'],
+                'estado_civil' => $request['estado_civil'],
+                'profesion_ocupacion' => $request['profesion_ocupacion'],
+                'poliza_electronica' => $request['poliza_electronica'],
+                'nombre_tarjeta' => $request['nombre_tarjeta'],
+                'numero_tarjeta' => $request['numero_tarjeta'],
+                'codigo_cvv' => $request['codigo_cvv'],
+                'banco' => $request['banco'],
+                'vencimiento_tarjeta' => $request['vencimiento_tarjeta'],
+                'titular_tarjeta' => $request['titular_tarjeta'],
+                'tipo_tarjeta' => $request['tipo_tarjeta'],
+                'codigo_postal' => $request['codigo_postal'],
+                'dni_solicitante' => null,
+                'solicitante' => true,
+                'grupo_familiar_id' => $grupoFamiliar->id
+            ]);
+    
+            $familiar->username = Str::lower(Str::replace(' ','',$request['name'].$request['nro_solicitud']));
+            $familiar->name = $request->name;
+            $familiar->email = $request->email;
+            $familiar->lastname = $request->lastname;
+            $familiar->dni = $request->dni;
+            $familiar->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
+            $familiar->edad = $this->calcularEdad($request['nacimiento']);
+            $familiar->save();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->onError(422,"Error al cargar los datos",$th->getMessage());
+        }
+
+        $this->crearLog('Admin',"Actualizar Familiar Afiliado", $request->user()->id,"Afiliado",$request->user()->role->id,$request->path());
+        return $this->onSuccess($familiar,'Afiliado actualizado de manera correcta');
+
     }
 }

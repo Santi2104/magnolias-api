@@ -74,6 +74,7 @@ class User extends Authenticatable
         'password',
         'lastname',
         'dni',
+        'tipo_dni',
         'edad',
         'nacimiento',
         'username',
