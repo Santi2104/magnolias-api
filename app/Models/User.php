@@ -76,6 +76,7 @@ class User extends Authenticatable
         'dni',
         'edad',
         'nacimiento',
+        'username',
         'role_id',
     ];
 

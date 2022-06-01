@@ -41,7 +41,8 @@ class AdministrativoController extends Controller
     {
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string','max:25'],
-            'email' => ['required','email', Rule::unique(User::class)],
+            'username' => ['required','string','max:30',Rule::unique(User::class)],
+            'email' => ['nullable','email'],
             'lastname' => ['required', 'string','max:25'],
             'dni' => ['required', Rule::unique(User::class),'max:9'],
             'nacimiento' => ['required', 'date'],
@@ -57,6 +58,7 @@ class AdministrativoController extends Controller
             $usuario = User::create([
                 'name'     => $request->name,
                 'email'    => $request->email,
+                'username' => $request->username,
                 'lastname' => $request->lastname,
                 'dni'      => $request->dni,
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
@@ -113,7 +115,8 @@ class AdministrativoController extends Controller
 
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string','max:25'],
-            'email' => ['required','email', Rule::unique(User::class)->ignore($usuario->id)],
+            'username' => ['required','string','max:30',Rule::unique(User::class)->ignore($usuario->id)],
+            'email' => ['nullable','email'],
             'lastname' => ['required', 'string','max:25'],
             'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
@@ -126,6 +129,7 @@ class AdministrativoController extends Controller
 
         $usuario->name = $request->name;
         $usuario->email = $request->email;
+        $usuario->username = $request->username;
         $usuario->lastname = $request->lastname;
         $usuario->dni = $request->dni;
         $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');

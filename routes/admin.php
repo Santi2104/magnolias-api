@@ -83,6 +83,7 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::put('afiliado/familia/edit', [AfiliadoController::class, 'actualizarFamiliar'])->name('afiliado.familiar');
         Route::get('afiliado/datos',[AfiliadoController::class,'datosAfiliado'])->name('afiliado.datos');
         Route::get('afiliado/familia',[AfiliadoController::class,'familiaresDelAfiliado'])->name('afiliado.familia');
+        Route::delete('afiliado/solicitante',[AfiliadoController::class,'bajaSolicitante'])->name('afiliado.baja_solicitante');
 
         //**Crud de los paises */
         Route::get('paises',[PaisController::class,'index'])->name('pais.index');

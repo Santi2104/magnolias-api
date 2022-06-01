@@ -219,4 +219,16 @@ trait ApiHelpers
         
     }
 
+    protected function verificarEmail($email)
+    {
+        $email = \App\Models\User::whereEmail($email)->first(['id','email']);
+
+        if($email)
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }

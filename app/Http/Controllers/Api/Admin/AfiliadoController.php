@@ -47,6 +47,7 @@ class AfiliadoController extends Controller
     public function store(Request $request)
     {
         $email = null;
+        $username = null;
         $solicitante = null;
         $idFamilia = 0;
         $grupo = null;
@@ -92,6 +93,11 @@ class AfiliadoController extends Controller
         
 
         if($request['solicitante']){
+
+            if($this->verificarEmail($request['email'])){
+                return $this->onError(422,"Error de validación", "El email ya esta en uso"); 
+            }
+            $username = Str::lower(Str::replace(' ','',$request['name'].$request['nro_solicitud']));           
             $email = $request['email'];
             $password = bcrypt(Str::random(12).$request['dni']);
             $request['parentesco'] = null;
@@ -100,6 +106,7 @@ class AfiliadoController extends Controller
 
         }else{
             $email = Str::random(12).$request['dni'].'@mail.com';
+            $username = Str::random(16).$request['nro_solicitud'];
             $password = bcrypt(Str::random(12).$request['dni']);
             $request['cuil'] = null;
             $request['estado_civil'] = null;
@@ -144,6 +151,7 @@ class AfiliadoController extends Controller
             $usuario = User::create([
                 'name'     => $request->name,
                 'email'    => $email,
+                'username'    => $username,
                 'lastname' => $request->lastname,
                 'dni'      => $request->dni,
                 'tipo_dni' => $request->tipo_dni,
@@ -336,6 +344,7 @@ class AfiliadoController extends Controller
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string','max:25'],
             'email' => ['required','email', Rule::unique(User::class,'email')->ignore($familiar->id)],
+            'username' => ['required',Rule::unique(User::class,'username')->ignore($familiar->id),'max:30'],
             'lastname' => ['required', 'string','max:25'],
             'dni' => ['required','string',Rule::unique(User::class,'dni')->ignore($familiar->id,),'max:9'],
             'nacimiento' => ['required','date'],
@@ -347,6 +356,7 @@ class AfiliadoController extends Controller
         }
 
         $familiar->name = $request->name;
+        $familiar->username = $request->username;
         $familiar->email = $request->email;
         $familiar->lastname = $request->lastname;
         $familiar->dni = $request->dni;
@@ -361,12 +371,35 @@ class AfiliadoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function bajaSolicitante(Request $request)
     {
-        //
+        $usuario = User::whereDni($request['dni'])->first();
+
+        if(!isset($usuario->afiliado))
+        {
+            return $this->onError(404,"No se puede encontrar al afiliado con el dni enviado");
+        }
+
+        if($usuario->afiliado->solicitante == false or $usuario->afiliado->activo)
+        {
+            return $this->onError(404,"Error al encontrar el afiliado","El afiliado debe ser un solicitante o ya se encuentra dado de baja");
+        }
+
+        $usuario->afiliado()->update([
+            'activo' => false
+        ]);
+
+        $familiares = Afiliado::whereDniSolicitante($usuario->dni)->get(['id','activo']);
+
+        foreach($familiares as $familiar){
+            $familiar->activo = false;
+            $familiar->save();
+        }
+
+        return $this->onSuccess(new AfiliadoResource($usuario),"Afiliado dado de baja de manera correcta",201);
     }
 
         /**

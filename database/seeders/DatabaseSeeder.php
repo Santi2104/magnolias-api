@@ -86,11 +86,11 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\User::factory()
         ->count(1)
-        ->create(['name' => 'Sergio','lastname' => 'Denis','email' => 'sergio@mail.com','role_id' => 1]);
+        ->create(['name' => 'Sergio','lastname' => 'Denis','email' => 'sergio@mail.com','username' => 'sergio','role_id' => 1]);
 
         \App\Models\User::factory()
         ->count(1)
-        ->create(['name' => 'Juan','lastname' => 'Perez','email' => 'administrativo@mail.com','role_id' => 5])
+        ->create(['name' => 'Juan','lastname' => 'Perez','email' => 'administrativo@mail.com','username' => 'juan','role_id' => 5])
         ->each(function (\App\Models\User $user){
             Administrativo::factory()
             ->create(['user_id' => $user->id]);

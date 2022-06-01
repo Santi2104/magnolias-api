@@ -24,12 +24,12 @@ class AuthController extends Controller
         }
 
         $request->validate([ 
-            'email'       => ['required','string','email'],
+            'username'       => ['required','string'],
             'password'    => ['required','string'],
             'remember_me' => ['boolean'],
         ]);
 
-        $credentials = request(['email', 'password']);
+        $credentials = request(['username', 'password']);
 
         if (!Auth::attempt($credentials)) {
             
