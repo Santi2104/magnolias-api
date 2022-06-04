@@ -34,6 +34,7 @@ class ProduccionSeeder extends Seeder
             [
                 'name' => 'Santiago',
                 'lastname' => 'Ortiz Ocampo',
+                'username' => 'sortiz',
                 'dni' => '12345678',
                 'edad' => '28',
                 'nacimiento' => '1993-04-21',
@@ -49,6 +50,7 @@ class ProduccionSeeder extends Seeder
             [
                 'name' => 'Emiliano',
                 'lastname' => 'Romero',
+                'username' => 'eromero',
                 'dni' => '12345679',
                 'edad' => '27',
                 'nacimiento' => '1994-04-04',
@@ -64,6 +66,7 @@ class ProduccionSeeder extends Seeder
             [
                 'name' => 'Sergio',
                 'lastname' => 'Denis',
+                'username' => 'sdenis',
                 'dni' => '12345680',
                 'edad' => '27',
                 'nacimiento' => '1994-04-04',
@@ -79,6 +82,7 @@ class ProduccionSeeder extends Seeder
             [
                 'name' => 'Juan Carlos',
                 'lastname' => 'bodoque',
+                'username' => 'jbodoque',
                 'dni' => '12345681',
                 'edad' => '27',
                 'nacimiento' => '1994-04-04',
@@ -119,7 +123,7 @@ class ProduccionSeeder extends Seeder
                     'nombre' => 'Responso',
                 ],
                 [
-                    'nombre' => 'Cremación ', 
+                    'nombre' => 'Cremación ',
                 ],
                 [
                     'nombre' => 'Entrega de urna',
