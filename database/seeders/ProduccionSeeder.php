@@ -34,10 +34,10 @@ class ProduccionSeeder extends Seeder
             [
                 'name' => 'Santiago',
                 'lastname' => 'Ortiz Ocampo',
-                'username' => 'sortiz',
                 'dni' => '12345678',
                 'edad' => '28',
                 'nacimiento' => '1993-04-21',
+                'username' => 'sortiz',
                 'email' => 'admin@mail.com',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
@@ -50,10 +50,10 @@ class ProduccionSeeder extends Seeder
             [
                 'name' => 'Emiliano',
                 'lastname' => 'Romero',
-                'username' => 'eromero',
                 'dni' => '12345679',
                 'edad' => '27',
                 'nacimiento' => '1994-04-04',
+                'username' => 'eromero',
                 'email' => 'coordinador@mail.com',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
@@ -66,10 +66,10 @@ class ProduccionSeeder extends Seeder
             [
                 'name' => 'Sergio',
                 'lastname' => 'Denis',
-                'username' => 'sdenis',
                 'dni' => '12345680',
                 'edad' => '27',
                 'nacimiento' => '1994-04-04',
+                'username' => 'sdenis',
                 'email' => 'vendedor@mail.com',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
@@ -82,10 +82,10 @@ class ProduccionSeeder extends Seeder
             [
                 'name' => 'Juan Carlos',
                 'lastname' => 'bodoque',
-                'username' => 'jbodoque',
                 'dni' => '12345681',
                 'edad' => '27',
                 'nacimiento' => '1994-04-04',
+                'username' => 'jbodoque',
                 'email' => 'administrativo@mail.com',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
