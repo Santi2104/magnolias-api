@@ -23,11 +23,12 @@ class AfiliadoResource extends JsonResource
             'dni' => $this->dni,
             'paquete' => $this->afiliado->paquete->nombre,
             'solicitante' => $this->afiliado->solicitante,
-            'activo' => $this->afiliado->activo,
+            'activo' => $this->afiliado->activo ? 'Activo' : 'No activo',
             'fecha_alta' => $this->created_at->format('Y-m-d'),
             'finaliza_en' => $this->afiliado->finaliza_en,
             'created_at' => $this->afiliado->created_at,
-            'vendedor' => $this->afiliado->vendedores
+            'vendedor' => $this->afiliado->vendedores,
+            'nro_solicitud' => $this->afiliado->nro_solicitud
         ];
     }
 }

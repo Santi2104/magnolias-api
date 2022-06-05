@@ -30,8 +30,14 @@ class AfiliadoController extends Controller
     {
         $afiliados = User::with([
             'afiliado' => function($query){
-                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','activo');
-            }
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','activo','finaliza_en','created_at','nro_solicitud');
+            },
+            'afiliado.vendedores' => function($query){
+                $query->select('id','user_id','codigo_vendedor');
+            },
+            'afiliado.vendedores.user' => function($query){
+                $query->select('id','name','lastname');
+            },
         ])
         ->where('role_id',\App\Models\Role::ES_AFILIADO)
         ->get();
@@ -72,7 +78,7 @@ class AfiliadoController extends Controller
             'cuil' => ['required_unless:solicitante,false'],
             'estado_civil' => ['required_unless:solicitante,false',Rule::in(Afiliado::estado_civil)],
             'profesion_ocupacion' => ['required_unless:solicitante,false'],
-            'poliza_electronica' => ['required_unless:solicitante,false','boolean'],
+            'poliza_electronica' => ['nullable','boolean'],
             'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
             'dni_solicitante' => ['required_unless:solicitante,true'],
             'nombre_tarjeta' => ['required_unless:solicitante,false','max:20'],
@@ -97,7 +103,7 @@ class AfiliadoController extends Controller
             if($this->verificarEmail($request['email'])){
                 return $this->onError(422,"Error de validación", "El email ya esta en uso"); 
             }
-            $username = Str::lower(Str::replace(' ','',$request['name'].$request['nro_solicitud']));           
+            $username = Str::lower(Str::replace(' ','',$request['name'].$request['nro_solicitud'].Str::random(3)));       
             $email = $request['email'];
             $password = bcrypt(Str::random(12).$request['dni']);
             $request['parentesco'] = null;
@@ -423,7 +429,7 @@ class AfiliadoController extends Controller
 
         $usuario = User::with([
             'afiliado' => function($query){
-                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante');
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','nro_solicitud','created_at','finaliza_en','activo','cuil','profesion_ocupacion');
             },
             'afiliado.paquete' => function($query){
                 $query->select('id','nombre');
