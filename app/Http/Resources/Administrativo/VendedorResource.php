@@ -20,6 +20,8 @@ class VendedorResource extends JsonResource
             'nombre' => $this->name,
             'apellido' => $this->lastname,
             'dni' => $this->dni,
+            "edad" => $this->edad,
+            "nacimiento" => $this->nacimiento,
             'email' => $this->email,
             'codigo_vendedor' => $this->vendedor->codigo_vendedor,
             'coordinador' => $this->vendedor->coordinador->user->name ." ".$this->vendedor->coordinador->user->lastname

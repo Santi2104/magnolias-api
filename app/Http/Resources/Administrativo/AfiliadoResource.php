@@ -21,6 +21,8 @@ class AfiliadoResource extends JsonResource
             'nombre' => $this->name,
             'apellido' => $this->lastname,
             'dni' => $this->dni,
+            "edad" => $this->edad,
+            "nacimiento" => $this->nacimiento,
             'paquete' => $this->afiliado->paquete->nombre,
             'solicitante' => $this->afiliado->solicitante,
             'activo' => $this->afiliado->activo ? 'Activo' : 'No activo',
