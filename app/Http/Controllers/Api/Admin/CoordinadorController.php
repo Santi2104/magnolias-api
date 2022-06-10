@@ -45,6 +45,7 @@ class CoordinadorController extends Controller
             'lastname' => ['required', 'string','max:25'],
             'dni' => ['required', Rule::unique(User::class),'max:9'],
             'nacimiento' => ['required', 'date'],
+            'username' => ['required','string','max:30',Rule::unique(User::class)],
         ]);
 
         if($validador->fails()){
@@ -59,6 +60,7 @@ class CoordinadorController extends Controller
                 'email'    => $request->email,
                 'lastname' => $request->lastname,
                 'dni'      => $request->dni,
+                'username' => $request->username,
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
                 'edad'     => $this->calcularEdad($request['nacimiento']),
                 'password' => bcrypt(Str::random(12).$request['dni']),
@@ -137,6 +139,7 @@ class CoordinadorController extends Controller
             'lastname' => ['required', 'string','max:25'],
             'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
+            'username' => ['required','string','max:30',Rule::unique(User::class)->ignore($usuario->id)],
         ]);
 
         if($validador->fails()){
@@ -150,6 +153,7 @@ class CoordinadorController extends Controller
         $usuario->dni = $request->dni;
         $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $usuario->edad = $this->calcularEdad($request['nacimiento']);
+        $usuario->username = $request->username;
         /**
             *?Talves aca Deberia Ir algo para modificar la tabla coordinador
             *? Si modifico el mail, deberia poder vericarlo de nuevo si es correcto

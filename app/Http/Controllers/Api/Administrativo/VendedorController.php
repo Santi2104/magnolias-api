@@ -68,6 +68,7 @@ class VendedorController extends Controller
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string','max:25'],
             'email' => ['required','email', Rule::unique(User::class)],
+            'username' => ['required','string','max:30',Rule::unique(User::class)],
             'lastname' => ['required', 'string','max:25'],
             'dni' => ['required', Rule::unique(User::class),'max:9'],
             'nacimiento' => ['required', 'date'],
@@ -91,6 +92,7 @@ class VendedorController extends Controller
                 'email'    => $request->email,
                 'lastname' => $request->lastname,
                 'dni'      => $request->dni,
+                'username' => $request->username,
                 'nacimiento' => $nacimiento,
                 'edad'     => $actual->diffInYears($nacimiento),
                 'password' => bcrypt(Str::random(12).$request['dni']),
@@ -156,6 +158,7 @@ class VendedorController extends Controller
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string','max:25'],
             'email' => ['required','email', Rule::unique(User::class)->ignore($usuario->id)],
+            'username' => ['required','string','max:30',Rule::unique(User::class)->ignore($usuario->id)],
             'lastname' => ['required', 'string','max:25'],
             'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
@@ -173,6 +176,7 @@ class VendedorController extends Controller
             $usuario->name = $request->name;
             $usuario->lastname = $request->lastname;
             $usuario->email = $request->email;
+            $usuario->username = $request->username;
             $usuario->dni = $request->dni;
             $usuario->nacimiento = $request->nacimiento;
             $usuario->edad = $this->calcularEdad($request->nacimiento);
