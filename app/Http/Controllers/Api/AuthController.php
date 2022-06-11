@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Library\ApiHelpers;
-use App\Http\Resources\UserAuthResource;
+use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Http\Library\ApiHelpers;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserAuthResource;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -130,5 +131,40 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return new UserAuthResource($request->user());
+    }
+
+    public function reiniciarCuenta(Request $request)
+    {
+
+        $usuario = User::where('id',$request['id'])->first();
+
+        if(!$usuario)
+        {
+           return $this->onError(422,"Error al reiniciar cuenta","No se encuentra el usuario con ese ID");
+        }
+
+        if(!$usuario->reset_email)
+        {
+            return $this->onError(422,"Error al reiniciar cuenta","Esta cuenta no tiene pedido de reinicio");
+        }
+
+
+        $validador = Validator::make($request->all(), [
+            'id' => ['required','exists:App\Models\User,id'],
+            'username' => ['required','string'],
+            'password' => ['required','string'],
+        ]);
+
+        if($validador->fails()){
+            return $this->onError(422,"Error de validacion",$validador->errors());
+        }
+
+        $usuario->username = $request['username'];
+        $usuario->password = bcrypt($request['password']);
+        $usuario->reset_email = false;
+
+        $usuario->save();
+
+        return $this->onSuccess($usuario,"Cuanta reestablecida de manera correcta");
     }
 }

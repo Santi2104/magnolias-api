@@ -171,12 +171,34 @@ class CoordinadorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $validador = Validator::make($request->all(), [
+            'id' => ['required','exists:App\Models\Coordinador,id'],
+        ]);
+
+        if($validador->fails()){
+            return $this->onError(422,"Error de validacion",$validador->errors());
+        }
+
+        $coordinador = Coordinador::find($request['id']);
+
+        try {
+            DB::beginTransaction();
+            $coordinador->user()->delete();
+            $coordinador->delete();
+            $coordinador->save();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->onError(422,"Error al cargar los datos",$th->getMessage());
+        }
+
+        return $this->onSuccess($coordinador,"Coordinador eliminado de manera correcta");
+
     }
 
 }

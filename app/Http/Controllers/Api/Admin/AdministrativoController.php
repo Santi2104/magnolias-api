@@ -99,7 +99,6 @@ class AdministrativoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -151,7 +150,7 @@ class AdministrativoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
@@ -171,5 +170,33 @@ class AdministrativoController extends Controller
         $administrativo->save();
 
         return $this->onSuccess($administrativo,"Administrativo eliminado de manera correcta");
+    }
+
+    public function resetEmail(Request $request)
+    {
+        $validador = Validator::make($request->all(), [
+            'id' => ['required','exists:App\Models\Administrativo,id'],
+        ]);
+
+        if($validador->fails()){
+            return $this->onError(422,"Error de validacion",$validador->errors());
+        }
+
+        $administrativo = Administrativo::find($request['id']);
+
+        $usuario = $administrativo->user;
+
+        if($usuario->reset_email){
+            return $this->onMessage(422,"Esta cuenta ya se encuentra reiniciada");
+        }
+
+        $administrativo->user()->update([
+            'username' => $usuario->name.$usuario->dni,
+            'password' => bcrypt($usuario->dni),
+            'reset_email' => true
+        ]);
+
+        return $this->onMessage(201,"La cuenta del usuario fue reiniciado de manera correcta");
+ 
     }
 }

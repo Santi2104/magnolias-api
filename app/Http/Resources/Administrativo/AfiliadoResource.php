@@ -17,6 +17,7 @@ class AfiliadoResource extends JsonResource
         return [
             'id' => $this->afiliado->id,
             'user_id' => $this->id,
+            'nro_solicitud' => $this->afiliado->nro_solicitud,
             'codigo_afiliado' => $this->afiliado->codigo_afiliado,
             'nombre' => $this->name,
             'apellido' => $this->lastname,
@@ -30,7 +31,6 @@ class AfiliadoResource extends JsonResource
             'finaliza_en' => $this->afiliado->finaliza_en,
             'created_at' => $this->afiliado->created_at,
             'vendedor' => $this->afiliado->vendedores,
-            'nro_solicitud' => $this->afiliado->nro_solicitud
         ];
     }
 }

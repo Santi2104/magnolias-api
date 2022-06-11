@@ -62,18 +62,21 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::get('coordinador/vendedor', [CoordinadorController::class,'show'])->name("coordinador.vendedor.index");
         Route::post('coordinador', [CoordinadorController::class, 'store'])->name("coordinador.store");
         Route::put('coordinador', [CoordinadorController::class, 'update'])->name("coordinador.update");
+        Route::delete('coordinador', [CoordinadorController::class, 'destroy'])->name("coordinador.destroy");
 
         //**Curd de los vendedores */
         Route::get('vendedores', [VendedorController::class, 'index'])->name('vendedor.index');
         Route::get('vendedor',[VendedorController::class, 'show'])->name('vendedor.show');
         Route::post('vendedor', [VendedorController::class, 'store'])->name('vendedor.store');
         Route::put('vendedor', [VendedorController::class, 'update'])->name('vendedor.update');
+        Route::delete('vendedor', [VendedorController::class, 'destroy'])->name('vendedor.destroy');
 
         //**Crud de los administrativos */
         Route::get('administrativo', [AdministrativoController::class, 'index'])->name("administrativo.index");
         Route::post('administrativo', [AdministrativoController::class, 'store'])->name("administrativo.store");
         Route::put('administrativo', [AdministrativoController::class, 'update'])->name("administrativo.update");
         Route::delete('administrativo', [AdministrativoController::class, 'destroy'])->name("administrativo.destroy");
+        Route::post('administrativo/reset-email',[AdministrativoController::class, 'resetEmail'])->name("administrativo.reset_email");
 
         //**Crud de los afiliados */
         Route::get('afiliados', [AfiliadoController::class,'index'])->name("afiliados.index");

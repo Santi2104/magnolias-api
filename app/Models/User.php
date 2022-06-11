@@ -79,6 +79,7 @@ class User extends Authenticatable
         'nacimiento',
         'username',
         'role_id',
+        'reset_email'
     ];
 
     /**
