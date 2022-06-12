@@ -23,6 +23,8 @@ class AfiliadoResource extends JsonResource
             'apellido' => $this->lastname,
             'dni' => $this->dni,
             "edad" => $this->edad,
+            "email" => $this->email,
+            "telefono_particular" => $this->afiliado->telefono_particular,
             "nacimiento" => $this->nacimiento,
             'paquete' => $this->afiliado->paquete->nombre,
             'solicitante' => $this->afiliado->solicitante,

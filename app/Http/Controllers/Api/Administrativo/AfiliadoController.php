@@ -88,6 +88,7 @@ class AfiliadoController extends Controller
             'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
             'dni_solicitante' => ['required_unless:solicitante,true'],
             'nombre_tarjeta' => ['required_unless:solicitante,false','max:20'],
+            'telefono_particular' => ['required_unless:solicitante,false','max:30'],
             'numero_tarjeta' => ['required_unless:solicitante,false'],
             'codigo_cvv' => ['required_unless:solicitante,false','max:3'],
             'tipo_tarjeta' => ['required_unless:solicitante,false','max:10'],
@@ -191,6 +192,7 @@ class AfiliadoController extends Controller
                 'banco' => $request['banco'],
                 'vencimiento_tarjeta' => $request['vencimiento_tarjeta'],
                 'titular_tarjeta' => $request['titular_tarjeta'],
+                'telefono_particular' => $request['telefono_particular'],
                 'tipo_tarjeta' => $request['tipo_tarjeta'],
                 'codigo_postal' => $request['codigo_postal'],
                 'activo' => true,
@@ -277,6 +279,7 @@ class AfiliadoController extends Controller
             'obra_social_id' => ['required','exists:App\Models\ObraSocial,id'],
             'nombre_tarjeta' => ['required','max:20'],
             'numero_tarjeta' => ['required'],
+            'telefono_particular' => ['required','max:30'],
             'codigo_cvv' => ['required','max:3'],
             'tipo_tarjeta' => ['required','max:10'],
             'banco' => ['required','max:15'],
@@ -327,6 +330,7 @@ class AfiliadoController extends Controller
             'nombre_tarjeta' => $request['nombre_tarjeta'],
             'numero_tarjeta' => $request['numero_tarjeta'],
             'codigo_cvv' => $request['codigo_cvv'],
+            'telefono_particular' => $request['telefono_particular'],
             'banco' => $request['banco'],
             'vencimiento_tarjeta' => $request['vencimiento_tarjeta'],
             'titular_tarjeta' => $request['titular_tarjeta'],
@@ -420,7 +424,7 @@ class AfiliadoController extends Controller
 
         $usuario = User::with([
             'afiliado' => function($query){
-                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','nro_solicitud','created_at','finaliza_en','activo','cuil','profesion_ocupacion');
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','nro_solicitud','created_at','finaliza_en','activo','cuil','profesion_ocupacion','telefono_particular');
             },
             'afiliado.paquete' => function($query){
                 $query->select('id','nombre');
@@ -434,7 +438,7 @@ class AfiliadoController extends Controller
             'afiliado.pagos'
         ])
         ->where('dni',$request->dni)
-        ->first(['id','name','lastname','dni']);
+        ->first(['id','name','lastname','dni','email']);
 
         if(is_null($usuario->afiliado))
         {
