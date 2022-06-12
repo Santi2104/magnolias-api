@@ -79,6 +79,7 @@ class Afiliado extends Model
         'titular_tarjeta',
         'codigo_postal',
         'ultimo_pago',
+        'telefono_particular',
         'activo',
         'nro_solicitud'
     ];
