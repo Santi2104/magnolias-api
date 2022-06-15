@@ -427,7 +427,7 @@ class AfiliadoController extends Controller
                 $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','nro_solicitud','created_at','finaliza_en','activo','cuil','profesion_ocupacion','telefono_particular');
             },
             'afiliado.paquete' => function($query){
-                $query->select('id','nombre');
+                $query->select('id','nombre','precio');
             },
             'afiliado.vendedores' => function($query){
                 $query->select('id','user_id','codigo_vendedor');
