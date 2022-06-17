@@ -453,7 +453,7 @@ class AfiliadoController extends Controller
             'afiliado.pagos'
         ])
         ->where('dni',$request->dni)
-        ->first(['id','name','lastname','dni','email']);
+        ->first(['id','name','lastname','dni','email','edad','nacimiento']);
 
         if(is_null($usuario->afiliado))
         {

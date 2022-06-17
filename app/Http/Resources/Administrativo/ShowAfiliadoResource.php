@@ -47,6 +47,8 @@ class ShowAfiliadoResource extends JsonResource
             'nombre' => $this->user->name,
             'apellido' => $this->user->lastname,
             'dni' => $this->user->dni,
+            'nacimiento' => $this->user->nacimiento,
+            'edad' => $this->user->edad,
             "paquete_id" => $this->paquete->nombre,
             "fecha_carga" => $this->created_at,
             "fecha_actualizacion" => $this->updated_at,
