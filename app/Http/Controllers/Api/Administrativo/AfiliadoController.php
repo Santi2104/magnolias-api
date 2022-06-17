@@ -36,7 +36,9 @@ class AfiliadoController extends Controller
         //$afiliados = User::whereRoleId(\App\Models\Role::ES_AFILIADO)->get();
         $afiliados = User::with([
             'afiliado' => function($query){
-                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','activo','finaliza_en','created_at','nro_solicitud','telefono_particular');
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante',
+                'activo','finaliza_en','created_at','nro_solicitud','nro_casa'
+                ,'telefono_particular','calle','barrio','provincia','localidad','departamento');
             },
             'afiliado.vendedores' => function($query){
                 $query->select('id','user_id','codigo_vendedor');
@@ -80,6 +82,9 @@ class AfiliadoController extends Controller
             'parentesco' => ['required_unless:solicitante,true',Rule::in(Afiliado::parentesco)],
             'calle' => ['required_unless:solicitante,false',],
             'barrio' => ['required_unless:solicitante,false'],
+            'provincia' => ['required_unless:solicitante,false'],
+            'localidad' => ['required_unless:solicitante,false'],
+            'departamento' => ['required_unless:solicitante,false'],
             'nro_casa' => ['required_unless:solicitante,false'],
             'cuil' => ['required_unless:solicitante,false'],
             'estado_civil' => ['required_unless:solicitante,false',Rule::in(Afiliado::estado_civil)],
@@ -174,6 +179,9 @@ class AfiliadoController extends Controller
                 "codigo_afiliado" => Str::uuid(),
                 "calle" => $request["calle"],
                 "barrio" => $request["barrio"],
+                "provincia" => $request['provincia'],
+                "localidad" => $request['localidad'],
+                "departamento" => $request['departamento'],
                 "nro_casa" => $request["nro_casa"],
                 "paquete_id" => $request["paquete_id"],
                 "obra_social_id" => $request["obra_social_id"],
@@ -271,6 +279,9 @@ class AfiliadoController extends Controller
             'sexo' => ['required', Rule::in(Afiliado::sexo)],
             'calle' => ['required',],
             'barrio' => ['required'],
+            'provincia' => ['required'],
+            'localidad' => ['required'],
+            'departamento' => ['required'],
             'nro_casa' => ['required'],
             'cuil' => ['required'],
             'estado_civil' => ['required',Rule::in(Afiliado::estado_civil)],
@@ -318,6 +329,9 @@ class AfiliadoController extends Controller
         $usuario->afiliado()->update([
             "calle" => $request["calle"],
             "barrio" => $request["barrio"],
+            "provincia" => $request['provincia'],
+            "localidad" => $request['localidad'],
+            "departamento" => $request['departamento'],
             "nro_casa" => $request["nro_casa"],
             "paquete_id" => $request["paquete_id"],
             "obra_social_id" => $request["obra_social_id"],
@@ -424,7 +438,8 @@ class AfiliadoController extends Controller
 
         $usuario = User::with([
             'afiliado' => function($query){
-                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','nro_solicitud','created_at','finaliza_en','activo','cuil','profesion_ocupacion','telefono_particular');
+                $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','nro_solicitud','created_at','finaliza_en','activo',
+                'cuil','profesion_ocupacion','telefono_particular','calle','barrio','provincia','localidad','departamento','nro_casa');
             },
             'afiliado.paquete' => function($query){
                 $query->select('id','nombre','precio');

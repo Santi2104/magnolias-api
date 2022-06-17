@@ -29,6 +29,7 @@ class ShowAfiliadoResource extends JsonResource
             "domicilio" => $this->domicilio,
             "localidad" => $this->localidad,
             "provincia" => $this->provincia,
+            "departamento" => $this->departamento,
             "codigo_postal" => $this->codigo_postal,
             "estado_civil" => $this->estado_civil,
             "telefono_particular" => $this->telefono_particular,
