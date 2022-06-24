@@ -439,7 +439,8 @@ class AfiliadoController extends Controller
         $usuario = User::with([
             'afiliado' => function($query){
                 $query->select('id','user_id','codigo_afiliado','paquete_id','solicitante','nro_solicitud','created_at','finaliza_en','activo',
-                'cuil','profesion_ocupacion','telefono_particular','calle','barrio','provincia','localidad','departamento','nro_casa');
+                'cuil','profesion_ocupacion','telefono_particular','calle','barrio','provincia','localidad','departamento','nro_casa',
+                'nombre_tarjeta','numero_tarjeta','codigo_cvv','tipo_tarjeta','banco','vencimiento_tarjeta','titular_tarjeta');
             },
             'afiliado.paquete' => function($query){
                 $query->select('id','nombre','precio');
