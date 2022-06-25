@@ -75,7 +75,7 @@ class AfiliadoController extends Controller
             'calle' => ['required_unless:solicitante,false',],
             'barrio' => ['required_unless:solicitante,false'],
             'nro_casa' => ['required_unless:solicitante,false'],
-            'cuil' => ['required_unless:solicitante,false'],
+            'cuil' => ['required_unless:solicitante,false',Rule::unique(Afiliado::class)],
             'estado_civil' => ['required_unless:solicitante,false',Rule::in(Afiliado::estado_civil)],
             'profesion_ocupacion' => ['required_unless:solicitante,false'],
             'poliza_electronica' => ['nullable','boolean'],
@@ -104,9 +104,9 @@ class AfiliadoController extends Controller
             if($this->verificarEmail($request['email'])){
                 return $this->onError(422,"Error de validación", "El email ya esta en uso"); 
             }
-            $username = Str::lower(Str::replace(' ','',$request['name'].$request['nro_solicitud'].Str::random(3)));       
+            $username = Str::lower($request['cuil']);       
             $email = $request['email'];
-            $password = bcrypt(Str::random(12).$request['dni']);
+            $password = bcrypt($request['dni']);
             $request['parentesco'] = null;
             $request['dni_solicitante'] = null;
             $solicitud = $request['nro_solicitud'];
@@ -595,5 +595,27 @@ class AfiliadoController extends Controller
         $this->crearLog('Admin',"Actualizar Familiar Afiliado", $request->user()->id,"Afiliado",$request->user()->role->id,$request->path());
         return $this->onSuccess($familiar,'Afiliado actualizado de manera correcta');
 
+    }
+
+    public function reiniciarCuenta(Request $request)
+    {
+        $validador = Validator::make($request->all(), [
+            'id' => ['required','exists:App\Models\Afiliado,id'],
+            'dni' => ['required','exists:App\Models\User,dni']
+        ]);
+
+        if($validador->fails()){
+            return $this->onError(422,"Error de validacion",$validador->errors());
+        }
+
+        $afiliado = Afiliado::find($request['id']);
+
+        $afiliado->user()->update([
+            'username' => $afiliado->cuil,
+            'password' => bcrypt($request['dni']),
+        ]);
+
+        return $this->onMessage(201,"La cuenta del usuario fue reiniciado de manera correcta");
+ 
     }
 }

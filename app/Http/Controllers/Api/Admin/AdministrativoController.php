@@ -176,6 +176,7 @@ class AdministrativoController extends Controller
     {
         $validador = Validator::make($request->all(), [
             'id' => ['required','exists:App\Models\Administrativo,id'],
+            'dni' => ['required']
         ]);
 
         if($validador->fails()){
@@ -186,14 +187,13 @@ class AdministrativoController extends Controller
 
         $usuario = $administrativo->user;
 
-        if($usuario->reset_email){
-            return $this->onMessage(422,"Esta cuenta ya se encuentra reiniciada");
-        }
+        // if($usuario->reset_email){
+        //     return $this->onMessage(422,"Esta cuenta ya se encuentra reiniciada");
+        // }
 
         $administrativo->user()->update([
-            'username' => $usuario->name.$usuario->dni,
-            'password' => bcrypt($usuario->dni),
-            'reset_email' => true
+            'username' => $usuario->cuil,
+            'password' => bcrypt($request['dni']),
         ]);
 
         return $this->onMessage(201,"La cuenta del usuario fue reiniciado de manera correcta");

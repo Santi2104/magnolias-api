@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
         Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
         Route::put('afiliado/solicitante', [AfiliadoController::class, 'updateSolicitante'])->name('afiliado.solicitante');
         Route::put('afiliado/familia/edit', [AfiliadoController::class, 'actualizarFamiliar'])->name('afiliado.familiar');
+        Route::post('afiliado/cuenta',[AfiliadoController::class, 'reiniciarCuenta'])->name('afiliado.cuenta');
 
         //**Rutas para los paquetes */
         Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
