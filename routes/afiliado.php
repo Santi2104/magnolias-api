@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\Afiliado\PaqueteController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Afiliado\AfiliadoController;
 
 Route::group(['middleware' => ['auth:api','scope:afiliado','checkaccept']], function(){
 
@@ -9,7 +9,8 @@ Route::group(['middleware' => ['auth:api','scope:afiliado','checkaccept']], func
         "as" => "afiliado."
     ], function(){
 
-        Route::get('paquete', [PaqueteController::class,'index'])->name('paquete.index');
+        Route::get('/', [AfiliadoController::class,'obtenerDatosDelAfiliado'])->name('afiliado.index');
+        Route::post('/password', [AfiliadoController::class,'cambiarContraseña'])->name('afiliado.password');
     });
 
 

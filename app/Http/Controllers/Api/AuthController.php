@@ -87,84 +87,9 @@ class AuthController extends Controller
         return $this->onMessage(200, "Su sesión ha sido cerrada");
     }
 
-    public function register(Request $request)
-    {
-
-        if($this->checkHeaders($request->header('Content-Type'),$request)){
-            return $this->onError(422,'Error en las cabeceras');
-        }
-
-        $nacimiento = Carbon::parse($request['nacimiento']);
-        $actual = Carbon::now();
-
-        //**Este login solo es para los afiliados que se registran por la pagina */
-        $request->validate([
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)],
-            'nacimiento' => ['required'],
-            'password'=> ['required','string','confirmed'],       
-        ]);
-
-
-        User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'lastname' => $request->lastname,
-            'dni'      => $request->dni,
-            'nacimiento' => $nacimiento,
-            'edad'     => $actual->diffInYears($nacimiento),
-            'password' => bcrypt($request->password),
-            'role_id'  => Role::ES_AFILIADO,
-        ]);
-
-        /**
-         * *En este punto el usuario está sin afiliarse
-         * *dentro de su panel de administracion se deberia
-         * *pedirle todo el tiempo que se compre un producto
-         */
-
-        return $this->onMessage(201,"Usuario creado de manera satisfactoria");    
-    }
-
     public function user(Request $request)
     {
         return new UserAuthResource($request->user());
     }
 
-    public function reiniciarCuenta(Request $request)
-    {
-
-        $usuario = User::where('id',$request['id'])->first();
-
-        if(!$usuario)
-        {
-           return $this->onError(422,"Error al reiniciar cuenta","No se encuentra el usuario con ese ID");
-        }
-
-        if(!$usuario->reset_email)
-        {
-            return $this->onError(422,"Error al reiniciar cuenta","Esta cuenta no tiene pedido de reinicio");
-        }
-
-
-        $validador = Validator::make($request->all(), [
-            'id' => ['required','exists:App\Models\User,id'],
-            'username' => ['required','string'],
-            'password' => ['required','string'],
-        ]);
-
-        if($validador->fails()){
-            return $this->onError(422,"Error de validacion",$validador->errors());
-        }
-
-        $usuario->username = $request['username'];
-        $usuario->password = bcrypt($request['password']);
-        $usuario->reset_email = false;
-
-        $usuario->save();
-
-        return $this->onSuccess($usuario,"Cuanta reestablecida de manera correcta");
-    }
 }
