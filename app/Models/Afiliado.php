@@ -57,12 +57,39 @@ class Afiliado extends Model
         'codigo_afiliado',
         'calle',
         'barrio',
+        'provincia',
+        'localidad',
+        'departamento',
         'nro_casa',
         'nro_depto',
         'obra_social_id',
         'grupo_familiar_id',
-        'solicitante'
+        'solicitante',
+        'dni_solicitante',
+        'parentesco',
+        'sexo',
+        'finaliza_en',
+        'cuil',
+        'estado_civil',
+        'profesion_ocupacion',
+        'poliza_electronica',
+        'nombre_tarjeta',
+        'numero_tarjeta',
+        'codigo_cvv',
+        'tipo_tarjeta',
+        'banco',
+        'vencimiento_tarjeta',
+        'titular_tarjeta',
+        'codigo_postal',
+        'ultimo_pago',
+        'telefono_particular',
+        'activo',
+        'nro_solicitud'
     ];
+
+    public const parentesco = ['Padre','Madre','Hijo','Hija','Conyugue'];
+    public const sexo = ['M','F'];
+    public const estado_civil = ['soltero', 'casado', 'viudo', 'divorciado'];
 
     /**
      * The vendedores that belong to the Afiliado
@@ -112,5 +139,15 @@ class Afiliado extends Model
     public function grupoFamiliar()
     {
         return $this->belongsTo(GrupoFamiliar::class);
+    }
+
+    /**
+     * Get all of the pagos for the Afiliado
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class);
     }
 }

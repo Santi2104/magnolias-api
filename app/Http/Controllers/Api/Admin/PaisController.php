@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Library\ApiHelpers;
-use App\Http\Resources\Admin\ZonaResource;
-use App\Models\Zona;
+use App\Models\Pais;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Library\ApiHelpers;
+use App\Http\Controllers\Controller;
+use App\Http\Library\LogHelpers;
 use Illuminate\Support\Facades\Validator;
 
-class ZonaController extends Controller
+class PaisController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -19,8 +20,8 @@ class ZonaController extends Controller
      */
     public function index()
     {
-        $zonas = Zona::all();
-        return $this->onSuccess(ZonaResource::collection($zonas));
+        $paises = Pais::all(['id','npais','activo']);
+        return $this->onSuccess($paises);
     }
 
     /**
@@ -32,24 +33,22 @@ class ZonaController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
-            "localidad_id" => ['required']
+            "nombre" => ['required','string','max:25',Rule::unique(Pais::class,'npais')],
         ]);
 
         if($validador->fails()){
-
             return response()->json([
                 'status' => 200,
                 'message' => $validador->errors(),
-            ], 200);
+            ], 422);
         }
 
-        $zona = Zona::create([
-            "nombre" => $request["nombre"],
-            "localidad_id" => $request["localidad_id"]
+        $pais = Pais::create([
+            'npais' => $request["nombre"]
         ]);
 
-        return $this->onSuccess(new ZonaResource($zona),"La zona fue creada de manera correcta",201);
+        $this->crearLog('Admin',"Creando Pais", $request->user()->id,"Pais",$request->user()->role->id,$request->path());
+        return $this->onSuccess($pais,"El paise fue cargado de manera correcta",201);
     }
 
     /**
@@ -67,41 +66,29 @@ class ZonaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
-            "localidad_id" => ['required']
+            'id' => ['required','exists:App\Models\Pais,id'],
+            "nombre" => ['required','string','max:25',Rule::unique(Pais::class,'npais')->ignore($request['nombre'],'npais')],
         ]);
 
         if($validador->fails()){
-
             return response()->json([
                 'status' => 200,
                 'message' => $validador->errors(),
-            ], 200);
+            ], 422);
         }
 
-        $zona = Zona::find($id);
-        if(!isset($zona)){
-            return $this->onError(404,"La zona al que intenta acceder no existe");
-        }
+        $pais = Pais::whereId($request['id'])->first();
+        $pais->npais = $request['nombre'];
+        $pais->save();
 
-        $zona->fill($request->only([
-            "nombre",
-            "localidad_id"
-        ]));
-
-        if($zona->isClean()){
-            return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
-        }
-
-        $zona->save();
-
-        return $this->onSuccess(new ZonaResource($zona),"Zona actualizado de manera correcta");
+        $this->crearLog('Admin',"Editando Pais", $request->user()->id,"Pais",$request->user()->role->id,$request->path());
+        return $this->onSuccess($pais,"El pais se actualizó de manera correcta");
+        
     }
 
     /**

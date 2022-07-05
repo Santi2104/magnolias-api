@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Library\ApiHelpers;
-use App\Http\Resources\Admin\ProductoResource;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Library\ApiHelpers;
+use App\Http\Controllers\Controller;
+use App\Http\Library\LogHelpers;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\Admin\ProductoResource;
 
 class ProductoController extends Controller
 {
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -32,20 +34,18 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required','string', 'unique:productos,nombre'],
-            "categoria_id" => ['required', 'exists:App\Models\Categoria,id']
+            "nombre" => ['required','string','max:15','unique:productos,nombre'],
         ]);
 
         if($validador->fails()){
 
             return $this->onError(422,"Error de validación", $validador->errors());
         }
-        
+
         $producto = Producto::create([
             "nombre" => $request['nombre'],
-            "categoria_id" => $request['categoria_id']
         ]);
-
+        $this->crearLog('Admin',"Creando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess(new ProductoResource($producto),"Producto creado de manera correcta",201);
     }
 
@@ -76,11 +76,9 @@ class ProductoController extends Controller
     public function update(Request $request, $id)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required'],
-            "categoria_id" => ['required', 'exists:App\Models\Categoria,id']
+            "nombre" => ['required','string','max:15',Rule::unique(Producto::class)->ignore($id)],
         ]);
         //*TODO: Realizar la validacion de arriba a todos los modelos
-        //*TODO: extraer las validaciones a sus respectivos archivos
         if($validador->fails()){
 
             return $this->onError(422,"Error de validación", $validador->errors());
@@ -101,7 +99,7 @@ class ProductoController extends Controller
         }
 
         $producto->save();
-
+        $this->crearLog('Admin',"Editando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess(new ProductoResource($producto),"Producto actualizado de manera correcta");
 
     }
@@ -111,16 +109,16 @@ class ProductoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
         $producto = Producto::find($id);
-        
+
         if(!isset($producto)){
             return $this->onError(404,"El producto al que intenta acceder no existe");
         }
 
         $producto->delete();
-
+        $this->crearLog('Admin',"Eliminando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess($producto, "Producto eliminada de manera correcta");
     }
 
@@ -128,16 +126,16 @@ class ProductoController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function restore($id)
+    public function restore(Request $request,$id)
     {
         $producto = Producto::withTrashed()->where('id', $id)->first();
 
         if(!isset($producto)){
             return $this->onError(404,"El producto al que intenta acceder no existe");
         }
-        
-        $producto->restore();
 
+        $producto->restore();
+        $this->crearLog('Admin',"Restaurando Producto", $request->user()->id,"Producto",$request->user()->role->id,$request->path());
         return $this->onSuccess($producto,"Producto restaurado");
     }
 }

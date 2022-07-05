@@ -3,6 +3,9 @@
 use App\Http\Controllers\Api\Administrativo\AfiliadoController;
 use App\Http\Controllers\Api\Administrativo\CategoriaController;
 use App\Http\Controllers\Api\Administrativo\CoordinadorController;
+use App\Http\Controllers\Api\Administrativo\PagoController;
+use App\Http\Controllers\Api\Administrativo\PaqueteController;
+use App\Http\Controllers\Api\Administrativo\UbicacionesController;
 use App\Http\Controllers\Api\Administrativo\VendedorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +27,27 @@ Route::group(['middleware' => ['auth:api','scope:administrativo','checkaccept']]
 
         //**Rutas para los afiliados */
         Route::get('afiliados', [AfiliadoController::class, 'index'])->name('afiliado,index');
+        Route::get('afiliado', [AfiliadoController::class, 'show'])->name('afiliado.show');
+        Route::get('afiliado/datos',[AfiliadoController::class,'datosAfiliado'])->name('afiliado.datos');
+        Route::get('afiliado/familia',[AfiliadoController::class,'familiaresDelAfiliado'])->name('afiliado.familia');
         Route::post('afiliado', [AfiliadoController::class, 'store'])->name('afiliado.store');
+        Route::put('afiliado/solicitante', [AfiliadoController::class, 'updateSolicitante'])->name('afiliado.solicitante');
+        Route::put('afiliado/familia/edit', [AfiliadoController::class, 'actualizarFamiliar'])->name('afiliado.familiar');
+        Route::post('afiliado/cuenta',[AfiliadoController::class, 'reiniciarCuenta'])->name('afiliado.cuenta');
+
+        //**Rutas para los paquetes */
+        Route::get('paquetes', [PaqueteController::class, 'index'])->name('paquete.index');
+
+        //**Rutas para las ubicaciones */
+        Route::get('pais/{id}/provincias', [UbicacionesController::class, 'listarProvinciasPorPais'])->name('pais.provincias');
+        Route::get('provincia/{id}/departamentos', [UbicacionesController::class, 'listarDepartamentosPorProvincia'])->name('provincia.departamentos');
+        Route::get('departamento/{id}/localidades', [UbicacionesController::class, 'listarLocalidadesPorDepartamento'])->name('departamento.localidades');
+        Route::get('localidad/{id}/calles', [UbicacionesController::class, 'listarCallesPorLocalidad'])->name('localidad.calles');
+        Route::get('localidad/{id}/barrios', [UbicacionesController::class, 'listarBarriosPorLocalidad'])->name('localidad.barrios');
+
+        //**Rutas para los pagos */
+        Route::get('pagos', [PagoController::class, 'index'])->name('pagos.index');
+        Route::put('pago', [PagoController::class, 'update'])->name('pagos.update');
+        Route::post('pago', [PagoController::class, 'store'])->name('pagos.store');
     });
 });

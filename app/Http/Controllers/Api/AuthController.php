@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Library\ApiHelpers;
-use App\Http\Resources\UserAuthResource;
+use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Http\Library\ApiHelpers;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserAuthResource;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -24,12 +25,12 @@ class AuthController extends Controller
         }
 
         $request->validate([ 
-            'email'       => ['required','string','email'],
+            'username'       => ['required','string'],
             'password'    => ['required','string'],
             'remember_me' => ['boolean'],
         ]);
 
-        $credentials = request(['email', 'password']);
+        $credentials = request(['username', 'password']);
 
         if (!Auth::attempt($credentials)) {
             
@@ -69,8 +70,9 @@ class AuthController extends Controller
         return $this->loginResponse(
             $tokenResult->accessToken,
             Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+            $user,
             "Inicio de sesión satisfactorio",
-            $user
+
         );
             
     }
@@ -85,49 +87,9 @@ class AuthController extends Controller
         return $this->onMessage(200, "Su sesión ha sido cerrada");
     }
 
-    public function register(Request $request)
-    {
-
-        if($this->checkHeaders($request->header('Content-Type'),$request)){
-            return $this->onError(422,'Error en las cabeceras');
-        }
-
-        $nacimiento = Carbon::parse($request['nacimiento']);
-        $actual = Carbon::now();
-
-        //**Este login solo es para los afiliados que se registran por la pagina */
-        $request->validate([
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)],
-            'nacimiento' => ['required'],
-            'password'=> ['required','string','confirmed'],       
-        ]);
-
-
-        User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'lastname' => $request->lastname,
-            'dni'      => $request->dni,
-            'nacimiento' => $nacimiento,
-            'edad'     => $actual->diffInYears($nacimiento),
-            'password' => bcrypt($request->password),
-            'role_id'  => Role::ES_AFILIADO,
-        ]);
-
-        /**
-         * *En este punto el usuario está sin afiliarse
-         * *dentro de su panel de administracion se deberia
-         * *pedirle todo el tiempo que se compre un producto
-         */
-
-        return $this->onMessage(201,"Usuario creado de manera satisfactoria");    
-    }
-
     public function user(Request $request)
     {
         return new UserAuthResource($request->user());
     }
+
 }

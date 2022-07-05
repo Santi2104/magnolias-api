@@ -23,6 +23,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+
+        $this->call([
+            PaisSeeder::class,
+            ProvinciaSeeder::class,
+            DepartamentoSeeder::class,
+            LocalidadSeeder::class,
+            CalleSeeder::class,
+            BarrioSeeder::class
+        ]);
+        
         \App\Models\Role::factory()
         ->count(1)
         ->create([
@@ -76,11 +86,11 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\User::factory()
         ->count(1)
-        ->create(['name' => 'Sergio','lastname' => 'Denis','email' => 'sergio@mail.com','role_id' => 1]);
+        ->create(['name' => 'Sergio','lastname' => 'Denis','email' => 'sergio@mail.com','username' => 'sergio','role_id' => 1]);
 
         \App\Models\User::factory()
         ->count(1)
-        ->create(['name' => 'Juan','lastname' => 'Perez','email' => 'administrativo@mail.com','role_id' => 5])
+        ->create(['name' => 'Juan','lastname' => 'Perez','email' => 'administrativo@mail.com','username' => 'juan','role_id' => 5])
         ->each(function (\App\Models\User $user){
             Administrativo::factory()
             ->create(['user_id' => $user->id]);
@@ -104,7 +114,6 @@ class DatabaseSeeder extends Seeder
      
         Producto::factory()
         ->count(4)
-        ->has(Categoria::factory()->count(1))
         ->create();
         
         Paquete::factory()
@@ -113,11 +122,11 @@ class DatabaseSeeder extends Seeder
                     ->count(3))
                     ->create();
 
-        Zona::factory()
-        ->count(10)
-        ->has(Localidad::factory()
-                    ->count(1))
-        ->create();
+        // Zona::factory()
+        // ->count(10)
+        // ->has(Localidad::factory()
+        //             ->count(1))
+        // ->create();
 
         // \App\Models\User::factory()
         // ->count(20)

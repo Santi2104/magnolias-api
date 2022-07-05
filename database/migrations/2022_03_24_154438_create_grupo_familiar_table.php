@@ -15,6 +15,7 @@ class CreateGrupoFamiliarTable extends Migration
     {
         Schema::create('grupo_familiar', function (Blueprint $table) {
             $table->id();
+            $table->string('dni_solicitante')->unique();
             $table->string('apellido');
             $table->timestamps();
         });

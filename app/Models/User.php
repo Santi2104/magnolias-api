@@ -74,9 +74,12 @@ class User extends Authenticatable
         'password',
         'lastname',
         'dni',
+        'tipo_dni',
         'edad',
         'nacimiento',
+        'username',
         'role_id',
+        'reset_email'
     ];
 
     /**
@@ -98,7 +101,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public const sexo = ['M','F'];
 
 
     /**

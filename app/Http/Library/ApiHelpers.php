@@ -2,6 +2,7 @@
 
 namespace App\Http\Library;
 
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
@@ -114,7 +115,7 @@ trait ApiHelpers
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function loginResponse(string $accesToken, string $expiresAt,string $message = "" ,$data, int $code = 200)
+    protected function loginResponse(string $accesToken, string $expiresAt,$data,string $message = "" , int $code = 200)
     {
         return response()->json([
             'access_token' => $accesToken,
@@ -166,6 +167,68 @@ trait ApiHelpers
 
         return false;
 
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $fechaNacimiento
+     * @return $edad
+     */
+    protected function calcularEdad($fechaNacimiento)
+    {
+        $nacimiento = Carbon::parse($fechaNacimiento)->format('Y-m-d');
+        $edad = Carbon::now()->diffInYears($nacimiento);
+        return $edad;
+    }
+
+    protected function calcularVencimiento($fecha)
+    {
+        $vence = Carbon::parse($fecha)->addMonth()->format('Y-m-d');
+        return $vence;
+    }
+
+    /**
+     * @param  $fecha
+     * @return boolean
+     */
+    protected function puedeEditar($fecha)
+    {
+        $fechaCreacion = Carbon::parse($fecha);
+        $diferencia = $fechaCreacion->diffIndays(now());
+
+        if($diferencia != 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function calcularComprobanteDePago()
+    {
+        $ultomoRegistro = \App\Models\Pago::where('id',\App\Models\Pago::max('id'))->first(['id','numero_comprobante']);
+
+        if(!isset($ultomoRegistro->numero_comprobante))
+        {
+            return 1;
+        }else
+        {
+            $numero = $ultomoRegistro->numero_comprobante + 1;
+            return $numero;
+        }
+
+        
+    }
+
+    protected function verificarEmail($email)
+    {
+        $email = \App\Models\User::whereEmail($email)->first(['id','email']);
+
+        if($email)
+        {
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

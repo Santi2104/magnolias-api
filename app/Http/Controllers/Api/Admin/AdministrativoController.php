@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Library\ApiHelpers;
+use App\Http\Library\LogHelpers;
 use App\Http\Resources\Admin\AdministrativoResource;
 use App\Http\Resources\Admin\UserAdministrativoResource;
 use App\Models\Administrativo;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Str;
 use Validator;
@@ -17,7 +19,7 @@ use Validator;
 class AdministrativoController extends Controller
 {
 
-    use ApiHelpers;
+    use ApiHelpers, LogHelpers;
     /**
      * Display a listing of the resource.
      *
@@ -38,12 +40,12 @@ class AdministrativoController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)],
+            'name' => ['required', 'string','max:25'],
+            'username' => ['required','string','max:30',Rule::unique(User::class)],
+            'email' => ['nullable','email'],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required', Rule::unique(User::class),'max:9'],
             'nacimiento' => ['required', 'date'],
-            'password'=> ['required','string','confirmed'], 
         ]);
 
         if($validador->fails()){
@@ -51,31 +53,35 @@ class AdministrativoController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-        $actual = Carbon::now();
+        try {
+            DB::beginTransaction();
+            $usuario = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'username' => $request->username,
+                'lastname' => $request->lastname,
+                'dni'      => $request->dni,
+                'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
+                'edad'     => $this->calcularEdad($request['nacimiento']),
+                'password' => bcrypt(Str::random(10). $request->dni),
+                'role_id'  => \App\Models\Role::ES_ADMINISTRATIVO,
+            ]);
+    
+            $usuario->administrativo()->create([
+                "codigo_administrativo" => Str::uuid()
+            ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->onError(422,"Error al cargar los datos",$th->getMessage());
+        }
 
-        $usuario = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'lastname' => $request->lastname,
-            'dni'      => $request->dni,
-            'nacimiento' => $nacimiento,
-            'edad'     => $actual->diffInYears($nacimiento),
-            'password' => bcrypt($request->password),
-            'role_id'  => \App\Models\Role::ES_ADMINISTRATIVO,
-        ]);
-
-        $usuario->administrativo()->create([
-            "codigo_administrativo" => Str::uuid()
-        ]);
-
+        $this->crearLog('Admin',"Creando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
         return $this->onSuccess(
             new UserAdministrativoResource($usuario),
             "Administrativo creado de manera correcta",
             201
         );
-
-
     }
 
     /**
@@ -93,7 +99,6 @@ class AdministrativoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -108,10 +113,11 @@ class AdministrativoController extends Controller
         $usuario = $administrativo->user;
 
         $validador = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
-            'email' => ['required','string', Rule::unique(User::class)->ignore($usuario->id)],
-            'lastname' => ['required', 'string'],
-            'dni' => ['required', Rule::unique(User::class)->ignore($usuario->id)],
+            'name' => ['required', 'string','max:25'],
+            'username' => ['required','string','max:30',Rule::unique(User::class)->ignore($usuario->id)],
+            'email' => ['nullable','email'],
+            'lastname' => ['required', 'string','max:25'],
+            'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
         ]);
 
@@ -120,16 +126,13 @@ class AdministrativoController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
-        $nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
-
-        $actual = Carbon::now();
-
         $usuario->name = $request->name;
         $usuario->email = $request->email;
+        $usuario->username = $request->username;
         $usuario->lastname = $request->lastname;
         $usuario->dni = $request->dni;
-        $usuario->nacimiento = $nacimiento;
-        $usuario->edad = $actual->diffInYears($nacimiento);
+        $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
+        $usuario->edad = $this->calcularEdad($request['nacimiento']);
         
         if($usuario->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
@@ -137,6 +140,7 @@ class AdministrativoController extends Controller
 
         $usuario->save();
 
+        $this->crearLog('Admin',"Editando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
         return $this->onSuccess(
             new UserAdministrativoResource($usuario),
             "Administrativo modificado de manera correcta",
@@ -146,11 +150,53 @@ class AdministrativoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $validador = Validator::make($request->all(), [
+            'id' => ['required','exists:App\Models\Administrativo,id'],
+        ]);
+
+        if($validador->fails()){
+            return $this->onError(422,"Error de validacion",$validador->errors());
+        }
+
+        $administrativo =  Administrativo::find($request['id']);
+
+        $administrativo->user()->delete();
+        $administrativo->delete();
+        $administrativo->save();
+
+        return $this->onSuccess($administrativo,"Administrativo eliminado de manera correcta");
+    }
+
+    public function resetEmail(Request $request)
+    {
+        $validador = Validator::make($request->all(), [
+            'id' => ['required','exists:App\Models\Administrativo,id'],
+            'dni' => ['required']
+        ]);
+
+        if($validador->fails()){
+            return $this->onError(422,"Error de validacion",$validador->errors());
+        }
+
+        $administrativo = Administrativo::find($request['id']);
+
+        $usuario = $administrativo->user;
+
+        // if($usuario->reset_email){
+        //     return $this->onMessage(422,"Esta cuenta ya se encuentra reiniciada");
+        // }
+
+        $administrativo->user()->update([
+            'username' => $usuario->cuil,
+            'password' => bcrypt($request['dni']),
+        ]);
+
+        return $this->onMessage(201,"La cuenta del usuario fue reiniciado de manera correcta");
+ 
     }
 }

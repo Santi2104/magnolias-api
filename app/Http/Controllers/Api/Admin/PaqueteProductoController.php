@@ -33,8 +33,8 @@ class PaqueteProductoController extends Controller
     {
 
         $validador = Validator::make($request->all(), [
-            "paquete_id" => ['required'],
-            "productos_id" => ['required','array']
+            "paquete_id" => ['required', 'exists:App\Models\Paquete,id'],
+            "productos_id" => ['required','array','exists:App\Models\Producto,id']
         ]);
 
         if($validador->fails()){
@@ -83,7 +83,7 @@ class PaqueteProductoController extends Controller
     public function update(Request $request, $id)
     {
         $validador = Validator::make($request->all(), [
-            "productos_id" => ['required','array']
+            "productos_id" => ['required','array','exists:App\Models\Producto,id']
         ]);
 
         if($validador->fails()){
@@ -101,7 +101,7 @@ class PaqueteProductoController extends Controller
         $paquete->productos()->sync($request["productos_id"]);
 
         return $this->onSuccess(new PaqueteProductoResource($paquete),
-                                "Los productos del paquete $paquete->nombre fueron actualizados",
+                                "Los productos del paquete ".$paquete->nombre." fueron actualizados",
                                 200);
     }
 
@@ -115,7 +115,7 @@ class PaqueteProductoController extends Controller
     public function destroy(Request $request,$id)
     {
         $validador = Validator::make($request->all(), [
-            "productos_id" => ['required','array']
+            "productos_id" => ['required','array','exists:App\Models\Producto,id']
         ]);
 
         if($validador->fails()){

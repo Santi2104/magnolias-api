@@ -9,6 +9,7 @@ Route::group(['middleware' => ['auth:api','scope:vendedor','checkaccept']], func
         "as" => 'vendedor.'
     ], function(){
 
+        //!Todas estas acciones no las puede realizar
         Route::get('afiliados', [AfiliadosController::class, 'index'])->name('afiliado.index');
         Route::post('afiliado', [AfiliadosController::class, 'store'])->name('afiliado.store');
         Route::get('afiliado/{uuid}', [AfiliadosController::class, 'show'])->name('afiliado.show');

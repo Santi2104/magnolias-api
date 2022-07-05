@@ -16,7 +16,6 @@ class ProductoFactory extends Factory
     {
         return [
             'nombre' => $this->faker->unique()->word,
-            'categoria_id' => Categoria::factory()
         ];
     }
 }

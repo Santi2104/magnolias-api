@@ -19,15 +19,16 @@ Route::group(['prefix' => 'auth'], function () {
 
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('user', [AuthController::class, 'user']);
+        Route::post('user/reset',[AuthController::class,'reiniciarCuenta']);
     });
 });
 
-//*Dar la posibilidad al admin de crear un administrativo
-//*Agregar scopes a cada rol (Administracion, Administrativo)
-//*TODO:Intentar implementar las transacciones o los eventos de Eloquent
-//*TODO:Suprimir la tabla categorias que no sirve pa' nah
-//*TODO:Crear una tabla para los Logs
-//*TODO:Implementar un sistema de "alias" para identificar a los vendedores y coordinadores
+//Agregar los cruds para los paises, provincias, etc.
+//Agregar el sistema de Logs a toda la aplicacion.
+//Agregar al administrativo la condicion de edicion antes de las 24hs.
+//Agregar el poder de editar un afiliado para el admin y el administrativo
+//Terminar todos los cruds del admin, incluyendo el del grupo familiar
+//*Agregar en el ApiHelper las validadiones especificas de algunos campos, como Cuil y esas cosas
 
 
 

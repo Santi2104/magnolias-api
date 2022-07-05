@@ -34,16 +34,46 @@ class Localidad extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nlocalidad','departamento_id','codigo_postal'];
     protected $table = 'localidades';
 
     /**
-     * Get all of the zonas for the Localidad
+     * The vendedores that belong to the Localidad
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function vendedores()
+    {
+        return $this->belongsToMany(Vendedor::class);
+    }
+
+    /**
+     * Get the departamento that owns the Localidad
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function departamento()
+    {
+        return $this->belongsTo(Departamento::class);
+    }
+
+    /**
+     * Get all of the calles for the Localidad
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function zonas()
+    public function calles()
     {
-        return $this->hasMany(Zona::class);
+        return $this->hasMany(Calle::class);
+    }
+
+    /**
+     * Get all of the barrios for the Localidad
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function barrios()
+    {
+        return $this->hasMany(Barrio::class);
     }
 }
