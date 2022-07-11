@@ -63,7 +63,7 @@ class AdministrativoController extends Controller
                 'dni'      => $request->dni,
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
                 'edad'     => $this->calcularEdad($request['nacimiento']),
-                'password' => bcrypt(Str::random(10). $request->dni),
+                'password' => bcrypt($request->dni),
                 'role_id'  => \App\Models\Role::ES_ADMINISTRATIVO,
             ]);
     
@@ -115,6 +115,7 @@ class AdministrativoController extends Controller
         $validador = Validator::make($request->all(), [
             'name' => ['required', 'string','max:25'],
             'username' => ['required','string','max:30',Rule::unique(User::class)->ignore($usuario->id)],
+            'password' => ['present'],
             'email' => ['nullable','email'],
             'lastname' => ['required', 'string','max:25'],
             'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
@@ -126,9 +127,20 @@ class AdministrativoController extends Controller
             return $this->onError(422,"Error de validación", $validador->errors());
         }
 
+        $password = "";
+
+        if(is_null($request['password']))
+        {
+            $password = $request->dni;
+        }else
+        {
+            $password = $request['password'];
+        }
+
         $usuario->name = $request->name;
         $usuario->email = $request->email;
         $usuario->username = $request->username;
+        $usuario->password = bcrypt($password);
         $usuario->lastname = $request->lastname;
         $usuario->dni = $request->dni;
         $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
@@ -138,9 +150,16 @@ class AdministrativoController extends Controller
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
 
-        $usuario->save();
+        try {
+            DB::beginTransaction();
+            $usuario->save();
+            $this->crearLog('Admin',"Editando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->onError(422,"Error al cargar los datos",$th->getMessage());
+        }
 
-        $this->crearLog('Admin',"Editando Administrativo", $request->user()->id,"Administrativo",$request->user()->role->id,$request->path());
         return $this->onSuccess(
             new UserAdministrativoResource($usuario),
             "Administrativo modificado de manera correcta",
