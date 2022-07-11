@@ -394,7 +394,7 @@ class AfiliadoController extends Controller
             return $this->onError(404,"No se puede encontrar al afiliado con el dni enviado");
         }
 
-        if($usuario->afiliado->solicitante == false or $usuario->afiliado->activo)
+        if(($usuario->afiliado->solicitante == false) or ($usuario->afiliado->activo == false))
         {
             return $this->onError(404,"Error al encontrar el afiliado","El afiliado debe ser un solicitante o ya se encuentra dado de baja");
         }
