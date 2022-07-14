@@ -24,8 +24,6 @@ class CreateAfiliadosTable extends Migration
             $table->string('dni_solicitante')->nullable();
             $table->enum('sexo',['M','F']);
             $table->string('parentesco')->nullable();
-            //?Crear clave foranea para relacionar el acta de solicitud
-            //?Crear una clave foranea para relacionar al acta de seguro
             $table->string('cuit')->nullable();
             $table->string('cuil')->nullable();
             $table->string('lugar_nacimiento')->nullable();
@@ -52,6 +50,7 @@ class CreateAfiliadosTable extends Migration
             $table->string('banco',15)->nullable();
             $table->string('vencimiento_tarjeta')->nullable();
             $table->string('titular_tarjeta',50)->nullable();
+            $table->date('periodo_carencia')->nullable();
             $table->foreignId('user_id')
             ->constrained()
             ->onDelete('cascade')

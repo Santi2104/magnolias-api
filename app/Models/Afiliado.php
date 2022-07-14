@@ -84,6 +84,7 @@ class Afiliado extends Model
         'ultimo_pago',
         'telefono_particular',
         'activo',
+        'periodo_carencia',
         'nro_solicitud'
     ];
 

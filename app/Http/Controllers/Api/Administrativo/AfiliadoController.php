@@ -203,6 +203,7 @@ class AfiliadoController extends Controller
                 'telefono_particular' => $request['telefono_particular'],
                 'tipo_tarjeta' => $request['tipo_tarjeta'],
                 'codigo_postal' => $request['codigo_postal'],
+                'periodo_carencia' => now()->addMonths(3)->format('Y-m-d'),
                 'activo' => true,
                 'dni_solicitante' => $sol,
                 'nro_solicitud' => $solicitud
