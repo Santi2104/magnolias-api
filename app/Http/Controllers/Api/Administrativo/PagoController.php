@@ -45,8 +45,11 @@ class PagoController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            'metodo_pago' => ['required'],
+            'metodo_pago' => ['required','exists:App\Models\MetodoPago,nombre'],
             'monto' => ['required', 'integer'],
+            'banco' => ['present','exists:App\Models\Banco,nombre'],
+            'tarjeta' => ['present'],
+            'nro_transaccion' => ['present'],
             'proximo_pago' => ['date'],
             'finaliza_en' => ['required','date'],
             'observaciones' => ['nullable'],

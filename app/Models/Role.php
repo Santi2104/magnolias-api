@@ -53,7 +53,8 @@ class Role extends Model
                                             'afiliado:index',
                                             'afiliado:show',
                                             'afiliado:store',
-                                            'paquete:index'
+                                            'paquete:index',
+                                            'banco:index'
                                         ];
 
     /**

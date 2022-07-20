@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AdministrativoController;
 use App\Http\Controllers\Api\Admin\AfiliadoController;
+use App\Http\Controllers\Api\Admin\BancoController;
 use App\Http\Controllers\Api\Admin\BarrioController;
 use App\Http\Controllers\Api\Admin\CalleController;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Api\Admin\PaqueteController;
 use App\Http\Controllers\Api\Admin\PaqueteProductoController;
 use App\Http\Controllers\Api\Admin\ProductoController;
 use App\Http\Controllers\Api\Admin\ProvinciaController;
+use App\Http\Controllers\Api\Admin\TarjetaController;
 use App\Http\Controllers\Api\Admin\VendedorController;
 
 Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
@@ -116,7 +118,16 @@ Route::group(['middleware' => ['auth:api','scope:*','checkaccept']], function(){
         Route::get('calles', [CalleController::class, 'index'])->name('calle.index');
         Route::post('calle', [CalleController::class, 'store'])->name('calle.store');
         Route::put('calle', [CalleController::class, 'update'])->name('calle.update');
-        
+
+        //**Crud de los bancos */
+        Route::get('bancos', [BancoController::class, 'index'])->name('banco.index');
+        Route::post('banco', [BancoController::class, 'store'])->name('banco.store');
+        Route::put('banco', [BancoController::class, 'update'])->name('banco.update');
+
+        //**Crud de las tarjetas */
+        Route::get('tarjetas',[TarjetaController::class,'index'])->name('tarjeta.index');
+        Route::post('tarjeta', [TarjetaController::class, 'store'])->name('tarjeta.store');
+        Route::put('tarjeta', [TarjetaController::class, 'update'])->name('tarjeta.update');
         
     });
 });
