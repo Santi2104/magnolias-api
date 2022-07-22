@@ -21,6 +21,7 @@ class MetodoPagoSeeder extends Seeder
             ['nombre' => 'Tarjerta de Credito','codigo' => 'TC' ],
             ['nombre' => 'Tarjerta de Debito','codigo' => 'TD' ],
             ['nombre' => 'Pagare','codigo' => 'Pag' ],
+            ['nombre' => 'Descuento por planilla','codigo' => 'DPP' ],
         ];
 
         DB::table('metodo_pagos')->insert($metodosPago);

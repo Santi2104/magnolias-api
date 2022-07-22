@@ -45,13 +45,13 @@ class PagoController extends Controller
     public function store(Request $request)
     {
         $validador = Validator::make($request->all(), [
-            'metodo_pago' => ['required','exists:App\Models\MetodoPago,nombre'],
+            'metodo_pago' => ['required'],
             'monto' => ['required', 'integer'],
-            'banco' => ['present','exists:App\Models\Banco,nombre'],
+            'banco' => ['present'],
             'tarjeta' => ['present'],
             'nro_transaccion' => ['present'],
             'proximo_pago' => ['date'],
-            'finaliza_en' => ['required','date'],
+            //'finaliza_en' => ['required','date'],
             'observaciones' => ['nullable'],
             'paquete_id' => ['required','exists:App\Models\Paquete,id'],
             'afiliado_id' => ['required','exists:App\Models\Afiliado,id']
@@ -67,10 +67,10 @@ class PagoController extends Controller
             'user' => function($query){
                 $query->select('id','dni');
             }
-        ])->whereId($request['afiliado_id'])->first(['id','solicitante','grupo_familiar_id','dni_solicitante','user_id']);
+        ])->whereId($request['afiliado_id'])->first(['id','solicitante','grupo_familiar_id','dni_solicitante','user_id','finaliza_en']);
         if(!$afiliado->solicitante)
         {
-            return $this->onError(422,"Error en el afiliado", "El pago debe hacerse con un afiliado solicitante"); 
+            return $this->onError(422,"Error en el afiliado", "El pago debe hacerse con un afiliado solicitante");
         }
 
         $pago = Pago::create([
@@ -79,14 +79,17 @@ class PagoController extends Controller
             'paquete_id' => $request->paquete_id,
             'afiliado_id' => $request->afiliado_id,
             'monto' => $request->monto,
+            'banco' => $request->banco,
+            'tarjeta' => $request->tarjeta,
             'metodo_pago' => $request->metodo_pago,
             'usuario' => $request->user()->name ." ". $request->user()->lastname,
             'observaciones' => $request['observaciones'],
             'numero_comprobante' => $this->calcularComprobanteDePago(),
+            'nro_transaccion' => $request->nro_transaccion,
             'pagado' => true
         ]);
 
-        event(new ActualizarAfiliado($pago,$afiliado,$request['finaliza_en']));
+        event(new ActualizarAfiliado($pago,$afiliado));
         $this->crearLog('administrativo',"Creando Pago", $request->user()->id,"Pago",$request->user()->role->id,$request->path());
         return $this->onSuccess($pago,"Pago registrado de manera correcta",201);
 
@@ -116,11 +119,12 @@ class PagoController extends Controller
             'metodo_pago' => ['required'],
             'monto' => ['required', 'integer'],
             'proximo_pago' => ['date'],
-            'finaliza_en' => ['required','date'],
+            'banco' => ['present'],
             'observaciones' => ['nullable'],
             'paquete_id' => ['required','exists:App\Models\Paquete,id'],
             'afiliado_id' => ['required','exists:App\Models\Afiliado,id'],
             'pago_id' => ['required','exists:App\Models\Pago,id'],
+            'nro_transaccion' => ['present'],
         ]);
 
         if($validador->fails())
@@ -137,10 +141,10 @@ class PagoController extends Controller
         $pago->metodo_pago = $request['metodo_pago'];
         $pago->monto = $request['monto'];
         $pago->proximo_pago = $request['proximo_pago'];
-        $pago->finaliza_en = $request['finaliza_en'];
         $pago->observaciones = $request['observaciones'];
         $pago->paquete_id = $request['paquete_id'];
         $pago->afiliado_id = $request['afiliado_id'];
+        $pago->nro_transaccion = $request['nro_transaccion'];
         $pago->save();
 
         $this->crearLog('administrativo',"Editando Pago", $request->user()->id,"Pago",$request->user()->role->id,$request->path());
