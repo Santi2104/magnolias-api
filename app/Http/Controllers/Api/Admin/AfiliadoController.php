@@ -193,6 +193,7 @@ class AfiliadoController extends Controller
                 'titular_tarjeta' => $request['titular_tarjeta'],
                 'tipo_tarjeta' => $request['tipo_tarjeta'],
                 'codigo_postal' => $request['codigo_postal'],
+                'periodo_carencia' => now()->addMonths(3)->format('Y-m-d'),
                 'activo' => true,
                 'dni_solicitante' => $sol,
                 'nro_solicitud' => $solicitud

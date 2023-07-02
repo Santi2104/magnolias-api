@@ -180,10 +180,32 @@ trait ApiHelpers
         return $edad;
     }
 
+    /**
+     * Calcula el proximo vencimiento del afiliado
+     * @param \Illuminate\Http\Request $fechaNacimiento
+     * @return $vence
+     */
     protected function calcularVencimiento($fecha)
     {
-        $vence = Carbon::parse($fecha)->addMonth()->format('Y-m-d');
-        return $vence;
+        $dia = Carbon::parse($fecha);
+        if($dia->day <= 19){
+
+            $diferencia = 20 - $dia->day;
+            $vence = Carbon::parse($dia)->addDays($diferencia)->format('Y-m-d');
+            return $vence;
+        }
+        
+        if($dia->day >= 21){
+            $diferencia = $dia->day - 20;
+            $vence = Carbon::parse($dia)->subDays($diferencia)->addMonth()->format('Y-m-d');
+            return $vence;
+        }
+        else{
+
+            $vence = Carbon::parse($dia)->addMonth()->format('Y-m-d');
+            return $vence;
+        }
+
     }
 
     /**

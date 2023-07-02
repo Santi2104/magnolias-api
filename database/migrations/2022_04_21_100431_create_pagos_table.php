@@ -20,6 +20,9 @@ class CreatePagosTable extends Migration
             $table->date('fecha_pago')->nullable();
             $table->date('proximo_pago');
             $table->string('metodo_pago')->nullable();
+            $table->string('banco')->nullable();
+            $table->string('tarjeta')->nullable();
+            $table->string('nro_transaccion')->nullable();
             $table->integer('monto')->nullable();
             $table->unsignedBigInteger('paquete_id');
             $table->foreign('paquete_id')->references('id')->on('paquetes');

@@ -22,11 +22,10 @@ class ActualizarAfiliado
      *
      * @return void
      */
-    public function __construct($pago,$afiliado,$finaliza_en)
+    public function __construct($pago,$afiliado)
     {
         $this->pago = $pago;
         $this->afiliado = $afiliado;
-        $this->finaliza_en = $finaliza_en;
     }
 
     /**

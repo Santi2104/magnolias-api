@@ -52,7 +52,8 @@ class AuthServiceProvider extends ServiceProvider
             'afiliado:store' => 'Crear un afiliado',
             'afiliado:update' => 'Editar un afiliado',
             'afiliado:destroy' => 'Eliminar un afiliado',
-            'paquete:index' => 'Listar los paquetes'
+            'paquete:index' => 'Listar los paquetes',
+            'banco:index' => 'Listar los bancos'
         ]);
 
     }

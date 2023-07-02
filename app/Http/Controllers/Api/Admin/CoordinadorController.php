@@ -63,7 +63,7 @@ class CoordinadorController extends Controller
                 'username' => $request->username,
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
                 'edad'     => $this->calcularEdad($request['nacimiento']),
-                'password' => bcrypt(Str::random(12).$request['dni']),
+                'password' => bcrypt($request['dni']),
                 'role_id'  => \App\Models\Role::ES_COORDINADOR,
             ]);
     
@@ -140,11 +140,22 @@ class CoordinadorController extends Controller
             'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
             'username' => ['required','string','max:30',Rule::unique(User::class)->ignore($usuario->id)],
+            'password' => ['present'],
         ]);
 
         if($validador->fails()){
 
             return $this->onError(422,"Error de validación", $validador->errors());
+        }
+
+        $password = "";
+
+        if(is_null($request['password']))
+        {
+            $password = $request->dni;
+        }else
+        {
+            $password = $request['password'];
         }
 
         $usuario->name = $request->name;
@@ -154,17 +165,23 @@ class CoordinadorController extends Controller
         $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $usuario->edad = $this->calcularEdad($request['nacimiento']);
         $usuario->username = $request->username;
-        /**
-            *?Talves aca Deberia Ir algo para modificar la tabla coordinador
-            *? Si modifico el mail, deberia poder vericarlo de nuevo si es correcto
-        */
+        $usuario->password = bcrypt($password);
 
         if($usuario->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
 
-        $usuario->save();
-        $this->crearLog('Admin',"Editando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
+        try {
+            DB::beginTransaction();
+            $usuario->save();
+            $this->crearLog('Admin',"Editando Coordinador", $request->user()->id,"Coordinador",$request->user()->role->id,$request->path());
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->onError(422,"Error al cargar los datos",$th->getMessage());
+        }
+
+
         return $this->onSuccess(new UserCoordinadorResource($usuario),"Coordinador actualizado de manera correcta",200);
     }
 

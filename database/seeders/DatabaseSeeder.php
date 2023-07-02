@@ -30,7 +30,10 @@ class DatabaseSeeder extends Seeder
             DepartamentoSeeder::class,
             LocalidadSeeder::class,
             CalleSeeder::class,
-            BarrioSeeder::class
+            BarrioSeeder::class,
+            MetodoPagoSeeder::class,
+            BancoSeeder::class,
+            TarjetaSeeder::class
         ]);
         
         \App\Models\Role::factory()
