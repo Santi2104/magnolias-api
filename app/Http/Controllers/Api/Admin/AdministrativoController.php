@@ -63,10 +63,10 @@ class AdministrativoController extends Controller
                 'dni'      => $request->dni,
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
                 'edad'     => $this->calcularEdad($request['nacimiento']),
-                'password' => bcrypt($request->dni),
+                'password' => bcrypt($request->password),
                 'role_id'  => \App\Models\Role::ES_ADMINISTRATIVO,
             ]);
-    
+
             $usuario->administrativo()->create([
                 "codigo_administrativo" => Str::uuid()
             ]);
@@ -145,7 +145,7 @@ class AdministrativoController extends Controller
         $usuario->dni = $request->dni;
         $usuario->nacimiento = Carbon::parse($request['nacimiento'])->format('Y-m-d');
         $usuario->edad = $this->calcularEdad($request['nacimiento']);
-        
+
         if($usuario->isClean()){
             return $this->onError(422,"Debe especificar al menos un valor diferente para poder actualizar");
         }
@@ -216,6 +216,6 @@ class AdministrativoController extends Controller
         ]);
 
         return $this->onMessage(201,"La cuenta del usuario fue reiniciado de manera correcta");
- 
+
     }
 }
