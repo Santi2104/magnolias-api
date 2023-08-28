@@ -63,10 +63,10 @@ class CoordinadorController extends Controller
                 'username' => $request->username,
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
                 'edad'     => $this->calcularEdad($request['nacimiento']),
-                'password' => bcrypt($request['dni']),
+                'password' => bcrypt(Str::random(12).$request['dni']),
                 'role_id'  => \App\Models\Role::ES_COORDINADOR,
             ]);
-    
+
             $usuario->coordinador()->create([
                 "codigo_coordinador" => Str::uuid()
             ]);
@@ -140,7 +140,7 @@ class CoordinadorController extends Controller
             'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
             'username' => ['required','string','max:30',Rule::unique(User::class)->ignore($usuario->id)],
-            'password' => ['present'],
+            'password' => ['nullable'],
         ]);
 
         if($validador->fails()){
@@ -152,7 +152,7 @@ class CoordinadorController extends Controller
 
         if(is_null($request['password']))
         {
-            $password = $request->dni;
+            $password = Str::random(12).$request['dni'];
         }else
         {
             $password = $request['password'];

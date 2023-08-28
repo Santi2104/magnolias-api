@@ -64,7 +64,7 @@ class VendedorController extends Controller
                 'nacimiento' => Carbon::parse($request['nacimiento'])->format('Y-m-d'),
                 'edad'     => $this->calcularEdad($request->nacimiento),
                 'username' => $request->username,
-                'password' => bcrypt($request['dni']),
+                'password' => bcrypt(Str::random(12).$request['dni']),
                 'role_id'  => \App\Models\Role::ES_VENDEDOR,
             ]);
 
@@ -119,7 +119,7 @@ class VendedorController extends Controller
                             $query->select('id','name','lastname','dni','email');
                         },
                     ])->first();
-        
+
         return $vendedor;
     }
 
@@ -145,7 +145,7 @@ class VendedorController extends Controller
             'email' => ['required','email', Rule::unique(User::class)->ignore($usuario->id)],
             'username' => ['required','string','max:30',Rule::unique(User::class)->ignore($usuario->id)],
             'lastname' => ['required', 'string','max:25'],
-            'password' => ['present'],
+            'password' => ['nullable'],
             'dni' => ['required','string',Rule::unique(User::class)->ignore($usuario->id),'max:9'],
             'nacimiento' => ['required','date'],
             'localidad_id' => ['required','exists:App\Models\Localidad,id'],
@@ -161,7 +161,7 @@ class VendedorController extends Controller
 
         if(is_null($request['password']))
         {
-            $password = $request->dni;
+            $password = Str::random(12).$request['dni'];
         }else
         {
             $password = $request['password'];
