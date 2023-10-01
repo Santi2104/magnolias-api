@@ -34,7 +34,7 @@ class PaqueteController extends Controller
     {
 
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required','string','max:15',Rule::unique(Paquete::class)],
+            "nombre" => ['required','string','max:100',Rule::unique(Paquete::class)],
             "precio" => ['required','integer','min:0','max:10000']
         ]);
 
@@ -61,7 +61,7 @@ class PaqueteController extends Controller
     public function update(Request $request, $id)
     {
         $validador = Validator::make($request->all(), [
-            "nombre" => ['required','string','max:15',Rule::unique(Paquete::class)->ignore($id)],
+            "nombre" => ['required','string','max:100',Rule::unique(Paquete::class)->ignore($id)],
             "precio" => ['required','integer','min:0','max:10000']
         ]);
 
@@ -98,7 +98,7 @@ class PaqueteController extends Controller
     public function destroy(Request $request,$id)
     {
         $paquete = Paquete::find($id);
-        
+
         if(!isset($paquete)){
             return $this->onError(404,"El paquete al que intenta acceder no existe");
         }
@@ -115,7 +115,7 @@ class PaqueteController extends Controller
         if(!isset($paquete)){
             return $this->onError(404,"El paquete al que intenta acceder no existe");
         }
-        
+
         $paquete->restore();
         $this->crearLog('Admin',"Restaurando Paquete", $request->user()->id,"Paquete",$request->user()->role->id,$request->path());
         return $this->onSuccess($paquete,"Paquete restaurado");
