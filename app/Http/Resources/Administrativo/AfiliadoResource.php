@@ -34,7 +34,7 @@ class AfiliadoResource extends JsonResource
             "nro_casa" => $this->afiliado->nro_casa,
             "departamento" => $this->afiliado->departamento,
             "nacimiento" => $this->nacimiento,
-            'paquete' => $this->afiliado->paquete->nombre ? $this->afiliado->paquete->nombre : '',
+            'paquete' => $this->afiliado->paquete ? $this->afiliado->paquete->nombre : '',
             'solicitante' => $this->afiliado->solicitante,
             'activo' => $this->afiliado->activo ? 'Activo' : 'No activo',
             'fecha_alta' => $this->created_at->format('Y-m-d'),
